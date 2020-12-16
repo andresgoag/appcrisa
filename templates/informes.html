@@ -1,0 +1,198 @@
+{%extends "navegacion.html"%}
+{%block content%}
+
+
+<div class="container-fluid">
+
+    <div class="row">
+
+        <div class="col-12">
+
+            <ul class="nav nav-tabs">
+
+                <li class="nav-item">
+                    <a href="#tabordenes" class="nav-link active" data-toggle="tab">Órdenes</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#tabprendas" class="nav-link" data-toggle="tab">Prendas</a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#tabusuarios" class="nav-link" data-toggle="tab">Usuarios</a>
+                </li>
+
+            </ul>
+        
+        </div>
+
+    </div>
+
+    <div class="tab-content">
+
+        <div class="tab-pane active" id="tabordenes" role="tabpanel">
+
+            <div class="row mt-2">
+                <div class="col-12">
+                    <div class="form-row">
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="estado_orden">Estado</label>
+                            <select name="estado_orden" id="estado_orden" class="form-control">
+                                <option value="todas">Todas</option>
+                                <option value="abierta">Abierta</option>
+                                <option value="produccion">Producción</option>
+                                <option value="despachada">Despachada</option>
+                                <option value="cerrada">Cerrada</option>
+                                <option value="cancelada">Cancelada</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="prioridad">Prioritaria</label>
+                            <select name="prioridad" id="prioridad" class="form-control">
+                                <option value="todas">Todas</option>
+                                <option value="si">Si</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="identificacion">Identificación del cliente</label>
+                            <input type="text" class="form-control" name="identificacion" id="identificacion">
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group align-self-end">
+                            <button class="btn btn-primary btn-block" id="buscador_ordenes">Buscar</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+
+                <div class="col-12">
+                    
+                    <table class="table table-bordered table-sm table-hover table-responsive-lg" id="tabla_ordenes">
+
+                        <thead>
+                            <th>Prioritaria</th>
+                            <th>Número de órden</th>
+                            <th>Prendas</th>
+                            <th>Nombre del cliente</th>
+                            <th>Identificación del cliente</th>
+                            <th>Estado</th>
+                            <th>Creada por</th>
+                        </thead>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="tab-pane" id="tabprendas" role="tabpanel">
+
+            <div class="row mt-2">
+                <div class="col-12">
+                    <div class="form-row">
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="tipo-prenda">Tipo de prenda</label>
+                            <select name="tipo-prenda" id="tipo-prenda" class="form-control">
+                                <option value="todas">Todas</option>
+                                <option value="falda">Falda</option>
+                                <option value="pantalon">Pantalón</option>
+                                <option value="short">Short</option>
+                                <option value="buzo">Buzo</option>
+                                <option value="camibuzo">Camibuzo</option>
+                                <option value="camiseta">Camiseta</option>
+                                <option value="croptop">Croptop</option>
+                                <option value="camisilla">Camisilla</option>
+                                <option value="camisa">Camisa de Botones</option>
+                                <option value="vestido">Vestido</option>
+                                <option value="correa">Correa</option>
+                                <option value="medias">Medias</option>
+                                <option value="gorro">Gorro</option>
+                                <option value="gafas">Gafas</option>
+                                <option value="tapabocas">Tapabocas</option>
+                                <option value="arnes">Arnés</option>
+                                <option value="panoleta">Pañoleta</option>
+                                <option value="cobija">Cobija</option>
+                                <option value="panties">Panties</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="usuario-responsable-prenda">Usuario responsable</label>
+                            <input type="text" class="form-control" name="usuario-responsable-prenda" id="usuario-responsable-prenda">
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="area-responsable-prenda">Área responsable</label>
+                            <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control">
+                                <option value="">Todas</option>
+                                <option value="diseno">Diseño</option>
+                                <option value="sublimacion">Sublimación</option>
+                                <option value="corte">Corte</option>
+                                <option value="confeccion-preparacion">Confección-preparación</option>
+                                <option value="confeccion-terminacion">Confección-terminación</option>
+                                <option value="calidad">Calidad</option>
+                                <option value="empaque">Empaque</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-2 form-group">
+                            <label for="prioridad-prenda">Prioritaria</label>
+                            <select name="prioridad-prenda" id="prioridad-prenda" class="form-control">
+                                <option value="todas">Todas</option>
+                                <option value="si">Si</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-1 form-group align-self-end">
+                            <button class="btn btn-primary btn-block" id="buscador_prendas">Buscar</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+
+                <div class="col-12">
+                    
+                    <table class="table table-bordered table-sm table-hover table-responsive-md" id="tabla_prendas">
+
+                        <thead>
+                            <th>Prioritaria</th>
+                            <th>Numero de órden</th>
+                            <th>Tipo</th>
+                            <th>Cantidad</th>
+                            <th>Área</th>
+                            <th>Responsable</th>
+                        </thead>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="tab-pane" id="tabusuarios" role="tabpanel">
+            <p>Hola</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{url_for('static', filename='script/informes.js')}}"></script>
+
+{%endblock%}

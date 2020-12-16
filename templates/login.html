@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>App Crisa</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+        <style>
+            .bd-placeholder-img {
+                font-size: 1.125rem;
+                text-anchor: middle;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+            @media (min-width: 768px) {
+                .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+                }
+            }
+        </style>
+
+        <link href="{{url_for('static', filename='css/signin.css')}}" rel="stylesheet">
+
+    </head>
+
+
+
+    <body class="text-center">
+
+        <form class="form-signin" action="/" method="POST">
+            <img class="mb-4" src="{{url_for('static', filename='img/logomin.png')}}" width="150">
+
+            <h1 class="h3 mb-3 font-weight-normal">Iniciar Sesión</h1>
+
+            <label for="usuario" class="sr-only">Usuario</label>
+            <input type="text" name="usuario" class="form-control mt-1" placeholder="Usuario" required autofocus>
+
+            <label for="password" class="sr-only">Contraseña</label>
+            <input type="password" name="password" class="form-control mt-1" placeholder="Contraseña" required>
+
+            {% with messages = get_flashed_messages(category_filter=['error']) %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        <p class="my-2">{{msg}}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <button class="btn btn-lg btn-primary btn-block mt-1" type="submit">Ingresar</button>
+
+        </form>
+
+    </body>
+
+</html>

@@ -1,0 +1,114 @@
+body {
+    color: #6a6a6a;
+}
+
+.barra_lateral {
+    background: #6a6a6a;
+    min-height: 100vh;
+    min-width: 250px;
+    color: #e0e0e0;
+}
+
+.barra_lateral .logo {
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.barra_lateral .logo h2 {
+    font-size: 1.5em;
+    margin: 0;
+    padding-right: 15px;
+}
+
+.barra_lateral .menu a {
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    color: #e0e0e0;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.barra_lateral .menu a svg {
+    margin-right: 10px;
+}
+
+.barra_lateral a:hover{
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.barra_lateral .info_usuario {
+    border-top: 2px solid rgba(255, 255, 255, 0.4);
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    background: #6a6a6a;
+    z-index: 1;
+}
+
+.barra_lateral .info_usuario a {
+    display: inline-block;
+    padding: 15px;
+    text-decoration: none;
+    color: #e0e0e0;
+}
+
+#user_name {
+    margin-left: 10px;
+}
+
+.buscador {
+    background: #6a6a6a;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+    display: block;
+}
+
+.buscador .input-group {
+    padding: 13px;
+}
+
+#comentarios_pedido {
+    min-height: 50px;
+}
+
+
+/* ------ Media Queries ------ */
+
+@media screen and (max-width:1199px) {
+
+    .barra_lateral {
+        min-width: auto;
+        text-align: center;
+    }
+    
+    .barra_lateral .menu a svg {
+        margin: 0;
+    }
+
+    .barra_lateral span {
+        display: none;
+    }
+
+    .barra_lateral .info_usuario a {
+        width: 100%;
+    }
+
+}
+
+
+
+@media screen and (max-width:575px) {
+
+    .barra_lateral {
+        min-height: auto;
+    }
+
+    .barra_lateral .menu a {
+        display: inline-block;
+        border-bottom: none;
+    }
+
+    /* .buscador {
+        display: none;
+    } */
+
+}
