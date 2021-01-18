@@ -1,4 +1,5 @@
 from db import db
+from datetime import datetime
 
 class OrdenesModel(db.Model):
 
@@ -21,6 +22,8 @@ class OrdenesModel(db.Model):
     forma_pago = db.Column(db.String(80))
     pagado = db.Column(db.String(80))
     comentarios = db.Column(db.String(300))
+    fecha = db.Column(db.String(80))
+    tiempo_estimado = db.Column(db.String(8))
 
     prendas = db.relationship('PrendasModel', lazy='dynamic')
     tiempos = db.relationship('TiemposModel', lazy='dynamic')
@@ -29,7 +32,7 @@ class OrdenesModel(db.Model):
     cliente_id = db.Column(db.Integer, db.ForeignKey('clientes.id'))
     cliente = db.relationship('ClientesModel')
 
-    def __init__(self, user, numero_orden, prioridad, estado_orden, incluir_envio, opcion_envio, empresa_envio, precio_envio, guia_envio, abono, precio_total, marca, medio_compra, forma_pago, pagado, comentarios, cliente_id):
+    def __init__(self, user, numero_orden, prioridad, estado_orden, incluir_envio, opcion_envio, empresa_envio, precio_envio, guia_envio, abono, precio_total, marca, medio_compra, forma_pago, pagado, comentarios, cliente_id, tiempo_estimado):
         self.user = user
         self.numero_orden = numero_orden
         self.prioridad = prioridad
@@ -47,6 +50,8 @@ class OrdenesModel(db.Model):
         self.pagado = pagado
         self.comentarios = comentarios
         self.cliente_id = cliente_id
+        self.tiempo_estimado = tiempo_estimado
+        self.fecha = datetime.now().strftime("%Y-%m-%d")
 
 
     def json(self):
@@ -75,7 +80,9 @@ class OrdenesModel(db.Model):
             "pagado": self.pagado,
             "comentarios": self.comentarios,
             "prendas": lista_prendas,
-            "cliente": self.cliente.json()
+            "cliente": self.cliente.json(),
+            "fecha": self.fecha,
+            "tiempo_estimado": self.tiempo_estimado
         }
 
     def save_to_db(self):

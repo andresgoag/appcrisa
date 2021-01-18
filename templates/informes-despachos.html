@@ -1,4 +1,4 @@
-{%extends "navegacion.html"%}
+{%extends "navegacion-operarios.html"%}
 {%block content%}
 
 
@@ -221,7 +221,7 @@
 
                         <div class="col-12 col-lg-2 form-group">
                             <label for="area-responsable-prenda">Área responsable</label>
-                            <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control">
+                            <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control" disabled>
                                 <option value="">Todas</option>
                                 <option value="analisis">Análisis</option>
                                 <option value="planeacion">Planeación</option>
@@ -290,6 +290,10 @@
 
 </div>
 
-<script src="{{url_for('static', filename='script/informes.js')}}"></script>
+<script>
+    document.getElementById("area-responsable-prenda").value = "{{session['area']}}";
+</script>
+
+<script src="{{url_for('static', filename='script/informes-despachos.js')}}"></script>
 
 {%endblock%}

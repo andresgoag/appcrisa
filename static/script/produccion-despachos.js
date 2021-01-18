@@ -95,6 +95,48 @@ const guardarEspecificacion = (evento) => {
     }, info_json_comentario)
 } // OK
 
+const area_responsable_prenda_siguiente = (id_prenda, select_areas) => {
+
+    let info = {
+        id_prenda: id_prenda, 
+        area: select_areas
+    }
+    let info_json = JSON.stringify(info)
+
+    fetchData("POST", "/arearesponsableprenda", mensaje_area_responsable, info_json);
+} // OK
+
+const enviar_a_siguiente_area = (evento) => {
+    let prenda = evento.target.parentElement.parentElement.parentElement;
+    let caso = prenda.querySelector(".contenedor-caso-produccion").value;
+    let area = prenda.querySelector(".contenedor-areas").value;
+    let id_prenda = prenda.querySelector(".id_input").value; // id base de datos
+    caso = switch_caso(parseInt(caso));
+    let index = caso.indexOf(area)
+
+    if (index == caso.length-1) {
+        alert(`${area_produccion_bonita(area)} es la ultima área`)
+    } else {
+        let verification = confirm(`Desea marcar como completo ${area_produccion_bonita(area)}? Esta acción es irreversible.`)
+        if (verification) {
+            let info = {
+                id_prenda: id_prenda,
+                area: area,
+                estado: true
+            };
+            let info_json = JSON.stringify(info);
+            fetchData("POST", "/marcarproduccion", function(error, data) {
+                if (error) return console.error(error);
+                if (data["status"] == "ok") {
+                    area_responsable_prenda_siguiente(id_prenda, caso[index+1]);
+                    fetchData("GET", `/cambiarusuariovacio/${id_prenda}`, postDoNothing);
+                }
+            }, info_json)
+        }
+    }
+
+} // OK
+
 const reportarError = (evento) => {
     let prenda = evento.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
     let caso = prenda.querySelector(".contenedor-caso-produccion").value;
@@ -203,7 +245,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="casos_produccion(this);">
+        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="casos_produccion(this);" disabled>
             <option value="">Seleccionar proceso</option>
             <option value="1">Caso 1 (Sublimada)</option>
             <option value="2">Caso 2 (Unicolor)</option>
@@ -219,16 +261,16 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select class="form-control form-control-sm contenedor-areas" id="area_${id_prenda_nueva}" onchange="area_responsable_prenda(this);">
+        <select class="form-control form-control-sm contenedor-areas" id="area_${id_prenda_nueva}" onchange="area_responsable_prenda(this);" disabled>
             <option value="">Área responsable</option>
         </select>
     </div>
     
     <div class="col-12 col-lg-2">
         <div class="input-group">
-            <input type="text" id="usuario_${id_prenda_nueva}" placeholder="Usuario responsable" class="form-control form-control-sm contenedor-usuario">
+            <input type="text" id="usuario_${id_prenda_nueva}" placeholder="Usuario responsable" class="form-control form-control-sm contenedor-usuario" disabled>
             <div class="input-group-append">
-                <button class="btn btn-primary btn-sm" type="button" name="button" onclick="usuario_responsable_prenda(this);">
+                <button class="btn btn-primary btn-sm" type="button" name="button" onclick="usuario_responsable_prenda(this);" disabled>
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
                     </svg>
@@ -237,13 +279,14 @@ const addPrendaProduccion = (id_prenda_nueva) => {
         </div>
     </div>
     
-    <div class="col-12 mt-3 d-flex flex-wrap justify-content-around contenedor_estados_produccion">
+    <div class="col-12 mt-3 d-none contenedor_estados_produccion">
     
     </div>
     
     <div class="col-12 mt-3">
         <div class="d-flex justify-content-center">
             <button class="btn btn-primary btn-sm cargar_tiempos" id="cargar_tiempos_${id_prenda_nueva}" onclick="cargarTiempos(this);">Cargar tiempos</button>
+            <button class="ml-1 btn btn-primary btn-sm" id="enviar_a_siguiente_area_${id_prenda_nueva}">Marcar etapa como completa</button>
             <button class="ml-1 btn btn-danger" type="button" name="button" data-toggle="modal" data-target="#modal_error_${id_prenda_nueva}">Reportar error</button>
         </div>
     </div>
@@ -288,6 +331,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     let div_prendas = document.getElementById("prendas");
     div_prendas.appendChild(div_nueva_prenda);
 
+    document.getElementById(`enviar_a_siguiente_area_${id_prenda_nueva}`).addEventListener('click', enviar_a_siguiente_area);
     document.getElementById(`boton_reportar_error_${id_prenda_nueva}`).addEventListener('click', reportarError);
     document.getElementById(`guardar_especificacion_${id_prenda_nueva}`).addEventListener('click', guardarEspecificacion);
 
@@ -327,6 +371,16 @@ const set_order_informacion = (error, data) => {
     set_element_value("numerodeorden", data["numero_orden"]);
     set_element_value("marcaorden", capitalize(data["marca"]));
     set_element_value("estado_orden", data["estado_orden"]);
+    set_element_value("opcion_envio", data["opcion_envio"]);
+    set_element_value("empresa_envio", data["empresa_envio"]);
+    set_element_value("guia_envio", data["guia_envio"]);
+
+
+    if (data["pagado"] == "si") {
+        document.getElementById("pagado").checked = true;
+    } else {
+        document.getElementById("pagado").checked = false;
+    }
 
     for (let i = 0; i < data["prendas"].length; i++) {
 

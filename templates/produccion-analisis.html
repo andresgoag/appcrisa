@@ -1,4 +1,4 @@
-{%extends "navegacion.html"%}
+{%extends "navegacion-operarios.html"%}
 {%block content%}
 
 {% with messages = get_flashed_messages(category_filter=['error']) %}
@@ -41,26 +41,16 @@
 
                 <div class="form-row form-group">
 
-                    <div class="col-12 col-md-3">
+                    <div class="col-12 col-md-4">
                         <input type="text" name="numero_orden" placeholder="Número de orden" class="form-control" value="" id="numerodeorden" readonly>
                     </div>
 
-                    <div class="col-12 col-md-3">
+                    <div class="col-12 col-md-4">
                         <input type="text" placeholder="Marca" class="form-control" id="marcaorden" readonly>
                     </div>
             
-                    <div class="col-12 col-md-3">
-                        <select class="form-control" name="estado_orden" id="estado_orden">
-                            <option value="analisis">Análisis</option>
-                            <option value="produccion">Producción</option>
-                            <option value="despachada">Despachada</option>
-                            <option value="cerrada">Cerrada</option>
-                            <option value="cancelada">Cancelada</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-12 col-md-3">
-                        <button class="btn btn-primary btn-block" type="submit" id="actualizar_estado_orden">Actualizar estado</button>
+                    <div class="col-12 col-md-4">
+                        <input type="text" class="form-control" name="estado_orden" id="estado_orden" placeholder="Estado de orden" readonly>
                     </div>
 
                 </div>
@@ -79,14 +69,7 @@
 
 </div>
 
-<script src="{{url_for('static', filename='script/produccion.js')}}"></script>
+
+<script src="{{url_for('static', filename='script/produccion-analisis.js')}}"></script>
 
 {%endblock%}
-
-
-
-
-
-
-
-<!-- falta verificar que todas las areas esten mmarcadas como completas para cambiar el estado de la orden a despachado-->

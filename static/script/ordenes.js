@@ -1,6 +1,6 @@
-var id_prenda = 1;
+let id_prenda = 1;
 
-tipos_prendas = {
+let tipos_prendas = {
     falda:[
         "Prensada",
         "Ajustada",
@@ -95,37 +95,122 @@ tipos_prendas = {
     ],
     panties:[
         "Tipo Único"
+    ],
+    dakimakuras:[
+        "Tipo Único"
+    ],
+    Kimono:[
+        "Tipo Único"
     ]
 }
-
 
 function addPrenda() {
 
     id_prenda += 1
 
-    var div_nueva_prenda = document.createElement("div");
+    console.log(id_prenda);
+
+    let div_nueva_prenda = document.createElement("div");
 
     div_nueva_prenda.setAttribute("class", "mt-3 form-row form-group prenda");
 
     div_nueva_prenda.setAttribute("id", "prenda_"+id_prenda)
 
-    html_prenda = '<div style="display: none;"><input type="text" class="id_input" name="id_'+id_prenda+'" id="id_'+id_prenda+'" value=""></div><div class="col-12 col-lg-2"><select class="form-control form-control-sm" name="tipo_'+id_prenda+'" id="tipo_'+id_prenda+'" onchange="selectSubtipo(this);" required><option value="">Tipo de prenda</option><option value="falda">Falda</option><option value="pantalon">Pantalón</option><option value="short">Short</option><option value="buzo">Buzo</option><option value="camibuzo">Camibuzo</option><option value="camiseta">Camiseta</option><option value="croptop">Croptop</option><option value="camisilla">Camisilla</option><option value="camisa">Camisa de Botones</option><option value="vestido">Vestido</option><option value="correa">Correa</option><option value="medias">Medias</option><option value="gorro">Gorro</option><option value="gafas">Gafas</option><option value="tapabocas">Tapabocas</option><option value="arnes">Arnés</option><option value="panoleta">Pañoleta</option><option value="cobija">Cobija</option><option value="panties">Panties</option></select></div><div class="col-12 col-lg-2"><select class="form-control form-control-sm subtipo" name="subtipo_'+id_prenda+'" id="subtipo_'+id_prenda+'" disabled required><option value="">Subtipo</option></select></div><div class="col-12 col-lg-2"><select class="form-control form-control-sm" name="genero_'+id_prenda+'" id="genero_'+id_prenda+'" required><option value="">Género</option><option value="unisex">Unisex</option><option value="masculino">Masculino</option><option value="femenino">Femenino</option></select></div><div class="col-12 col-lg-2"><select class="form-control form-control-sm" name="talla_'+id_prenda+'" id="talla_'+id_prenda+'" required><option value="">Talla</option><option value="talla_unica">Talla única</option><option value="xs">XS</option><option value="s">S</option><option value="m">M</option><option value="l">L</option><option value="xl">XL</option><option value="xxl">XXL</option><option value="xxxl">XXXL</option></select></div><div class="col-12 col-lg-2"><input type="text" name="imagen_'+id_prenda+'" id="imagen_'+id_prenda+'" placeholder="URL Imagen" class="form-control form-control-sm"></div><div class="col-12 col-lg-2"><input type="number" name="precio_'+id_prenda+'" id="precio_'+id_prenda+'" placeholder="Precio Unitario" class="form-control form-control-sm precio" oninput="precioTotal(); sumCantidades();" required></div><div class="col-12 col-lg-2"><input type="number" name="cantidad_'+id_prenda+'" id="cantidad_'+id_prenda+'" placeholder="Cantidad" class="form-control form-control-sm cantidad" oninput="precioTotal(); sumCantidades();" required></div><div class="col-12 col-lg-10"><div class="input-group"><input type="text" name="especificacion_'+id_prenda+'" id="especificacion_'+id_prenda+'" placeholder="Especificación del producto" class="form-control form-control-sm"><button class="btn btn-danger btn-sm" type="button" id="remover_'+id_prenda+'">-</button></div></div>'
+    html_prenda = `<div style="display: none;">
+            <input type="text" class="id_input" name="id_${id_prenda}" id="id_${id_prenda}" value="">
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <select class="form-control form-control-sm" name="tipo_${id_prenda}" id="tipo_${id_prenda}" onchange="selectSubtipo(this);" required>
+                <option value="">Tipo de prenda</option>
+                <option value="falda">Falda</option>
+                <option value="pantalon">Pantalón</option>
+                <option value="short">Short</option>
+                <option value="buzo">Buzo</option>
+                <option value="camibuzo">Camibuzo</option>
+                <option value="camiseta">Camiseta</option>
+                <option value="croptop">Croptop</option>
+                <option value="camisilla">Camisilla</option>
+                <option value="camisa">Camisa de Botones</option>
+                <option value="vestido">Vestido</option>
+                <option value="correa">Correa</option>
+                <option value="medias">Medias</option>
+                <option value="gorro">Gorro</option>
+                <option value="gafas">Gafas</option>
+                <option value="tapabocas">Tapabocas</option>
+                <option value="arnes">Arnés</option>
+                <option value="panoleta">Pañoleta</option>
+                <option value="cobija">Cobija</option>
+                <option value="panties">Panties</option>
+                <option value="dakimakuras">Dakimakuras</option>
+                <option value="kimono">Kimono</option>
+            </select>
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <select class="form-control form-control-sm subtipo" name="subtipo_${id_prenda}" id="subtipo_${id_prenda}" disabled required>
+                <option value="">Subtipo</option>
+            </select>
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <select class="form-control form-control-sm" name="genero_${id_prenda}" id="genero_${id_prenda}" required>
+                <option value="">Género</option>
+                <option value="unisex">Unisex</option>
+                <option value="masculino">Masculino</option>
+                <option value="femenino">Femenino</option>
+            </select>
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <select class="form-control form-control-sm" name="talla_${id_prenda}" id="talla_${id_prenda}" required>
+                <option value="">Talla</option>
+                <option value="talla_unica">Talla única</option>
+                <option value="junio">Junior</option>
+                <option value="xs">XS</option>
+                <option value="s">S</option>
+                <option value="m">M</option>
+                <option value="l">L</option>
+                <option value="xl">XL</option>
+                <option value="xxl">XXL</option>
+                <option value="xxxl">XXXL</option>
+            </select>
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <input type="text" name="imagen_${id_prenda}" id="imagen_${id_prenda}" placeholder="URL Imagen" class="form-control form-control-sm">
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <input type="number" name="precio_${id_prenda}" id="precio_${id_prenda}" placeholder="Precio Unitario" class="form-control form-control-sm precio" oninput="precioTotal(); sumCantidades();" required>
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <input type="number" name="cantidad_${id_prenda}" id="cantidad_${id_prenda}" placeholder="Cantidad" class="form-control form-control-sm cantidad" oninput="precioTotal(); sumCantidades();" required>
+        </div>
+        
+        <div class="col-12 col-lg-10">
+            <div class="input-group">
+                <input type="text" name="especificacion_${id_prenda}" id="especificacion_${id_prenda}" placeholder="Especificación del producto" class="form-control form-control-sm">
+                <button class="btn btn-danger btn-sm" type="button" id="remover_${id_prenda}">-</button>
+            </div>
+        </div>`;
 
     div_nueva_prenda.insertAdjacentHTML('beforeend', html_prenda);
 
-    var div_prendas = document.getElementById("prendas");
+    let div_prendas = document.getElementById("prendas");
     div_prendas.appendChild(div_nueva_prenda);
 
-    var boton_remover = document.getElementById('remover_'+id_prenda)
+    let boton_remover = document.getElementById('remover_'+id_prenda)
     boton_remover.addEventListener('click', function(){
 
-        id_prenda = document.querySelector("#"+boton_remover.parentElement.parentElement.parentElement.id+" .id_input").value
-        if(id_prenda !== "") {
-            var request = new XMLHttpRequest();
-            request.open("DELETE", "/borrarprenda/"+id_prenda);
+        let id_prenda_borrar = document.querySelector("#"+boton_remover.parentElement.parentElement.parentElement.id+" .id_input").value
+        if(id_prenda_borrar !== "") {
+            let request = new XMLHttpRequest();
+            request.open("DELETE", "/borrarprenda/"+id_prenda_borrar);
             request.onreadystatechange = function() {
                 if (request.readyState === 4 && request.status === 200) {
-                    var data = JSON.parse(request.responseText);
+                    let data = JSON.parse(request.responseText);
                     console.log(data["message"]);
                 }
             }
@@ -134,6 +219,7 @@ function addPrenda() {
         }
         
         boton_remover.parentElement.parentElement.parentElement.remove()
+        id_prenda = id_prenda-1
         sumCantidades();
         precioTotal();
     })
@@ -142,11 +228,11 @@ function addPrenda() {
 
 function sumCantidades() {
 
-    var resultado = 0
-    var cantidades = document.getElementsByClassName("cantidad")
+    let resultado = 0
+    let cantidades = document.getElementsByClassName("cantidad")
 
-    for (var i = 0; i < cantidades.length; i++) {
-        var x = cantidades[i].value
+    for (let i = 0; i < cantidades.length; i++) {
+        let x = cantidades[i].value
         if (x == ""){
            x = 0;
         }
@@ -164,7 +250,7 @@ function sumCantidades() {
 
 function selectSubtipo(clickedElement) {
 
-    var select_subtipo = document.querySelector("#"+clickedElement.parentElement.parentElement.id+" .subtipo")
+    let select_subtipo = document.querySelector("#"+clickedElement.parentElement.parentElement.id+" .subtipo")
 
     if (clickedElement.value != "") {
 
@@ -174,7 +260,7 @@ function selectSubtipo(clickedElement) {
             select_subtipo.remove(i);
         }
 
-        var html_str = ''
+        let html_str = ''
         for (let i = 0; i < tipos_prendas[clickedElement.value].length; i++) {
             html_str = html_str + '<option value="'+tipos_prendas[clickedElement.value][i].toLowerCase()+'">'+tipos_prendas[clickedElement.value][i]+'</option>';
         }
@@ -206,19 +292,18 @@ function habilitarEnvio() {
     }
 }
 
-
 function precioTotal() {
 
-    var resultado = 0
-    var precios = document.getElementsByClassName("precio")
+    let resultado = 0
+    let precios = document.getElementsByClassName("precio")
 
-    for (var i = 0; i < precios.length; i++) {
-        var precio = precios[i].value;
+    for (let i = 0; i < precios.length; i++) {
+        let precio = precios[i].value;
         if (precio == ""){
            precio = 0;
         }
 
-        var cantidad = precios[i].parentElement.parentElement.querySelector(".cantidad").value;
+        let cantidad = precios[i].parentElement.parentElement.querySelector(".cantidad").value;
         if (cantidad == ""){
             cantidad = 0;
         }
@@ -226,7 +311,7 @@ function precioTotal() {
         resultado = resultado + (parseInt(precio)*parseInt(cantidad));
     }
 
-    var precio_envio = document.getElementById('precio_envio').value;
+    let precio_envio = document.getElementById('precio_envio').value;
     if(precio_envio == ""){
         precio_envio = 0;
     }
@@ -246,11 +331,11 @@ function precioTotal() {
 function buscarCliente(){
     cedula = document.getElementById("cliente_cedula").value;
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.open("GET", "/getuser/"+cedula);
     request.onreadystatechange = function() {
         if (request.readyState === 4 && request.status === 200) {
-            var data = JSON.parse(request.responseText);
+            let data = JSON.parse(request.responseText);
             document.getElementById("cliente_categoria").value = data["tipo"];
             document.getElementById("cliente_nombre").value = data["nombre"];
             document.getElementById("cliente_correo").value = data["correo"];
@@ -264,7 +349,7 @@ function buscarCliente(){
             document.getElementById("cliente_pais").value = data["pais"];
             document.getElementById("cliente_postal").value = data["codigo_postal"];
         } else if (request.readyState === 4 && request.status === 400) {
-            var data = JSON.parse(request.responseText);
+            let data = JSON.parse(request.responseText);
             document.getElementById("cliente_cedula").value = data["message"];
         }
     }
@@ -273,18 +358,16 @@ function buscarCliente(){
 
 }
 
-boton_buscar_cliente = document.getElementById("boton_buscar_cliente");
+let boton_buscar_cliente = document.getElementById("boton_buscar_cliente");
 boton_buscar_cliente.addEventListener('click', buscarCliente);
-
-
 
 function crearNumeroOrden() {
     clearOrderPage();
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.open("GET", "/crearnumerodeorden");
     request.onreadystatechange = function() {
         if (request.readyState === 4 && request.status === 200) {
-            var data = JSON.parse(request.responseText);
+            let data = JSON.parse(request.responseText);
             document.getElementById("numerodeorden").value = data["numero_orden"];
             document.getElementById("boton_submit").disabled = false;
         }
@@ -293,21 +376,19 @@ function crearNumeroOrden() {
     request.send();
 }
 
-boton_crear_orden = document.getElementById("boton_crear_orden");
+let boton_crear_orden = document.getElementById("boton_crear_orden");
 boton_crear_orden.addEventListener('click', crearNumeroOrden);
 
-
-
 function buscarOrdenVentas() {
-    order = document.getElementById("input_buscar_orden").value;
+    order = document.getElementById("input_buscar_orden").value.trim();
 
     clearOrderPage();
 
-    var request = new XMLHttpRequest();
+    let request = new XMLHttpRequest();
     request.open("GET", "/getorder/"+order);
     request.onreadystatechange = function() {
         if (request.readyState === 4 && request.status === 200) {
-            var data = JSON.parse(request.responseText);
+            let data = JSON.parse(request.responseText);
 
             document.getElementById("numerodeorden").value = data["numero_orden"]
             document.getElementById("estado_orden").value = data["estado_orden"]
@@ -357,8 +438,10 @@ function buscarOrdenVentas() {
 
             document.getElementById("abono").value = data["abono"]
             document.getElementById("precio_total").value = data["precio_total"]
+            abono();
             document.getElementById("marca").value = data["marca"]
             document.getElementById("medio_compra").value = data["medio_compra"]
+            document.getElementById("tiempo_estimado").value = data['tiempo_estimado']
             document.getElementById("forma_pago").value = data["forma_pago"]
 
             if (data["pagado"] === "si") {
@@ -386,7 +469,7 @@ function buscarOrdenVentas() {
 
 
         } else if (request.readyState === 4 && request.status === 400) {
-            var data = JSON.parse(request.responseText);
+            let data = JSON.parse(request.responseText);
             document.getElementById("input_buscar_orden").value = data["message"]
         }
     }
@@ -394,10 +477,8 @@ function buscarOrdenVentas() {
     request.send();
 }
 
-boton_buscar_orden = document.getElementById("boton_buscar_orden");
+let boton_buscar_orden = document.getElementById("boton_buscar_orden");
 boton_buscar_orden.addEventListener('click', buscarOrdenVentas);
-
-
 
 function clearOrderPage() {
     document.getElementById("numerodeorden").value = "";
@@ -448,3 +529,52 @@ function clearOrderPage() {
     document.getElementById("comentario").value = "";
     document.getElementById("boton_submit").disabled = true;
 }
+
+
+const abono = () => {
+    let abono = parseInt(document.getElementById("abono").value);
+    let total = parseInt(document.getElementById("precio_total").value);
+    let restante = total - abono;
+    document.getElementById("debe").value = restante;
+    if (restante == 0) {
+        document.getElementById("pagado").checked = true;
+    } else {
+        document.getElementById("pagado").checked = false;
+    }
+
+}
+
+let input_abono = document.getElementById("abono");
+input_abono.addEventListener('input', abono);
+
+
+const mercadoLibre = (evento) => {
+    let medio_seleccionado = evento.target.value;
+    if (medio_seleccionado == 'mercadolibre') {
+        document.getElementById("habilitar_envio").checked = true;
+        let campos_envio = document.getElementsByClassName('form-envio')
+        for (let i = 0; i < campos_envio.length; i++) {
+            campos_envio[i].disabled = false;
+            precioTotal();
+        }
+
+        document.getElementById("empresa_envio").value = "servientrega";
+        document.getElementById("opcion_envio").value = "contado";
+    } else {
+
+        document.getElementById("habilitar_envio").checked = false;
+        let campos_envio = document.getElementsByClassName('form-envio')
+
+        for (let i = 0; i < campos_envio.length; i++) {
+            campos_envio[i].disabled = true;
+            document.getElementById('precio_envio').value = "";
+            precioTotal();
+        }
+
+        document.getElementById("empresa_envio").value = "";
+        document.getElementById("opcion_envio").value = "";
+    }
+}
+
+let input_medio_compra = document.getElementById("medio_compra");
+input_medio_compra.addEventListener("input", mercadoLibre);

@@ -35,7 +35,8 @@ def first_run():
         usuario = "main_admin"
         password = bcrypt.hashpw("appcrisa1029$".encode("utf-8"), salt)
         role = "administrador"
-        admin = UserModel(usuario, password, role)
+        area = "administrador"
+        admin = UserModel(usuario, password, role, area)
         admin.save_to_db()
 
 
@@ -58,7 +59,16 @@ def home():
                 if bcrypt.checkpw(input_password, usuario.password):
                     session['user'] = usuario.usuario
                     session['role'] = usuario.role
-                    return redirect(url_for('ordenes'))
+                    session['area'] = usuario.area
+
+                    if session['area'] == 'ventas':
+                        return redirect(url_for('ordenes'))
+                    elif session['area'] == "analisis":
+                        return render_template("informes-analisis.html")
+                    elif session['role'] == "operador":
+                        return redirect(url_for('informes'))
+                    else:    
+                        return redirect(url_for('ordenes'))
                 else:
                     flash("Email o contraseña incorrecta", "error")
                     return render_template('login.html')
@@ -74,7 +84,12 @@ def home():
 @app.route('/ordenes')
 def ordenes():
     if 'user' in session:
-        return render_template('ordenes.html')
+        if session['role'] == "administrador":
+            return render_template('ordenes.html')
+        elif session['area'] == "ventas":
+            return render_template('ordenes-ventas.html')
+        else:
+            return redirect(url_for('informes'))
     else:
         return redirect(url_for('home'))
 
@@ -82,7 +97,16 @@ def ordenes():
 @app.route('/produccion')
 def produccion():
     if 'user' in session:
-        return render_template("produccion.html")
+        if session['area'] == 'ventas':
+            return render_template("produccion-ventas.html")
+        elif session['area'] == "empaque" or session['area'] == "almacen" or session['area'] == "verificacion":
+            return render_template("produccion-despachos.html")
+        elif session['area'] == "analisis":
+            return render_template("produccion-analisis.html")
+        elif session['role'] == 'operador':
+            return render_template("produccion-operarios.html")
+        else:
+            return render_template("produccion.html")
     else:
         return redirect(url_for('home'))
 
@@ -90,7 +114,16 @@ def produccion():
 @app.route('/informes')
 def informes():
     if 'user' in session:
-        return render_template("informes.html")
+        if session['area'] == 'ventas':
+            return render_template("informes-ventas.html")
+        elif session['area'] == "empaque" or session['area'] == "almacen" or session['area'] == "verificacion":
+            return render_template("informes-despachos.html")
+        elif session['area'] == "analisis":
+            return render_template("informes-analisis.html")
+        elif session['role'] == 'operador':
+            return render_template("informes-operarios.html")
+        else:
+            return render_template("informes.html")
     else:
         return redirect(url_for('home'))
 
@@ -98,7 +131,11 @@ def informes():
 @app.route('/configuracion')
 def configuracion():
     if 'user' in session:
-        return render_template("configuracion.html")
+        if session['role'] == "administrador":
+            return render_template("configuracion.html")
+        else:
+            return redirect(url_for('informes'))
+            
     else:
         return redirect(url_for('home'))
 
@@ -176,6 +213,7 @@ def guardar_orden():
     precio_total = data['precio_total']
     marca = data['marca']
     medio_compra = data['medio_compra']
+    tiempo_estimado = data['tiempo_estimado']
     forma_pago = data['forma_pago']
     if request.form.get('pagado') == "pagado":
         pagado = 'si'
@@ -212,12 +250,13 @@ def guardar_orden():
         orden.pagado = pagado
         orden.comentarios = comentarios
         orden.cliente_id = cliente_id
+        orden.tiempo_estimado = tiempo_estimado
         orden.save_to_db()
         flash(f"Orden {numero_orden} actualizada exitosamente", 'success')
         orden_id = orden.id
 
     else:
-        orden = OrdenesModel(user,numero_orden, prioridad, estado_orden, incluir_envio, opcion_envio, empresa_envio, precio_envio, guia_envio, abono, precio_total, marca, medio_compra, forma_pago, pagado, comentarios, cliente_id)
+        orden = OrdenesModel(user,numero_orden, prioridad, estado_orden, incluir_envio, opcion_envio, empresa_envio, precio_envio, guia_envio, abono, precio_total, marca, medio_compra, forma_pago, pagado, comentarios, cliente_id, tiempo_estimado)
         orden.save_to_db()
         flash(f"Orden {numero_orden} creada exitosamente", 'success')
         orden = OrdenesModel.find_by_orden(numero_orden)
@@ -346,11 +385,11 @@ def cargar_tiempos():
             tiempo.final = datetime.now().strftime("%Y %m %d %H %M %S")
             tiempo.save_to_db()
         else:
-            tiempo = TiemposModel(user.id, prenda.orden_id, prenda.id, data['area_produccion'])
+            tiempo = TiemposModel(user.id, prenda.orden_id, prenda.id, session['area'])
             tiempo.save_to_db()
 
     else:
-        tiempo = TiemposModel(user.id, prenda.orden_id, prenda.id, data['area_produccion'])
+        tiempo = TiemposModel(user.id, prenda.orden_id, prenda.id, session['area'])
         tiempo.save_to_db()
 
     return tiempo.json()
@@ -430,6 +469,7 @@ def crear_usuario():
     usuario = data['input-nuevo-usuario']
     password = bcrypt.hashpw(data["input-nuevo-usuario-password"].encode("utf-8"), salt)
     role = data["input-nuevo-usuario-role"]
+    area = data["input-nuevo-usuario-area"]
 
     user = UserModel.find_by_usuario(usuario)
 
@@ -438,7 +478,7 @@ def crear_usuario():
         return(redirect(url_for('configuracion')))
 
     else:
-        user = UserModel(usuario, password, role)
+        user = UserModel(usuario, password, role, area)
         try:
             user.save_to_db()
             flash(f"Usuario {usuario} creado con éxito", "success")
@@ -468,15 +508,36 @@ def usuario_responsable_prenda():
         usuario = UserModel.find_by_usuario(data["usuario"])
 
         if usuario:
-            prenda.user_responsable = data["usuario"]
-            prenda.save_to_db()
-            return {"message":f"Se asigno exitosamente a {data['usuario']}"}
+            
+            if usuario.area == data['area']:
+                prenda.user_responsable = data["usuario"]
+                prenda.save_to_db()
+                return {"message":f"Se asigno exitosamente a {data['usuario']}"}
+            
+            return {'message':f'El usuario seleccionado no es del area {data["area"]}'}
         
         else:
             return {"message":f"el usuario {data['usuario']} no existe"}
             
     else:
         return {"message":"Error al asignar usuario, por favor recargue la página e inténtelo nuevamente"}
+
+
+@app.route('/cambiarusuariovacio/<int:prenda_id>')
+def cambiar_usuario_vacio(prenda_id):
+
+    prenda = PrendasModel.find_by_id(prenda_id)
+    if prenda:
+
+        prenda.user_responsable = ""
+        try:
+            prenda.save_to_db()
+            return {"message":f"Se asigno exitosamente a {data['usuario']}"}
+        except:
+            return {"message":"Servidor no disponible"}
+            
+    else:
+        return {"message":"prenda no encontrada"}
 
 
 @app.route('/verordenes')
@@ -497,6 +558,85 @@ def ver_tiempos():
         y[cont] = i.json()
         cont = cont + 1
     return y
+
+
+@app.route('/getsession')
+def getsession():
+
+    if 'user' in session:
+        return {
+            "usuario": session['user'],
+            "role": session['role'],
+            "area": session['area'],
+            "message": "success"
+        }
+    else:
+        return {"message":"none"}
+
+
+@app.route('/getuserinfo')
+def getuserinfo():
+
+    data = request.form
+    usuario = data['input-nuevo-usuario']
+    password = bcrypt.hashpw(data["input-nuevo-usuario-password"].encode("utf-8"), salt)
+    role = data["input-nuevo-usuario-role"]
+    area = data["input-nuevo-usuario-area"]
+
+    user = UserModel.find_by_usuario(usuario)
+
+    if user:
+        flash(f"El usuario {usuario} ya existe, por favor seleccione otro nombre de usuario", "error")
+        return(redirect(url_for('configuracion')))
+
+    else:
+        user = UserModel(usuario, password, role, area)
+        try:
+            user.save_to_db()
+            flash(f"Usuario {usuario} creado con éxito", "success")
+            return(redirect(url_for('configuracion')))
+        except:
+            flash(f"Error al crear el usuario {usuario}, por favor intentelo nuevamente", "error")
+            return(redirect(url_for('configuracion')))
+
+
+@app.route('/agregarcomentario', methods=["POST"])
+def agregar_comentario():
+    data = request.get_json()
+    nuevo_comentario = data['comentario']
+    
+    prenda = PrendasModel.find_by_id(data['id'])
+
+    if prenda:
+        prenda.especificacion = prenda.especificacion +" >>> "+ nuevo_comentario
+        try:
+            prenda.save_to_db()
+            return {"message": "ok", "especificacion": prenda.especificacion}
+        except:
+            return {"message":"Error en el servidor"}
+    else:
+        return {"message":"prenda no encontrada"}
+
+
+@app.route('/modificarcomentario', methods=["POST"])
+def modificar_comentario():
+    data = request.get_json()
+    nuevo_comentario = data['comentario']
+    
+    prenda = PrendasModel.find_by_id(data['id'])
+
+    if prenda:
+        prenda.especificacion = nuevo_comentario
+        try:
+            prenda.save_to_db()
+            return {"message": "ok", "especificacion": prenda.especificacion}
+        except:
+            return {"message":"Error en el servidor"}
+    else:
+        return {"message":"prenda no encontrada"}
+
+
+
 
 
 

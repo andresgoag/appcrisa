@@ -1,0 +1,102 @@
+{%extends "navegacion-operarios.html"%}
+{%block content%}
+
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-12">
+            <ul class="nav nav-tabs">
+
+                <li class="nav-item">
+                    <a href="#tabprendas" class="nav-link active" data-toggle="tab">Prendas</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="tabprendas" role="tabpanel">
+
+            <div class="row mt-2">
+                <div class="col-12">
+                    <div class="form-row">
+
+                        <div class="col-12 col-lg-4 form-group">
+                            <label for="tipo-prenda">Tipo de prenda</label>
+                            <select name="tipo-prenda" id="tipo-prenda" class="form-control">
+                                <option value="todas">Todas</option>
+                                <option value="falda">Falda</option>
+                                <option value="pantalon">Pantalón</option>
+                                <option value="short">Short</option>
+                                <option value="buzo">Buzo</option>
+                                <option value="camibuzo">Camibuzo</option>
+                                <option value="camiseta">Camiseta</option>
+                                <option value="croptop">Croptop</option>
+                                <option value="camisilla">Camisilla</option>
+                                <option value="camisa">Camisa de Botones</option>
+                                <option value="vestido">Vestido</option>
+                                <option value="correa">Correa</option>
+                                <option value="medias">Medias</option>
+                                <option value="gorro">Gorro</option>
+                                <option value="gafas">Gafas</option>
+                                <option value="tapabocas">Tapabocas</option>
+                                <option value="arnes">Arnés</option>
+                                <option value="panoleta">Pañoleta</option>
+                                <option value="cobija">Cobija</option>
+                                <option value="panties">Panties</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-4 form-group">
+                            <label for="usuario-responsable-prenda">Usuario responsable</label>
+                            <input type="text" class="form-control" name="usuario-responsable-prenda" id="usuario-responsable-prenda" value="{{session['user']}}" disabled>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="prioridad-prenda">Prioritaria</label>
+                            <select name="prioridad-prenda" id="prioridad-prenda" class="form-control">
+                                <option value="todas">Todas</option>
+                                <option value="si">Si</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-1 form-group align-self-end">
+                            <button class="btn btn-primary btn-block" id="buscador_prendas">Buscar</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+
+                <div class="col-12">
+                    
+                    <table class="table table-bordered table-sm table-hover table-responsive-md" id="tabla_prendas">
+
+                        <thead>
+                            <th>Prioritaria</th>
+                            <th>Numero de órden</th>
+                            <th>Tipo</th>
+                            <th>Cantidad</th>
+                            <th>Área</th>
+                            <th>Responsable</th>
+                        </thead>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="{{url_for('static', filename='script/informes-operarios.js')}}"></script>
+
+{%endblock%}

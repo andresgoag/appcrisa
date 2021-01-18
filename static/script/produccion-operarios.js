@@ -61,7 +61,12 @@ const switch_caso = (caso_produccion) => {
     return caso;
 } // OK
 
-const area_responsable_error = (id_prenda, select_areas) => {
+const mensaje_area_responsable = (error, data) => {
+    if (error) return console.error(error);
+    alert(data["message"]);
+} // OK
+
+const area_responsable_prenda = (id_prenda, select_areas) => {
 
     let info = {
         id_prenda: id_prenda, 
@@ -70,6 +75,38 @@ const area_responsable_error = (id_prenda, select_areas) => {
     let info_json = JSON.stringify(info)
 
     fetchData("POST", "/arearesponsableprenda", mensaje_area_responsable, info_json);
+} // OK
+
+const enviar_a_siguiente_area = (evento) => {
+    let prenda = evento.target.parentElement.parentElement.parentElement;
+    let caso = prenda.querySelector(".contenedor-caso-produccion").value;
+    let area = prenda.querySelector(".contenedor-areas").value;
+    let id_prenda = prenda.querySelector(".id_input").value; // id base de datos
+    caso = switch_caso(parseInt(caso));
+    let index = caso.indexOf(area)
+
+    if (index == caso.length-1) {
+        alert(`${area_produccion_bonita(area)} es la ultima área`)
+    } else {
+        let verification = confirm(`Desea marcar como completo ${area_produccion_bonita(area)}? Esta acción es irreversible.`)
+        if (verification) {
+            let info = {
+                id_prenda: id_prenda,
+                area: area,
+                estado: true
+            };
+            let info_json = JSON.stringify(info);
+            fetchData("POST", "/marcarproduccion", function(error, data) {
+                if (error) return console.error(error);
+                if (data["status"] == "ok") {
+                    area_responsable_prenda(id_prenda, caso[index+1]);
+                    fetchData("GET", `/cambiarusuariovacio/${id_prenda}`, postDoNothing);
+                    prenda.style.display = 'none';
+                }
+            }, info_json)
+        }
+    }
+
 } // OK
 
 const guardarEspecificacion = (evento) => {
@@ -93,6 +130,10 @@ const guardarEspecificacion = (evento) => {
             alert(data_comentario['message'])
         }
     }, info_json_comentario)
+} // OK
+
+const postDoNothing = (error, data) => {
+    if (error) return console.error(error);
 } // OK
 
 const reportarError = (evento) => {
@@ -143,9 +184,11 @@ const reportarError = (evento) => {
         info_json = JSON.stringify(info);
         fetchData("POST", "/casoproduccion", (error2, data2) => {
             if (error2) return console.error(error2);
-            area_responsable_error(id_prenda, area_retorno);
-            prenda.querySelector(".contenedor-areas").value = area_retorno;
+            area_responsable_prenda(id_prenda, area_retorno);
             $(`#${modal_id}`).modal('hide')
+            prenda.style.display = 'none';
+
+            fetchData("GET", `/cambiarusuariovacio/${id_prenda}`, postDoNothing);
 
         }, info_json);
 
@@ -182,7 +225,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <a href="https://google.com.co" target="_blank" id="imagen_${id_prenda_nueva}" class="form-control form-control-sm" readonly>URL Imagen</a>
+        <a href="/noimagen" target="_blank" id="imagen_${id_prenda_nueva}" class="form-control form-control-sm" readonly>URL Imagen</a>
     </div>
     
     <div class="col-12 col-lg-2">
@@ -203,7 +246,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="casos_produccion(this);">
+        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="casos_produccion(this);" disabled>
             <option value="">Seleccionar proceso</option>
             <option value="1">Caso 1 (Sublimada)</option>
             <option value="2">Caso 2 (Unicolor)</option>
@@ -219,16 +262,16 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select class="form-control form-control-sm contenedor-areas" id="area_${id_prenda_nueva}" onchange="area_responsable_prenda(this);">
+        <select class="form-control form-control-sm contenedor-areas" id="area_${id_prenda_nueva}" disabled>
             <option value="">Área responsable</option>
         </select>
     </div>
     
     <div class="col-12 col-lg-2">
         <div class="input-group">
-            <input type="text" id="usuario_${id_prenda_nueva}" placeholder="Usuario responsable" class="form-control form-control-sm contenedor-usuario">
+            <input type="text" id="usuario_${id_prenda_nueva}" placeholder="Usuario responsable" class="form-control form-control-sm contenedor-usuario" disabled>
             <div class="input-group-append">
-                <button class="btn btn-primary btn-sm" type="button" name="button" onclick="usuario_responsable_prenda(this);">
+                <button class="btn btn-primary btn-sm" type="button" name="button" onclick="usuario_responsable_prenda(this);" disabled>
                     <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
                         <path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
                     </svg>
@@ -237,13 +280,10 @@ const addPrendaProduccion = (id_prenda_nueva) => {
         </div>
     </div>
     
-    <div class="col-12 mt-3 d-flex flex-wrap justify-content-around contenedor_estados_produccion">
-    
-    </div>
-    
     <div class="col-12 mt-3">
         <div class="d-flex justify-content-center">
             <button class="btn btn-primary btn-sm cargar_tiempos" id="cargar_tiempos_${id_prenda_nueva}" onclick="cargarTiempos(this);">Cargar tiempos</button>
+            <button class="ml-1 btn btn-primary btn-sm" id="enviar_a_siguiente_area_${id_prenda_nueva}">Marcar etapa como completa</button>
             <button class="ml-1 btn btn-danger" type="button" name="button" data-toggle="modal" data-target="#modal_error_${id_prenda_nueva}">Reportar error</button>
         </div>
     </div>
@@ -288,6 +328,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     let div_prendas = document.getElementById("prendas");
     div_prendas.appendChild(div_nueva_prenda);
 
+    document.getElementById(`enviar_a_siguiente_area_${id_prenda_nueva}`).addEventListener('click', enviar_a_siguiente_area);
     document.getElementById(`boton_reportar_error_${id_prenda_nueva}`).addEventListener('click', reportarError);
     document.getElementById(`guardar_especificacion_${id_prenda_nueva}`).addEventListener('click', guardarEspecificacion);
 
@@ -303,6 +344,24 @@ const clearProductionPage = () => {
 
 const capitalize = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1)
+} // OK
+
+const verificar_tiempo_abierto = (error, data) => {
+
+    if (error) return console.error(error);
+
+    let tiempos_abiertos = data["tiempos_abiertos"];
+    let prendas_creadas = document.getElementsByClassName("id_input");
+    for (let index = 0; index < prendas_creadas.length; index++) {
+
+        for (let indexb = 0; indexb < tiempos_abiertos.length; indexb++) {
+            if (prendas_creadas[index].value == tiempos_abiertos[indexb]["prenda"]) {
+                document.querySelector("#"+prendas_creadas[index].parentElement.parentElement.id +" .cargar_tiempos").classList.remove("btn-primary");
+                document.querySelector("#"+prendas_creadas[index].parentElement.parentElement.id +" .cargar_tiempos").classList.add("btn-success");
+                document.querySelector("#"+prendas_creadas[index].parentElement.parentElement.id +" .cargar_tiempos").textContent = "Detener Tiempo"
+            } 
+        }
+    }
 } // OK
 
 const casos_produccion_modal = (caso, select) => {
@@ -328,65 +387,44 @@ const set_order_informacion = (error, data) => {
     set_element_value("marcaorden", capitalize(data["marca"]));
     set_element_value("estado_orden", data["estado_orden"]);
 
-    for (let i = 0; i < data["prendas"].length; i++) {
 
-        addPrendaProduccion(i)
+    fetchData("GET", "/getsession", (error1, data1) => {
+        if (error1) return console.error(error);
 
-        set_element_value("id_"+i, data["prendas"][i]["id"]);
-        set_element_value("tipo_"+i, data["prendas"][i]["tipo"]);
-        set_element_value("subtipo_"+i, data["prendas"][i]["subtipo"]);
-        set_element_value("genero_"+i, data["prendas"][i]["genero"]);
-        set_element_value("talla_"+i, data["prendas"][i]["talla"].toUpperCase());
-        document.getElementById("imagen_"+i).setAttribute('href', data["prendas"][i]["imagen"]);
-        set_element_value("cantidad_"+i, data["prendas"][i]["cantidad"]);
-        set_element_value("especificacion_"+i, data["prendas"][i]["especificacion"]);
-        set_element_value("caso_produccion_"+i, data["prendas"][i]["caso_produccion"]);
+        for (let i = 0; i < data["prendas"].length; i++) {
+
+            if (data1['area'] == data["prendas"][i]["area_responsable"] && data1['usuario'] == data["prendas"][i]["usuario_responsable"]) {
+                addPrendaProduccion(i)
         
-        casos_produccion(document.getElementById("caso_produccion_"+i))
-        let caso = switch_caso(parseInt(data["prendas"][i]["caso_produccion"]))
-        if (caso != "") {
-            for (let a = 0; a < caso.length; a++) {
-                if (data["prendas"][i]["estados_produccion"][caso[a]] == 1) {
-                    document.getElementById(caso[a]+"prenda_"+i).checked=true;
-                    document.getElementById(caso[a]+"prenda_"+i).disabled=true;
-                }
+                set_element_value("id_"+i, data["prendas"][i]["id"]);
+                set_element_value("tipo_"+i, data["prendas"][i]["tipo"]);
+                set_element_value("subtipo_"+i, data["prendas"][i]["subtipo"]);
+                set_element_value("genero_"+i, data["prendas"][i]["genero"]);
+                set_element_value("talla_"+i, data["prendas"][i]["talla"].toUpperCase());
+                document.getElementById("imagen_"+i).setAttribute('href', data["prendas"][i]["imagen"]);
+                set_element_value("cantidad_"+i, data["prendas"][i]["cantidad"]);
+                set_element_value("especificacion_"+i, data["prendas"][i]["especificacion"]);
+                set_element_value("caso_produccion_"+i, data["prendas"][i]["caso_produccion"]);
+                casos_produccion(document.getElementById("caso_produccion_"+i))
+                set_element_value("usuario_"+i, data["prendas"][i]["usuario_responsable"]);
+                set_element_value("area_"+i, data["prendas"][i]["area_responsable"]);
+                casos_produccion_modal(data["prendas"][i]["caso_produccion"], document.getElementById(`caso_produccion_error_${i}`));
+            } else {
+                continue;
             }
+
         }
+    
+        fetchData("GET", "/verificartiempos/"+get_element_value("numerodeorden"), verificar_tiempo_abierto)
 
-        set_element_value("usuario_"+i, data["prendas"][i]["usuario_responsable"]);
-        set_element_value("area_"+i, data["prendas"][i]["area_responsable"]);
-        casos_produccion_modal(data["prendas"][i]["caso_produccion"], document.getElementById(`caso_produccion_error_${i}`));
-    }
+    })
 
-    fetchData("GET", "/verificartiempos/"+get_element_value("numerodeorden"), verificar_tiempo_abierto)
-} // OK
-
-const verificar_tiempo_abierto = (error, data) => {
-
-    if (error) return console.error(error);
-
-    let tiempos_abiertos = data["tiempos_abiertos"];
-    let prendas_creadas = document.getElementsByClassName("id_input");
-    for (let index = 0; index < prendas_creadas.length; index++) {
-
-        for (let indexb = 0; indexb < tiempos_abiertos.length; indexb++) {
-            if (prendas_creadas[index].value == tiempos_abiertos[indexb]["prenda"]) {
-                document.querySelector("#"+prendas_creadas[index].parentElement.parentElement.id +" .cargar_tiempos").classList.remove("btn-primary");
-                document.querySelector("#"+prendas_creadas[index].parentElement.parentElement.id +" .cargar_tiempos").classList.add("btn-success");
-                document.querySelector("#"+prendas_creadas[index].parentElement.parentElement.id +" .cargar_tiempos").textContent = "Detener Tiempo"
-            } 
-        }
-    }
 } // OK
 
 const buscarOrdenProduccion = () => {
     clearProductionPage();
     let order = get_element_value("input_buscar_orden").trim();
     fetchData("GET", "/getorder/"+order, set_order_informacion);
-} // OK
-
-const postDoNothing = (error, data) => {
-    if (error) return console.error(error);
 } // OK
 
 const area_produccion_bonita = (area) => {
@@ -435,77 +473,19 @@ const area_produccion_bonita = (area) => {
 } // OK
 
 const casos_produccion = (clickedElement) => {
-
     let _id = clickedElement.parentElement.parentElement.id; // id del elemento contenedor de la prenda 
-    let id_prenda = document.querySelector("#"+_id+" .id_input").value; // id de base de datos de la prenda
-    let contenedor_estados_produccion = document.querySelector("#"+_id+" .contenedor_estados_produccion");
     let caso = switch_caso(parseInt(clickedElement.value));
-    let info;
-    contenedor_estados_produccion.innerHTML = "";
-    
     if (caso != "") {
-
-        info = {
-            caso: clickedElement.value,
-            id: id_prenda,
-            estados: caso,
-            area_inicial: caso[0]
-        };
 
         document.querySelector("#"+_id+" .contenedor-areas").innerHTML = "";
 
         for (let i = 0; i < caso.length; i++) {
             let html_area_produccion = '<option value="'+caso[i]+'">'+area_produccion_bonita(caso[i])+'</option>'
             document.querySelector("#"+_id+" .contenedor-areas").insertAdjacentHTML('beforeend', html_area_produccion);
-
-            let html_caso_produccion = `<div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="`+caso[i]+_id+`" value="`+caso[i]+`">
-                <label class="form-check-label" for="`+caso[i]+_id+`">`+area_produccion_bonita(caso[i])+`</label>
-            </div>`;
-
-            contenedor_estados_produccion.insertAdjacentHTML('beforeend', html_caso_produccion);
-
-            let checkbox_estado_produccion = document.getElementById(caso[i]+_id);
-            checkbox_estado_produccion.addEventListener('click', function() {
-
-                let elemento = this;
-                let verification = confirm("Desea marcar como completo "+area_produccion_bonita(elemento.value)+"? Esta acción es irreversible.")
-                if (verification) {
-                    let area = elemento.value;
-                    let _id = elemento.parentElement.parentElement.parentElement.id;
-                    let id_prenda_para_estado = document.querySelector("#"+_id+" .id_input").value; // id de base de datos de la prenda
-                    let info = {
-                        id_prenda: id_prenda_para_estado,
-                        area: area,
-                        estado: elemento.checked,
-                    };
-                    let info_json = JSON.stringify(info);
-                    fetchData("POST", "/marcarproduccion", function(error, data) {
-                        if (error) return console.error(error);
-
-                        if (data["status"] == "ok") {
-                            elemento.disabled = true;
-                        }
-                    }, info_json)
-                } else {
-                    elemento.checked = false;
-                }
-            });
-
         }
     } else {
-        info = {
-            caso: clickedElement.value,
-            id: id_prenda,
-            estados: caso,
-            area_inicial: ""
-        };
         document.querySelector("#"+_id+" .contenedor-areas").innerHTML = '<option value="">Área responsable</option>';
     }
-
-    let info_json = JSON.stringify(info);
-    fetchData("POST", "/casoproduccion", postDoNothing, info_json);
-
 } // OK
 
 const cargarTiempos = (clickedElement) => {
@@ -531,51 +511,9 @@ const cargarTiempos = (clickedElement) => {
     }, info_json);
 } // OK
 
-const mensaje_area_responsable = (error, data) => {
-    if (error) return console.error(error);
-    alert(data["message"]);
-} // OK
 
-const area_responsable_prenda = (clickedElement) => {
-    let _id = clickedElement.parentElement.parentElement.id; // id del elemento contenedor de la prenda 
-    let id_prenda = document.querySelector("#"+_id+" .id_input").value; // id de base de datos de la prenda
-    let select_areas = document.querySelector("#"+_id+" .contenedor-areas").value;
 
-    let info = {
-        id_prenda: id_prenda, 
-        area: select_areas
-    }
-    let info_json = JSON.stringify(info)
 
-    fetchData("POST", "/arearesponsableprenda", mensaje_area_responsable, info_json);
-} // OK
-
-const mensaje_usuario_responsable = (error, data) => {
-    if (error) return console.error(error);
-    alert(data["message"]);
-} // OK
-
-let usuario_responsable_prenda = (clickedElement) => {
-    let _id = clickedElement.parentElement.parentElement.parentElement.parentElement.id; // id del elemento contenedor de la prenda 
-    let id_prenda = document.querySelector("#"+_id+" .id_input").value; // id de base de datos de la prenda
-    let select_areas = document.querySelector("#"+_id+" .contenedor-areas").value;
-    let usuario = document.querySelector("#"+_id+" .contenedor-usuario").value;
-
-    if (usuario != "") {
-        let info = {
-            id_prenda: id_prenda, 
-            usuario: usuario,
-            area: select_areas
-        };
-        let info_json = JSON.stringify(info);
-
-        fetchData("POST", "/usuarioresponsableprenda", mensaje_usuario_responsable, info_json);
-
-    } else {
-        alert("Por favor escriba un usuario para asignar");
-    }
-
-} // OK
 
 boton_buscar_orden = document.getElementById("boton_buscar_orden");
 boton_buscar_orden.addEventListener('click', buscarOrdenProduccion);

@@ -1,0 +1,147 @@
+{%extends "navegacion-ventas.html"%}
+{%block content%}
+
+{% with messages = get_flashed_messages(category_filter=['error']) %}
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="container-fluid p-0">
+                <div class="alert alert-danger" id="alerta">
+                    {{msg}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with messages = get_flashed_messages(category_filter=['success']) %}
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="container-fluid p-0">
+                <div class="alert alert-success" id="alerta">
+                    {{msg}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="container-fluid">
+
+    <div class="row mt-3">
+
+        <div class="col-12">
+
+            <div class="border p-2">
+
+                <h5>Orden</h5>
+
+                <form action="/actualizarestadoorden" method="POST">
+
+                    <div class="form-row form-group">
+
+                        <div class="col-12 col-md-3">
+                            <input type="text" name="numero_orden" placeholder="Número de orden" class="form-control" value="" id="numerodeorden" readonly>
+                        </div>
+
+                        <div class="col-12 col-md-3">
+                            <input type="text" placeholder="Marca" class="form-control" id="marcaorden" readonly>
+                        </div>
+                
+                        <div class="col-12 col-md-3">
+                            <select class="form-control" name="estado_orden" id="estado_orden">
+                                <option value="analisis">Análisis</option>
+                                <option value="produccion">Producción</option>
+                                <option value="despachada">Despachada</option>
+                                <option value="cerrada">Cerrada</option>
+                                <option value="cancelada">Cancelada</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-1 d-flex align-items-center justify-content-center">
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" name="pagado" value="pagado" id="pagado" disabled>
+                                <label class="custom-control-label" for="pagado">Pagó</label>
+                            </div>
+                        </div>
+
+                        
+                        <div class="col-12 col-md-2">
+                            <button class="btn btn-primary btn-block" type="submit" id="actualizar_estado_orden">Actualizar estado</button>
+                        </div>
+
+                    </div>
+
+                </form>
+
+                <div class="row mt-5">
+
+                    <div class="col-12">
+            
+                        <div class="row">
+                            <div class="form-group col-12 col-md-4">
+                                <label for="opcion_envio">Opción de Envio</label>
+                                <select class="form-control" name="opcion_envio" id="opcion_envio" disabled>
+                                    <option value="">Seleccione</option>
+                                    <option value="al_cobro">Al cobro</option>
+                                    <option value="contado">Contado</option>
+                                    <option value="contraentrega">Contraentrega</option>
+                                    <option value="recoge_en_local">Recoge en local</option>
+                                </select>
+                            </div>
+                    
+                            <div class="form-group col-12 col-md-4">
+                                <label for="empresa_envio">Empresa de envío</label>
+                                <select class="form-control form-envio" name="empresa_envio" id="empresa_envio" disabled>
+                                    <option value="">Seleccione</option>
+                                    <option value="interrapidisimo">Interrapidisimo</option>
+                                    <option value="servientrega">Servientrega</option>
+                                    <option value="472">4/72</option>
+                                    <option value="mensajero">Mensajero</option>
+                                    <option value="envia">Envia</option>
+                                    <option value="coordinadora">Coordinadora</option>
+                                    <option value="deprisa">Deprisa</option>
+                                    <option value="tcc">TCC</option>
+                                    <option value="saferbo">Saferbo</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-12 col-md-4">
+                                <label for="guia_envio">Número de guía</label>
+                                <input type="text" name="guia_envio" class="form-control form-envio" id="guia_envio" disabled>
+                            </div>
+                        </div>
+                    </div>
+            
+                </div>
+            </div>
+
+            <h5 class="mt-5">Prendas</h5>
+
+            <div id="prendas">
+                
+            </div>
+        
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{url_for('static', filename='script/produccion-despachos.js')}}"></script>
+
+{%endblock%}
+
+
+
+
+
+
+
+<!-- falta verificar que todas las areas esten mmarcadas como completas para cambiar el estado de la orden a despachado-->

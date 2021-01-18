@@ -202,85 +202,27 @@ const addPrendaProduccion = (id_prenda_nueva) => {
         </div>
     </div>
     
-    <div class="col-12 col-lg-2">
+    <div class="col-12 col-lg-6">
         <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="casos_produccion(this);">
             <option value="">Seleccionar proceso</option>
-            <option value="1">Caso 1 (Sublimada)</option>
-            <option value="2">Caso 2 (Unicolor)</option>
-            <option value="3">Caso 3 (Medidas personalizadas)</option>
-            <option value="4">Caso 4 (Apliques)</option>
-            <option value="5">Caso 5 (Manualidad)</option>
-            <option value="6">Caso 6 (Unicolor vinilo)</option>
-            <option value="7">Caso 7 (Primero corte)</option>
-            <option value="8">Caso 8 (Manualidad con costuras)</option>
             <option value="9">Sin Material</option>
             <option value="10">Con Material</option>
         </select>
     </div>
-    
-    <div class="col-12 col-lg-2">
+
+    <div class="col d-none">
         <select class="form-control form-control-sm contenedor-areas" id="area_${id_prenda_nueva}" onchange="area_responsable_prenda(this);">
             <option value="">Área responsable</option>
         </select>
     </div>
     
-    <div class="col-12 col-lg-2">
-        <div class="input-group">
-            <input type="text" id="usuario_${id_prenda_nueva}" placeholder="Usuario responsable" class="form-control form-control-sm contenedor-usuario">
-            <div class="input-group-append">
-                <button class="btn btn-primary btn-sm" type="button" name="button" onclick="usuario_responsable_prenda(this);">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" class="bi bi-check" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-12 mt-3 d-flex flex-wrap justify-content-around contenedor_estados_produccion">
+    <div class="col-12 d-none mt-3 contenedor_estados_produccion">
     
     </div>
     
     <div class="col-12 mt-3">
         <div class="d-flex justify-content-center">
             <button class="btn btn-primary btn-sm cargar_tiempos" id="cargar_tiempos_${id_prenda_nueva}" onclick="cargarTiempos(this);">Cargar tiempos</button>
-            <button class="ml-1 btn btn-danger" type="button" name="button" data-toggle="modal" data-target="#modal_error_${id_prenda_nueva}">Reportar error</button>
-        </div>
-    </div>
-
-    <!-- Este div es lo que aparece con el boton -->
-    <div class="modal fade" id="modal_error_${id_prenda_nueva}" tabindex="-1" role="dialog" aria-labelledby="cualquier_modal_id" aria-hidden="true">
-        <div class="modal-dialog">
-
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Reporte de error</h5>
-                    <button class="close" data-dismiss="modal" type="button" name="button">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="row justify-content-center">
-                        <div class="col-12">
-                            <label for="caso_produccion_error_${id_prenda_nueva}">Área a la que retorna:</label>
-                            <select id="caso_produccion_error_${id_prenda_nueva}" class="form-control caso_produccion_error">
-                            </select>
-                        </div>
-                        <div class="col-12">
-                            <label for="textarea_error_${id_prenda_nueva}">Comentarios:</label>
-                            <textarea class="textarea-error form-control" rows="4" name="textarea_error_${id_prenda_nueva}" id="textarea_error_${id_prenda_nueva}" cols="30" rows="10"></textarea>
-                            <p>Recuerde informar a su superior</p>
-                        </div>
-                        <div class="col-auto mt-2">
-                            <button class="ml-1 btn btn-danger btn-sm" id="boton_reportar_error_${id_prenda_nueva}">Reportar error</button>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
         </div>
     </div>`;
 
@@ -288,7 +230,6 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     let div_prendas = document.getElementById("prendas");
     div_prendas.appendChild(div_nueva_prenda);
 
-    document.getElementById(`boton_reportar_error_${id_prenda_nueva}`).addEventListener('click', reportarError);
     document.getElementById(`guardar_especificacion_${id_prenda_nueva}`).addEventListener('click', guardarEspecificacion);
 
 } // OK
@@ -353,9 +294,9 @@ const set_order_informacion = (error, data) => {
             }
         }
 
-        set_element_value("usuario_"+i, data["prendas"][i]["usuario_responsable"]);
+        
         set_element_value("area_"+i, data["prendas"][i]["area_responsable"]);
-        casos_produccion_modal(data["prendas"][i]["caso_produccion"], document.getElementById(`caso_produccion_error_${i}`));
+
     }
 
     fetchData("GET", "/verificartiempos/"+get_element_value("numerodeorden"), verificar_tiempo_abierto)
