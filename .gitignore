@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+uwsgi.ini
+wsgi.py
+log/
+requirements.txt

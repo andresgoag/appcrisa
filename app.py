@@ -574,6 +574,18 @@ def borrar_prenda(prenda_id):
     return{"message":"No se encontro la prenda con el id"+prenda_id}
 
 
+@app.route('/borrarusuario', methods=['DELETE'])
+def borrar_usuario():
+    usuario = data['eliminar-usuario']
+    user = UserModel.find_by_usuario(usuario)
+    if user:
+        user.delete_from_db()
+        flash("Usuario eliminado con exito", "success")
+    flash("Usuario no encontrado", "error")
+    return redirect(url_for('configuracion'))
+    
+
+
 @app.route('/actualizarestadoorden', methods=["POST"])
 def actualizar_estado_orden():
 
