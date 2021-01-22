@@ -18,6 +18,7 @@ class PrendasModel(db.Model):
     estados_produccion = db.Column(db.String(400))
     area_responsable = db.Column(db.String(80))
     user_responsable = db.Column(db.String(80))
+    empacado = db.Column(db.String(2))
 
     tiempos = db.relationship('TiemposModel', lazy='dynamic')
 
@@ -39,6 +40,7 @@ class PrendasModel(db.Model):
         self.estados_produccion = ""
         self.area_responsable = ""
         self.user_responsable = ""
+        self.empacado = "no"
 
     def json(self):
         if self.estados_produccion == "":
@@ -59,7 +61,8 @@ class PrendasModel(db.Model):
             "caso_produccion": self.caso_produccion,
             "estados_produccion": estados_produccion_dict,
             "area_responsable": self.area_responsable,
-            "usuario_responsable": self.user_responsable
+            "usuario_responsable": self.user_responsable,
+            "empacado": self.empacado
         }
 
     def save_to_db(self):

@@ -2,13 +2,8 @@ const buscador_ordenes = () => {
     let estado = document.getElementById("estado_orden").value;
     let marca = document.getElementById("marca").value;
     let prioridad = document.getElementById("prioridad").value;
-    let identificacion = document.getElementById("identificacion").value;
-    let telefono = document.getElementById("telefono").value;
     let fecha = document.getElementById("fecha").value;
     let medio_compra = document.getElementById("medio_compra").value;
-    let pagado = document.getElementById("pagado").value;
-    let opcion_envio = document.getElementById("opcion_envio").value;
-    let empresa_envio = document.getElementById("empresa_envio").value;
     let tiempo_estimado = document.getElementById("tiempo_estimado").value;
     let tabla = document.getElementById("tabla_ordenes");
 
@@ -35,28 +30,16 @@ const buscador_ordenes = () => {
                 }
                 let cliente_nombre = data['ordenes'][i]['cliente']['nombre'];
                 let cliente_identificacion = data['ordenes'][i]['cliente']['cedula'];
-                let cliente_telefono = data['ordenes'][i]['cliente']['telefono'];
                 let estado_orden = data['ordenes'][i]['estado_orden'];
                 let marca_orden = data['ordenes'][i]['marca'];
                 let orden_medio_compra = data['ordenes'][i]['medio_compra'];
                 let responsable = data['ordenes'][i]['usuario_responsable'];
                 let orden_fecha = data['ordenes'][i]['fecha'];
-                let orden_pagado = data['ordenes'][i]['pagado'];
-                let orden_opcion_envio = data['ordenes'][i]['opcion_envio'];
                 let orden_tiempo_estimado = data['ordenes'][i]['tiempo_estimado'];
-                let orden_empresa_envio = data['ordenes'][i]['empresa_envio'];
-                let total = data['ordenes'][i]['precio_total']
-                let abono = data['ordenes'][i]['abono']
-                if (abono == "") {
-                    abono = 0
-                }
-                let debe = parseFloat(total) - parseFloat(abono)
                 
 
                 if ((estado == estado_orden || estado == "todas") && (marca == marca_orden || marca == "todas") && (prioridad == prioritaria || prioridad == "todas") &&
-                (identificacion == cliente_identificacion || identificacion == "") && (telefono == cliente_telefono || telefono == "")
-                && (fecha == orden_fecha || fecha == "") && (medio_compra == orden_medio_compra || medio_compra == "todas") && (pagado == orden_pagado || pagado == "todas") &&
-                (opcion_envio == orden_opcion_envio || opcion_envio == "todas") && (empresa_envio == orden_empresa_envio || empresa_envio == "todas") && 
+                (fecha == orden_fecha || fecha == "") && (medio_compra == orden_medio_compra || medio_compra == "todas") && 
                 (tiempo_estimado == orden_tiempo_estimado || tiempo_estimado == "todas") ) {
                     
                     html_orden = `<tr class="fila">
@@ -66,24 +49,11 @@ const buscador_ordenes = () => {
                         <td>${cliente_nombre}</td>
                         <td>${cliente_identificacion}</td>
                         <td>${estado_orden}</td>
-                        <td>${total}</td>
-                        <td>${abono}</td>
-                        <td>${debe}</td>
-                        
-                        <td>                
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" name="check_pago_${i}" id="check_pago_${i}">
-                                <label class="custom-control-label" for="check_pago_${i}">Pagó</label>
-                            </div>
-                        </td>
                         <td>${responsable}</td>
+
                     </tr>`;
                     tabla.insertAdjacentHTML('beforeend', html_orden);
-                    let checkbox_pago = document.getElementById(`check_pago_${i}`)
-                    if (data['ordenes'][i]['pagado'] == "si") {
-                        checkbox_pago.checked = true;
-                    }
-                    checkbox_pago.addEventListener('click',checkPago)
+
                 }
             }
         }
@@ -94,19 +64,6 @@ const buscador_ordenes = () => {
 let boton_buscador_ordenes = document.getElementById("buscador_ordenes");
 boton_buscador_ordenes.addEventListener('click', buscador_ordenes);
 
-const checkPago = (evento) => {
-    let fila = evento.target.parentElement.parentElement.parentElement;
-    let orden = fila.querySelector(".orden").textContent;
-
-    info = {orden:orden, estado:evento.target.checked}
-    info_json = JSON.stringify(info)
-    
-    fetchData("POST", "/marcarpago", (error, data) => {
-        alert(data['message'])
-    }, info_json)
-
-}
-
 
 const buscador_prendas = () => {
     let tipo = document.getElementById("tipo-prenda").value;
@@ -115,7 +72,6 @@ const buscador_prendas = () => {
     let prioridad = document.getElementById("prioridad-prenda").value;
     let material = document.getElementById("material").value;
     let tabla = document.getElementById("tabla_prendas");
-    let orden = document.getElementById("orden-prenda").value;
 
     let request = new XMLHttpRequest();
     request.open("GET", "/verordenes");
@@ -141,7 +97,7 @@ const buscador_prendas = () => {
                     let responsable_prenda = prendas[a]["usuario_responsable"];
 
                     if ((tipo == tipo_prenda || tipo == "todas") && (usuario == responsable_prenda || usuario == "") && (area == area_prenda || area == "") &&
-                    (prioridad == prioritaria|| prioridad == "todas") && (material == area_prenda || material == "todas") && (orden == numero_orden || orden == "") ) {
+                    (prioridad == prioritaria|| prioridad == "todas") && (material == area_prenda || material == "todas") ) {
                         html_orden = '<tr class="fila"><td>'+prioritaria+'</td><td>'+numero_orden+'</td><td>'+tipo_prenda+'</td><td>'+cantidad_prenda+'</td><td>'+area_prenda+'</td><td>'+responsable_prenda+'</td></tr>'
                         tabla.insertAdjacentHTML('beforeend', html_orden);
                     }

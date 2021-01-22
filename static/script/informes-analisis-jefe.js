@@ -66,24 +66,10 @@ const buscador_ordenes = () => {
                         <td>${cliente_nombre}</td>
                         <td>${cliente_identificacion}</td>
                         <td>${estado_orden}</td>
-                        <td>${total}</td>
-                        <td>${abono}</td>
-                        <td>${debe}</td>
-                        
-                        <td>                
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" name="check_pago_${i}" id="check_pago_${i}">
-                                <label class="custom-control-label" for="check_pago_${i}">Pagó</label>
-                            </div>
-                        </td>
                         <td>${responsable}</td>
                     </tr>`;
                     tabla.insertAdjacentHTML('beforeend', html_orden);
-                    let checkbox_pago = document.getElementById(`check_pago_${i}`)
-                    if (data['ordenes'][i]['pagado'] == "si") {
-                        checkbox_pago.checked = true;
-                    }
-                    checkbox_pago.addEventListener('click',checkPago)
+
                 }
             }
         }

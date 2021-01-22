@@ -55,14 +55,16 @@ const buscador_ordenes = () => {
                     
                     html_orden = `<tr class="fila">
                         <td>${prioritaria}</td>
-                        <td>${numero_orden}</td>
+                        <td class="orden">${numero_orden}</td>
                         <td>${cantidad_prendas}</td>
                         <td>${cliente_nombre}</td>
                         <td>${cliente_identificacion}</td>
                         <td>${estado_orden}</td>
                         <td>${responsable}</td>
+                        <td>${orden_pagado}</td>
                     </tr>`;
                     tabla.insertAdjacentHTML('beforeend', html_orden);
+
                 }
             }
         }
@@ -72,6 +74,19 @@ const buscador_ordenes = () => {
 
 let boton_buscador_ordenes = document.getElementById("buscador_ordenes");
 boton_buscador_ordenes.addEventListener('click', buscador_ordenes);
+
+const checkPago = (evento) => {
+    let fila = evento.target.parentElement.parentElement.parentElement;
+    let orden = fila.querySelector(".orden").textContent;
+
+    info = {orden:orden, estado:evento.target.checked}
+    info_json = JSON.stringify(info)
+    
+    fetchData("POST", "/marcarpago", (error, data) => {
+        alert(data['message'])
+    }, info_json)
+
+}
 
 
 const buscador_prendas = () => {

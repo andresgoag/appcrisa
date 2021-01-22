@@ -69,13 +69,6 @@ const buscador_ordenes = () => {
                         <td>${total}</td>
                         <td>${abono}</td>
                         <td>${debe}</td>
-                        
-                        <td>                
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" name="check_pago_${i}" id="check_pago_${i}">
-                                <label class="custom-control-label" for="check_pago_${i}">Pagó</label>
-                            </div>
-                        </td>
                         <td>${responsable}</td>
                     </tr>`;
                     tabla.insertAdjacentHTML('beforeend', html_orden);
@@ -94,64 +87,3 @@ const buscador_ordenes = () => {
 let boton_buscador_ordenes = document.getElementById("buscador_ordenes");
 boton_buscador_ordenes.addEventListener('click', buscador_ordenes);
 
-const checkPago = (evento) => {
-    let fila = evento.target.parentElement.parentElement.parentElement;
-    let orden = fila.querySelector(".orden").textContent;
-
-    info = {orden:orden, estado:evento.target.checked}
-    info_json = JSON.stringify(info)
-    
-    fetchData("POST", "/marcarpago", (error, data) => {
-        alert(data['message'])
-    }, info_json)
-
-}
-
-
-const buscador_prendas = () => {
-    let tipo = document.getElementById("tipo-prenda").value;
-    let usuario = document.getElementById("usuario-responsable-prenda").value;
-    let area = document.getElementById("area-responsable-prenda").value;
-    let prioridad = document.getElementById("prioridad-prenda").value;
-    let material = document.getElementById("material").value;
-    let tabla = document.getElementById("tabla_prendas");
-    let orden = document.getElementById("orden-prenda").value;
-
-    let request = new XMLHttpRequest();
-    request.open("GET", "/verordenes");
-    request.onreadystatechange = () => {
-        if (request.readyState === 4 && request.status === 200) {
-
-            filas = document.querySelectorAll('#tabla_prendas .fila')
-
-            for (let i = 0; i < filas.length; i++) {
-                filas[i].remove()
-            }
-
-            let data = JSON.parse(request.responseText);
-            for (let i = 0; i < data['ordenes'].length; i++) {
-                let prioritaria = data['ordenes'][i]['prioritaria'];
-                let numero_orden = data['ordenes'][i]['numero_orden'];
-                let prendas = data['ordenes'][i]['prendas'];
-
-                for (let a = 0; a < prendas.length; a++) {
-                    let tipo_prenda = prendas[a]["tipo"];
-                    let cantidad_prenda = prendas[a]["cantidad"];
-                    let area_prenda = prendas[a]["area_responsable"];
-                    let responsable_prenda = prendas[a]["usuario_responsable"];
-
-                    if ((tipo == tipo_prenda || tipo == "todas") && (usuario == responsable_prenda || usuario == "") && (area == area_prenda || area == "") &&
-                    (prioridad == prioritaria|| prioridad == "todas") && (material == area_prenda || material == "todas") && (orden == numero_orden || orden == "") ) {
-                        html_orden = '<tr class="fila"><td>'+prioritaria+'</td><td>'+numero_orden+'</td><td>'+tipo_prenda+'</td><td>'+cantidad_prenda+'</td><td>'+area_prenda+'</td><td>'+responsable_prenda+'</td></tr>'
-                        tabla.insertAdjacentHTML('beforeend', html_orden);
-                    }
-                }
-            }
-        }
-    }
-    request.send();
-}
-
-
-const boton_buscador_prendas = document.getElementById("buscador_prendas");
-boton_buscador_prendas.addEventListener('click', buscador_prendas);

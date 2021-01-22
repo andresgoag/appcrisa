@@ -1,4 +1,4 @@
-{%extends "navegacion-ventas.html"%}
+{%extends "navegacion-operarios.html"%}
 {%block content%}
 
 {% with messages = get_flashed_messages(category_filter=['error']) %}
@@ -213,6 +213,6 @@
 
 </div>
 
-<script src="{{url_for('static', filename='script/produccion-ventas.js')}}"></script>
+<script src="{{url_for('static', filename='script/produccion-empaques.js')}}"></script>
 
 {%endblock%}

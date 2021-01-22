@@ -57,9 +57,11 @@
                             <select class="form-control" name="estado_orden" id="estado_orden">
                                 <option value="analisis">Análisis</option>
                                 <option value="produccion">Producción</option>
+                                <option value="almacen">Almacén</option>
                                 <option value="despachada">Despachada</option>
                                 <option value="cerrada">Cerrada</option>
                                 <option value="cancelada">Cancelada</option>
+                                <option value="cambios">Cambios</option>
                             </select>
                         </div>
 
@@ -78,6 +80,83 @@
                     </div>
 
                 </form>
+
+
+                <div class="form-row mt-5">
+        
+                    <div class="col-12 mb-3">
+                        <h5>Cliente</h5>
+                    </div>
+            
+                    <div class="form-group col-12 col-md-4">
+                        <label for="cliente_categoria">Tipo</label>
+                        <select class="form-control" name="cliente_categoria" id="cliente_categoria" disabled>
+                            <option value="persona">Persona</option>
+                            <option value="empresa">Empresa</option>
+                            <option value="empleado">Empleado</option>
+                        </select>
+                    </div>
+            
+                    <div class="form-group col-12 col-md-4">
+                        <label for="cliente_nombre">Nombre</label>
+                        <input type="text" class="form-control" name="cliente_nombre" id="cliente_nombre" readonly>
+                    </div>
+            
+                    <div class="form-group col-12 col-md-4">
+                        <label for="cliente_correo">Correo electrónico</label>
+                        <input type="email" class="form-control" name="cliente_correo" id="cliente_correo" readonly>
+                    </div>
+            
+                    <div class="form-group col-12 col-md-4">
+                        <label for="cliente_tipodoc">Tipo de documento</label>
+                        <select class="form-control" name="cliente_tipodoc" id="cliente_tipodoc" disabled>
+                            <option value="cc">Cédula de ciudadanía</option>
+                            <option value="Nit">Nit</option>
+                            <option value="ti">Tarjeta de identidad</option>
+                            <option value="pasaporte">Pasaporte</option>
+                            <option value="ce">Cédula de extranjería</option>
+                        </select>
+                    </div>
+            
+                    <div class="form-group col-12 col-md-4">
+                        <label for="cliente_cedula">Número de documento</label>
+                        <input type="text" class="form-control" name="cliente_cedula" id="cliente_cedula" readonly>
+                    </div>
+            
+                    <div class="form-group col-12 col-md-4">
+                        <label for="cliente_telefono">Teléfono</label>
+                        <input type="text" class="form-control" name="cliente_telefono" id="cliente_telefono" readonly>
+                    </div>
+            
+                    <div class="form-group col-12 col-md-4">
+                        <label for="cliente_direccion">Dirección</label>
+                        <input type="text" class="form-control" name="cliente_direccion" id="cliente_direccion" readonly>
+                    </div>
+            
+                    <div class="form-group col-12 col-md-4">
+                        <label for="cliente_barrio">Barrio</label>
+                        <input type="text" class="form-control" name="cliente_barrio" id="cliente_barrio" readonly>
+                    </div>
+            
+                    <div class="form-group col-12 col-md-4">
+                        <label for="cliente_ciudad">Ciudad</label>
+                        <input type="text" class="form-control" name="cliente_ciudad" id="cliente_ciudad" readonly> 
+                    </div>
+            
+                    <div class="form-group col-12 col-md-4">
+                        <label for="cliente_departamento">Departamento</label>
+                        <input type="text" class="form-control" name="cliente_departamento" id="cliente_departamento" readonly>
+                    </div>
+            
+                    <div class="form-group col-12 col-md-4">
+                        <label for="cliente_pais">País</label>
+                        <input type="text" class="form-control" name="cliente_pais" id="cliente_pais" readonly>
+                    </div>
+                    
+                </div>
+
+
+
 
                 <div class="row mt-5">
 
@@ -134,14 +213,6 @@
 
 </div>
 
-<script src="{{url_for('static', filename='script/produccion-despachos.js')}}"></script>
+<script src="{{url_for('static', filename='script/produccion-empaques-jefe.js')}}"></script>
 
 {%endblock%}
-
-
-
-
-
-
-
-<!-- falta verificar que todas las areas esten mmarcadas como completas para cambiar el estado de la orden a despachado-->

@@ -15,34 +15,34 @@ const switch_caso = (caso_produccion) => {
 
     switch (caso_produccion) {
     case 1:
-        caso = ['diseno', 'sublimacion', 'corte', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Sublimada
+        caso = ['diseno', 'sublimacion', 'corte', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Sublimada
         break;
     case 2:
-        caso = ['corte', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Unicolor
+        caso = ['corte', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Unicolor
         break;
 
     case 3:
-        caso = ['corte', 'diseno', 'sublimacion', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Medidas personalizadas
+        caso = ['corte', 'diseno', 'sublimacion', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Medidas personalizadas
         break;
 
     case 4:
-        caso = ['diseno', 'sublimacion', 'confeccion-terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Apliques
+        caso = ['diseno', 'sublimacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Apliques
         break;
 
     case 5:
-        caso = ['empaque', 'almacen', 'verificacion', 'ventas']; // Manualidad
+        caso = ['empaque']; // Manualidad
         break;
 
     case 6:
-        caso = ['corte', 'preparacion', 'terminacion', 'diseno', 'sublimacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Unicolor vinilo
+        caso = ['corte', 'preparacion', 'terminacion', 'diseno', 'sublimacion', 'calidad', 'empaque']; // Unicolor vinilo
         break;
 
     case 7:
-        caso = ['corte', 'diseno', 'sublimacion', 'preparacion', 'terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Primero corte
+        caso = ['corte', 'diseno', 'sublimacion', 'preparacion', 'terminacion', 'calidad', 'empaque']; // Primero corte
         break;
 
     case 8:
-        caso = ['empaque', 'terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Manualidad con costuras
+        caso = ['empaque', 'terminacion', 'calidad', 'empaque']; // Manualidad con costuras
         break;
 
     case 9:
@@ -369,6 +369,8 @@ const casos_produccion_modal = (caso, select) => {
     if (list_caso != "") {
 
         select.innerHTML = "";
+        select.insertAdjacentHTML('beforeend', '<option value="planeacion">Planeación</option>');
+
 
         for (let i = 0; i < list_caso.length; i++) {
             let html_area_produccion = '<option value="'+list_caso[i]+'">'+area_produccion_bonita(list_caso[i])+'</option>'
@@ -457,16 +459,6 @@ const area_produccion_bonita = (area) => {
         case 'planeacion':
             return "Planeación";
 
-        case 'almacen':
-            return 'Almacen';
-
-        case 'verificacion':
-            return 'Verificación';
-        
-        case 'ventas':
-            return 'Ventas';
-
-
         default:
             return 'Area no reconocida'
     }
@@ -478,6 +470,7 @@ const casos_produccion = (clickedElement) => {
     if (caso != "") {
 
         document.querySelector("#"+_id+" .contenedor-areas").innerHTML = "";
+        document.querySelector("#"+_id+" .contenedor-areas").insertAdjacentHTML('beforeend', '<option value="planeacion">Planeación</option>');
 
         for (let i = 0; i < caso.length; i++) {
             let html_area_produccion = '<option value="'+caso[i]+'">'+area_produccion_bonita(caso[i])+'</option>'

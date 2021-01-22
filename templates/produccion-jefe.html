@@ -1,4 +1,4 @@
-{%extends "navegacion.html"%}
+{%extends "navegacion-operarios.html"%}
 {%block content%}
 
 {% with messages = get_flashed_messages(category_filter=['error']) %}
@@ -81,14 +81,6 @@
 
 </div>
 
-<script src="{{url_for('static', filename='script/produccion.js')}}"></script>
+<script src="{{url_for('static', filename='script/produccion-jefe.js')}}"></script>
 
 {%endblock%}
-
-
-
-
-
-
-
-<!-- falta verificar que todas las areas esten mmarcadas como completas para cambiar el estado de la orden a despachado-->

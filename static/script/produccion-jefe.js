@@ -203,7 +203,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="casos_produccion(this);">
+        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="casos_produccion(this);" disabled>
             <option value="">Seleccionar proceso</option>
             <option value="1">Caso 1 (Sublimada)</option>
             <option value="2">Caso 2 (Unicolor)</option>
@@ -219,7 +219,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select class="form-control form-control-sm contenedor-areas" id="area_${id_prenda_nueva}" onchange="area_responsable_prenda(this);">
+        <select class="form-control form-control-sm contenedor-areas" id="area_${id_prenda_nueva}" onchange="area_responsable_prenda(this);" disabled>
             <option value="">Área responsable</option>
         </select>
     </div>

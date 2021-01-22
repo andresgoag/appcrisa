@@ -47,12 +47,22 @@
             {% with messages = get_flashed_messages(category_filter=['error']) %}
                 {% if messages %}
                     {% for msg in messages %}
-                        <p class="my-2">{{msg}}</p>
+                        <p class="text-danger my-2">{{msg}}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% with messages = get_flashed_messages(category_filter=['success']) %}
+                {% if messages %}
+                    {% for msg in messages %}
+                        <p class="text-success my-2">{{msg}}</p>
                     {% endfor %}
                 {% endif %}
             {% endwith %}
 
             <button class="btn btn-lg btn-primary btn-block mt-1" type="submit">Ingresar</button>
+
+            <a href="/cambiarcontrasena">Cambiar contraseña</a>
 
         </form>
 

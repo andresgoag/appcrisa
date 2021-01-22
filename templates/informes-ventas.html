@@ -38,9 +38,11 @@
                                 <option value="todas">Todas</option>
                                 <option value="analisis">Análisis</option>
                                 <option value="produccion">Producción</option>
+                                <option value="almacen">Almacén</option>
                                 <option value="despachada">Despachada</option>
                                 <option value="cerrada">Cerrada</option>
                                 <option value="cancelada">Cancelada</option>
+                                <option value="cambios">Cambios</option>
                             </select>
                         </div>
 
@@ -162,7 +164,7 @@
 
                 <div class="col-12">
                     
-                    <table class="table table-bordered table-sm table-hover table-responsive-lg" id="tabla_ordenes">
+                    <table class="table table-bordered table-hover table-sm table-responsive-lg" id="tabla_ordenes">
 
                         <thead>
                             <th>Prioritaria</th>
@@ -171,6 +173,10 @@
                             <th>Nombre del cliente</th>
                             <th>Identificación del cliente</th>
                             <th>Estado</th>
+                            <th>Precio total</th>
+                            <th>Abono</th>
+                            <th>Debe</th>
+                            <th>Pagado</th>
                             <th>Creada por</th>
                         </thead>
 
@@ -188,7 +194,12 @@
                 <div class="col-12">
                     <div class="form-row">
 
-                        <div class="col-12 col-lg-2 form-group">
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="orden-prenda">Orden</label>
+                            <input type="text" class="form-control" name="orden-prenda" id="orden-prenda">
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="tipo-prenda">Tipo de prenda</label>
                             <select name="tipo-prenda" id="tipo-prenda" class="form-control">
                                 <option value="todas">Todas</option>
@@ -214,14 +225,14 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-2 form-group">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="usuario-responsable-prenda">Usuario responsable</label>
                             <input type="text" class="form-control" name="usuario-responsable-prenda" id="usuario-responsable-prenda">
                         </div>
 
-                        <div class="col-12 col-lg-2 form-group">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="area-responsable-prenda">Área responsable</label>
-                            <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control" disabled>
+                            <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control">
                                 <option value="">Todas</option>
                                 <option value="analisis">Análisis</option>
                                 <option value="planeacion">Planeación</option>
@@ -232,13 +243,10 @@
                                 <option value="confeccion-terminacion">Confección-terminación</option>
                                 <option value="calidad">Calidad</option>
                                 <option value="empaque">Empaque</option>
-                                <option value="almacen">Almacen</option>
-                                <option value="verificacion">Verificación</option>
-                                <option value="ventas">Ventas</option>
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-2 form-group">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="prioridad-prenda">Prioritaria</label>
                             <select name="prioridad-prenda" id="prioridad-prenda" class="form-control">
                                 <option value="todas">Todas</option>
@@ -247,7 +255,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-2 form-group">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="material">Sin material</label>
                             <select name="material" id="material" class="form-control">
                                 <option value="todas">Todas</option>
@@ -255,7 +263,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-2 form-group align-self-end">
+                        <div class="col-12 col-lg-3 form-group align-self-end">
                             <button class="btn btn-primary btn-block" id="buscador_prendas">Buscar</button>
                         </div>
 
@@ -290,10 +298,7 @@
 
 </div>
 
-<script>
-    document.getElementById("area-responsable-prenda").value = "{{session['area']}}";
-</script>
 
-<script src="{{url_for('static', filename='script/informes-despachos.js')}}"></script>
+<script src="{{url_for('static', filename='script/informes.js')}}"></script>
 
 {%endblock%}

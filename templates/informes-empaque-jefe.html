@@ -38,9 +38,11 @@
                                 <option value="todas">Todas</option>
                                 <option value="analisis">Análisis</option>
                                 <option value="produccion">Producción</option>
+                                <option value="almacen">Almacén</option>
                                 <option value="despachada">Despachada</option>
                                 <option value="cerrada">Cerrada</option>
                                 <option value="cancelada">Cancelada</option>
+                                <option value="cambios">Cambios</option>
                             </select>
                         </div>
 
@@ -172,6 +174,7 @@
                             <th>Identificación del cliente</th>
                             <th>Estado</th>
                             <th>Creada por</th>
+                            <th>Pagado</th>
                         </thead>
 
                     </table>
@@ -221,7 +224,7 @@
 
                         <div class="col-12 col-lg-2 form-group">
                             <label for="area-responsable-prenda">Área responsable</label>
-                            <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control" disabled>
+                            <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control">
                                 <option value="">Todas</option>
                                 <option value="analisis">Análisis</option>
                                 <option value="planeacion">Planeación</option>
@@ -232,9 +235,6 @@
                                 <option value="confeccion-terminacion">Confección-terminación</option>
                                 <option value="calidad">Calidad</option>
                                 <option value="empaque">Empaque</option>
-                                <option value="almacen">Almacen</option>
-                                <option value="verificacion">Verificación</option>
-                                <option value="ventas">Ventas</option>
                             </select>
                         </div>
 
@@ -290,10 +290,7 @@
 
 </div>
 
-<script>
-    document.getElementById("area-responsable-prenda").value = "{{session['area']}}";
-</script>
 
-<script src="{{url_for('static', filename='script/informes-despachos.js')}}"></script>
+<script src="{{url_for('static', filename='script/informes-empaque.js')}}"></script>
 
 {%endblock%}

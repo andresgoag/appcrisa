@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambiar contraseña</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
+<body>
+
+    <div class="container">
+        <div class="row justify-content-center mt-3">
+            <div class="col-auto border p-5">
+
+                <h3 class="mb-5">Cambiar contraseña</h3>
+
+                <form action="/cambiarcontrasena" method="POST">
+
+                    <div class="form-group">
+                        <label for="usuario">Usuario:</label>
+                        <input type="text" class="form-control" placeholder="Usuario" name="usuario" id="usuario" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contrasena-actual">Contraseña actual</label>
+                        <input type="password" class="form-control" placeholder="Contraseña actual" name="contrasena-actual" id="contrasena-actual" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contrasena-nueva">Contraseña nueva</label>
+                        <input type="password" class="form-control" placeholder="Contraseña nueva" name="contrasena-nueva" id="contrasena-nueva" required>
+                    </div>
+
+                    <input type="submit" class="btn btn-block btn-primary mt-5">
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

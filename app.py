@@ -61,14 +61,8 @@ def home():
                     session['role'] = usuario.role
                     session['area'] = usuario.area
 
-                    if session['area'] == 'ventas':
-                        return redirect(url_for('ordenes'))
-                    elif session['area'] == "analisis":
-                        return render_template("informes-analisis.html")
-                    elif session['role'] == "operador":
-                        return redirect(url_for('informes'))
-                    else:    
-                        return redirect(url_for('ordenes'))
+                    return redirect(url_for('ordenes'))
+
                 else:
                     flash("Email o contraseña incorrecta", "error")
                     return render_template('login.html')
@@ -84,12 +78,16 @@ def home():
 @app.route('/ordenes')
 def ordenes():
     if 'user' in session:
+
         if session['role'] == "administrador":
             return render_template('ordenes.html')
+
         elif session['area'] == "ventas":
             return render_template('ordenes-ventas.html')
+
         else:
             return redirect(url_for('informes'))
+
     else:
         return redirect(url_for('home'))
 
@@ -97,16 +95,47 @@ def ordenes():
 @app.route('/produccion')
 def produccion():
     if 'user' in session:
-        if session['area'] == 'ventas':
-            return render_template("produccion-ventas.html")
-        elif session['area'] == "empaque" or session['area'] == "almacen" or session['area'] == "verificacion":
-            return render_template("produccion-despachos.html")
-        elif session['area'] == "analisis":
-            return render_template("produccion-analisis.html")
-        elif session['role'] == 'operador':
-            return render_template("produccion-operarios.html")
+
+        if session['role'] == 'operador':
+            if session['area'] == 'ventas':
+                return render_template("produccion-ventas.html") #ok
+
+            elif session['area'] == 'almacen':
+                return redirect(url_for('informes'))
+
+            elif session['area'] == "analisis":
+                return render_template("produccion-analisis.html") #ok
+            
+            elif session['area'] == "empaque":
+                return render_template("produccion-empaques.html") #ok
+
+            else:
+                return render_template("produccion-operarios.html") #ok
+
+
+        elif session['role'] == 'jefe-area':
+            if session['area'] == 'ventas':
+                return render_template("produccion-ventas.html") #ok
+
+            elif session['area'] == 'almacen':
+                return redirect(url_for('informes'))
+
+            elif session['area'] == "analisis":
+                return render_template("produccion-analisis.html") #ok
+
+            elif session['area'] == "empaque":
+                return render_template("produccion-empaques-jefe.html") #ok
+
+            else:
+                return render_template("produccion-jefe.html") #ok
+
+
+        elif session['role'] == 'administrador':
+            return render_template("produccion.html") #ok
+
         else:
-            return render_template("produccion.html")
+            return{"message":"Role no reconocido"}
+
     else:
         return redirect(url_for('home'))
 
@@ -114,16 +143,48 @@ def produccion():
 @app.route('/informes')
 def informes():
     if 'user' in session:
-        if session['area'] == 'ventas':
-            return render_template("informes-ventas.html")
-        elif session['area'] == "empaque" or session['area'] == "almacen" or session['area'] == "verificacion":
-            return render_template("informes-despachos.html")
-        elif session['area'] == "analisis":
-            return render_template("informes-analisis.html")
-        elif session['role'] == 'operador':
-            return render_template("informes-operarios.html")
+
+        if session['role'] == 'operador':
+            if session['area'] == 'ventas':
+                return render_template("informes-ventas.html") #ok
+
+            elif session['area'] == 'almacen':
+                return render_template("informes-almacen.html")
+
+            elif session['area'] == "analisis":
+                return render_template("informes-analisis.html") #ok
+            
+            elif session['area'] == "empaque":
+                return render_template("informes-empaque.html") #ok
+
+            else:
+                return render_template("informes-operarios.html") #ok
+
+
+        elif session['role'] == 'jefe-area':
+            if session['area'] == 'ventas':
+                return render_template("informes-ventas.html") #ok
+
+            elif session['area'] == 'almacen':
+                return render_template("informes-almacen.html")
+
+            elif session['area'] == "analisis":
+                return render_template("informes-analisis-jefe.html") #ok
+
+            elif session['area'] == "empaque":
+                return render_template("informes-empaque-jefe.html") #ok
+
+            else:
+                return render_template("informes-jefe.html") #ok
+
+
+        elif session['role'] == 'administrador':
+            return render_template("informes.html") #ok
+
         else:
-            return render_template("informes.html")
+            return{"message":"Role no reconocido"}
+
+            
     else:
         return redirect(url_for('home'))
 
@@ -135,9 +196,39 @@ def configuracion():
             return render_template("configuracion.html")
         else:
             return redirect(url_for('informes'))
-            
     else:
         return redirect(url_for('home'))
+
+
+@app.route('/cambiarcontrasena', methods=["POST", "GET"])
+def cambiar_contrasena():
+    if request.method == "POST":
+
+        data = request.form
+
+        user = UserModel.find_by_usuario(data['usuario'])
+        if user:
+            if bcrypt.checkpw(data['contrasena-actual'].encode("utf-8"), user.password):
+                user.password = bcrypt.hashpw(data['contrasena-nueva'].encode("utf-8"), salt)
+                try:
+                    user.save_to_db()
+                except:
+                    flash("Error en el servidor, trate nuevamente", "error")
+                    return redirect(url_for('home'))
+
+                flash("Contraseña actualizada exitosamente", "success")
+                return redirect(url_for('home'))
+
+            else:
+                flash("Contraseña incorrecta", "error")
+                return redirect(url_for('home'))
+
+        else:
+            flash("Usuario no encontrado", "error")
+            return redirect(url_for('home'))
+
+    else:
+        return render_template('contrasena.html')
 
 
 
@@ -344,18 +435,36 @@ def actualizar_estado_orden():
     flash(data['numero_orden'], 'orden')
     order = OrdenesModel.find_by_orden(data['numero_orden'])
 
-    if data['estado_orden'] != 'despachada':
+    if data['estado_orden'] == "almacen":
+        flag = True
+        for prenda in order.prendas:
+            if prenda.empacado == "no":
+                flash(f"La orden {data['numero_orden']} tiene prendas pendientes por empacar", "error")
+                flag = False
+                break
+        if flag:
+            order.estado_orden = data['estado_orden']
+            order.save_to_db()
+            flash("Estado actualizado exitosamente", 'success')
+
+
+    elif data['estado_orden'] == 'despachada':
+        if orden.estado_orden == "almacen":
+            if order.pagado == 'si':
+                order.estado_orden = data['estado_orden']
+                order.save_to_db()
+                flash("Estado actualizado exitosamente", 'success')
+            else:
+                flash(f"La orden {data['numero_orden']} aun no ha sido pagada, aun no puede ser despachada", 'error')
+        else:
+            flash(f"La orden {data['numero_orden']} no se encuentra en almacen", 'error')
+
+
+    else:
         order.estado_orden = data['estado_orden']
         order.save_to_db()
         flash("Estado actualizado exitosamente", 'success')
 
-    if data['estado_orden'] == 'despachada':
-        if order.pagado == 'si':
-            order.estado_orden = data['estado_orden']
-            order.save_to_db()
-            flash("Estado actualizado exitosamente", 'success')
-        else:
-            flash(f"La orden {data['numero_orden']} aun no ha sido pagada, aun no puede ser despachada", 'error')
 
     return redirect(url_for('produccion'))
 
@@ -486,6 +595,34 @@ def crear_usuario():
         except:
             flash(f"Error al crear el usuario {usuario}, por favor intentelo nuevamente", "error")
             return(redirect(url_for('configuracion')))
+
+
+@app.route('/modificarusuario', methods=["POST"])
+def modificar_usuario():
+    data = request.form
+
+    usuario = data['modificar-usuario']
+    password = bcrypt.hashpw(data["modificar-password"].encode("utf-8"), salt)
+    role = data["modificar-role"]
+    area = data["modificar-area"]
+
+    user = UserModel.find_by_usuario(usuario)
+
+    if user:
+        user.password = password
+        user.role = role
+        user.area = area
+        try:
+            user.save_to_db()
+            flash(f"Usuario {usuario} actualizado exitosamente", "success")
+            return(redirect(url_for('configuracion')))
+        except:
+            flash(f"Error al actualizar el usuario {usuario}, por favor intentelo nuevamente", "error")
+            return(redirect(url_for('configuracion')))
+
+    else:
+        flash("Usuario no encontrado", "error")
+        return(redirect(url_for('configuracion')))
 
 
 @app.route('/arearesponsableprenda', methods=["POST"])
@@ -634,6 +771,54 @@ def modificar_comentario():
             return {"message":"Error en el servidor"}
     else:
         return {"message":"prenda no encontrada"}
+
+
+@app.route('/marcarpago', methods=["POST"])
+def marcar_pago():
+    data = request.get_json()
+
+    orden = OrdenesModel.find_by_orden(data['orden'])
+
+    if orden:
+        if data['estado']:
+            orden.pagado = "si"
+        else:
+            orden.pagado = "no"
+        
+        try:
+            orden.save_to_db()
+            return {"message":"actualizado exitosamente"}
+        except:
+            return{"message":"Servidor no disponible, intentelo mas tarde"},500
+    else:
+        return {"message":"Orden no encontrada"},400
+
+
+@app.route('/marcarempaque', methods=['POST'])
+def marcar_empaque():
+
+    data = request.get_json()
+
+    prenda = PrendasModel.find_by_id(data['prenda_id'])
+
+    if prenda:
+        if data['estado']:
+            prenda.empacado = "si"
+            prenda.area_responsable = ""
+        else:
+            prenda.empacado = "no"
+            prenda.area_responsable = "empaque"
+
+        try:
+            prenda.save_to_db()
+            return {"message":"Actualizado exitosamente"}
+
+        except:
+            return {"message":"Servidor no disponible, intente nuevamente"}
+
+    
+    return {"message":"Prenda no encontrada"}
+
 
 
 

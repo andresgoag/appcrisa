@@ -15,7 +15,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="#tabprendas" class="nav-link" data-toggle="tab">Prendas sin material</a>
+                    <a href="#tabprendas" class="nav-link" data-toggle="tab">Prendas</a>
                 </li>
 
             </ul>
@@ -35,7 +35,14 @@
                         <div class="col-12 col-lg-3 form-group">
                             <label for="estado_orden">Estado</label>
                             <select name="estado_orden" id="estado_orden" class="form-control">
+                                <option value="todas">Todas</option>
                                 <option value="analisis">Análisis</option>
+                                <option value="produccion">Producción</option>
+                                <option value="almacen">Almacén</option>
+                                <option value="despachada">Despachada</option>
+                                <option value="cerrada">Cerrada</option>
+                                <option value="cancelada">Cancelada</option>
+                                <option value="cambios">Cambios</option>
                             </select>
                         </div>
 
@@ -63,7 +70,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-3 form-group" style="display: none;">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="pagado">Orden paga</label>
                             <select name="pagado" id="pagado" class="form-control">
                                 <option value="todas">Todas</option>
@@ -72,12 +79,12 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-3 form-group" style="display: none;">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="identificacion">Identificación del cliente</label>
                             <input type="text" class="form-control" name="identificacion" id="identificacion">
                         </div>
 
-                        <div class="col-12 col-lg-3 form-group" style="display: none;">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="telefono">Telefono del cliente</label>
                             <input type="text" class="form-control" name="telefono" id="telefono">
                         </div>
@@ -103,7 +110,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-3 form-group" style="display: none;">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="opcion_envio">Opción de envío</label>
                             <select class="form-control" name="opcion_envio" id="opcion_envio">
                                 <option value="todas">Todas</option>
@@ -114,7 +121,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-3 form-group" style="display: none;">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="empresa_envio">Empresa envío</label>
                             <select class="form-control" name="empresa_envio" id="empresa_envio">
                                 <option value="todas">Todas</option>
@@ -167,6 +174,7 @@
                             <th>Identificación del cliente</th>
                             <th>Estado</th>
                             <th>Creada por</th>
+                            <th>Pagado</th>
                         </thead>
 
                     </table>
@@ -183,7 +191,7 @@
                 <div class="col-12">
                     <div class="form-row">
 
-                        <div class="col-12 col-lg-3 form-group d-none">
+                        <div class="col-12 col-lg-2 form-group">
                             <label for="tipo-prenda">Tipo de prenda</label>
                             <select name="tipo-prenda" id="tipo-prenda" class="form-control">
                                 <option value="todas">Todas</option>
@@ -209,16 +217,17 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-3 form-group d-none">
+                        <div class="col-12 col-lg-2 form-group">
                             <label for="usuario-responsable-prenda">Usuario responsable</label>
                             <input type="text" class="form-control" name="usuario-responsable-prenda" id="usuario-responsable-prenda">
                         </div>
 
-                        <div class="col-12 col-lg-3 form-group d-none">
+                        <div class="col-12 col-lg-2 form-group">
                             <label for="area-responsable-prenda">Área responsable</label>
-                            <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control">
+                            <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control" disabled>
                                 <option value="">Todas</option>
                                 <option value="analisis">Análisis</option>
+                                <option value="planeacion">Planeación</option>
                                 <option value="diseno">Diseño</option>
                                 <option value="sublimacion">Sublimación</option>
                                 <option value="corte">Corte</option>
@@ -229,7 +238,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-4 form-group">
+                        <div class="col-12 col-lg-2 form-group">
                             <label for="prioridad-prenda">Prioritaria</label>
                             <select name="prioridad-prenda" id="prioridad-prenda" class="form-control">
                                 <option value="todas">Todas</option>
@@ -238,14 +247,15 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-4 form-group">
+                        <div class="col-12 col-lg-2 form-group">
                             <label for="material">Sin material</label>
                             <select name="material" id="material" class="form-control">
+                                <option value="todas">Todas</option>
                                 <option value="sin material">Sin material</option>
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-4 form-group align-self-end">
+                        <div class="col-12 col-lg-2 form-group align-self-end">
                             <button class="btn btn-primary btn-block" id="buscador_prendas">Buscar</button>
                         </div>
 
@@ -280,6 +290,10 @@
 
 </div>
 
-<script src="{{url_for('static', filename='script/informes-analisis.js')}}"></script>
+<script>
+    document.getElementById("area-responsable-prenda").value = "{{session['area']}}";
+</script>
+
+<script src="{{url_for('static', filename='script/informes-empaque.js')}}"></script>
 
 {%endblock%}

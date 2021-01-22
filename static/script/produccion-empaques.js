@@ -15,34 +15,34 @@ const switch_caso = (caso_produccion) => {
 
     switch (caso_produccion) {
     case 1:
-        caso = ['diseno', 'sublimacion', 'corte', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Sublimada
+        caso = ['diseno', 'sublimacion', 'corte', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Sublimada
         break;
     case 2:
-        caso = ['corte', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Unicolor
+        caso = ['corte', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Unicolor
         break;
 
     case 3:
-        caso = ['corte', 'diseno', 'sublimacion', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Medidas personalizadas
+        caso = ['corte', 'diseno', 'sublimacion', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Medidas personalizadas
         break;
 
     case 4:
-        caso = ['diseno', 'sublimacion', 'confeccion-terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Apliques
+        caso = ['diseno', 'sublimacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Apliques
         break;
 
     case 5:
-        caso = ['empaque', 'almacen', 'verificacion', 'ventas']; // Manualidad
+        caso = ['empaque']; // Manualidad
         break;
 
     case 6:
-        caso = ['corte', 'preparacion', 'terminacion', 'diseno', 'sublimacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Unicolor vinilo
+        caso = ['corte', 'preparacion', 'terminacion', 'diseno', 'sublimacion', 'calidad', 'empaque']; // Unicolor vinilo
         break;
 
     case 7:
-        caso = ['corte', 'diseno', 'sublimacion', 'preparacion', 'terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Primero corte
+        caso = ['corte', 'diseno', 'sublimacion', 'preparacion', 'terminacion', 'calidad', 'empaque']; // Primero corte
         break;
 
     case 8:
-        caso = ['empaque', 'terminacion', 'calidad', 'empaque', 'almacen', 'verificacion', 'ventas']; // Manualidad con costuras
+        caso = ['empaque', 'terminacion', 'calidad', 'empaque']; // Manualidad con costuras
         break;
 
     case 9:
@@ -93,48 +93,6 @@ const guardarEspecificacion = (evento) => {
             alert(data_comentario['message'])
         }
     }, info_json_comentario)
-} // OK
-
-const area_responsable_prenda_siguiente = (id_prenda, select_areas) => {
-
-    let info = {
-        id_prenda: id_prenda, 
-        area: select_areas
-    }
-    let info_json = JSON.stringify(info)
-
-    fetchData("POST", "/arearesponsableprenda", mensaje_area_responsable, info_json);
-} // OK
-
-const enviar_a_siguiente_area = (evento) => {
-    let prenda = evento.target.parentElement.parentElement.parentElement;
-    let caso = prenda.querySelector(".contenedor-caso-produccion").value;
-    let area = prenda.querySelector(".contenedor-areas").value;
-    let id_prenda = prenda.querySelector(".id_input").value; // id base de datos
-    caso = switch_caso(parseInt(caso));
-    let index = caso.indexOf(area)
-
-    if (index == caso.length-1) {
-        alert(`${area_produccion_bonita(area)} es la ultima área`)
-    } else {
-        let verification = confirm(`Desea marcar como completo ${area_produccion_bonita(area)}? Esta acción es irreversible.`)
-        if (verification) {
-            let info = {
-                id_prenda: id_prenda,
-                area: area,
-                estado: true
-            };
-            let info_json = JSON.stringify(info);
-            fetchData("POST", "/marcarproduccion", function(error, data) {
-                if (error) return console.error(error);
-                if (data["status"] == "ok") {
-                    area_responsable_prenda_siguiente(id_prenda, caso[index+1]);
-                    fetchData("GET", `/cambiarusuariovacio/${id_prenda}`, postDoNothing);
-                }
-            }, info_json)
-        }
-    }
-
 } // OK
 
 const reportarError = (evento) => {
@@ -194,6 +152,24 @@ const reportarError = (evento) => {
     }, info_json);
 
 } // OK
+
+const empacado = (evento) => {
+    let prenda = evento.target.parentElement.parentElement.parentElement.parentElement.parentElement;
+    let prenda_id = prenda.querySelector(".id_input").value;
+
+    let info = {
+        prenda_id:prenda_id,
+        estado:evento.target.checked
+    };
+
+    let info_json = JSON.stringify(info);
+
+    fetchData("POST", "/marcarempaque", (error, data) => {
+        if (error) return console.error(error);
+        alert(data['message'])
+    }, info_json);
+
+} // ok
 
 const addPrendaProduccion = (id_prenda_nueva) => {
 
@@ -286,7 +262,12 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     <div class="col-12 mt-3">
         <div class="d-flex justify-content-center">
             <button class="btn btn-primary btn-sm cargar_tiempos" id="cargar_tiempos_${id_prenda_nueva}" onclick="cargarTiempos(this);">Cargar tiempos</button>
-            <button class="ml-1 btn btn-primary btn-sm" id="enviar_a_siguiente_area_${id_prenda_nueva}">Marcar etapa como completa</button>
+            <div class="d-flex align-items-center px-3">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" name="empacado_${id_prenda_nueva}" id="empacado_${id_prenda_nueva}">
+                    <label class="custom-control-label" for="empacado_${id_prenda_nueva}">Empacado</label>
+                </div>
+            </div>
             <button class="ml-1 btn btn-danger" type="button" name="button" data-toggle="modal" data-target="#modal_error_${id_prenda_nueva}">Reportar error</button>
         </div>
     </div>
@@ -331,7 +312,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     let div_prendas = document.getElementById("prendas");
     div_prendas.appendChild(div_nueva_prenda);
 
-    document.getElementById(`enviar_a_siguiente_area_${id_prenda_nueva}`).addEventListener('click', enviar_a_siguiente_area);
+    document.getElementById(`empacado_${id_prenda_nueva}`).addEventListener('click', empacado);
     document.getElementById(`boton_reportar_error_${id_prenda_nueva}`).addEventListener('click', reportarError);
     document.getElementById(`guardar_especificacion_${id_prenda_nueva}`).addEventListener('click', guardarEspecificacion);
 
@@ -354,6 +335,7 @@ const casos_produccion_modal = (caso, select) => {
     if (list_caso != "") {
 
         select.innerHTML = "";
+        select.insertAdjacentHTML('beforeend', '<option value="planeacion">Planeación</option>');
 
         for (let i = 0; i < list_caso.length; i++) {
             let html_area_produccion = '<option value="'+list_caso[i]+'">'+area_produccion_bonita(list_caso[i])+'</option>'
@@ -374,6 +356,20 @@ const set_order_informacion = (error, data) => {
     set_element_value("opcion_envio", data["opcion_envio"]);
     set_element_value("empresa_envio", data["empresa_envio"]);
     set_element_value("guia_envio", data["guia_envio"]);
+    set_element_value("cliente_categoria", data["cliente"]["tipo"]);
+    set_element_value("cliente_nombre", data["cliente"]["nombre"]);
+    set_element_value("cliente_correo", data["cliente"]["correo"]);
+    set_element_value("cliente_tipodoc", data["cliente"]["tipodoc"]);
+    set_element_value("cliente_cedula", data["cliente"]["cedula"]);
+    set_element_value("cliente_telefono", data["cliente"]["telefono"]);
+    set_element_value("cliente_direccion", data["cliente"]["direccion"]);
+    set_element_value("cliente_barrio", data["cliente"]["barrio"]);
+    set_element_value("cliente_ciudad", data["cliente"]["ciudad"]);
+    set_element_value("cliente_departamento", data["cliente"]["departamento"]);
+    set_element_value("cliente_pais", data["cliente"]["pais"]);
+
+
+
 
 
     if (data["pagado"] == "si") {
@@ -410,6 +406,10 @@ const set_order_informacion = (error, data) => {
         set_element_value("usuario_"+i, data["prendas"][i]["usuario_responsable"]);
         set_element_value("area_"+i, data["prendas"][i]["area_responsable"]);
         casos_produccion_modal(data["prendas"][i]["caso_produccion"], document.getElementById(`caso_produccion_error_${i}`));
+
+        if (data["prendas"][i]["empacado"] == "si") {
+            document.getElementById(`empacado_${i}`).checked = true;
+        }
     }
 
     fetchData("GET", "/verificartiempos/"+get_element_value("numerodeorden"), verificar_tiempo_abierto)
@@ -473,16 +473,6 @@ const area_produccion_bonita = (area) => {
         case 'planeacion':
             return "Planeación";
 
-        case 'almacen':
-            return 'Almacen';
-
-        case 'verificacion':
-            return 'Verificación';
-        
-        case 'ventas':
-            return 'Ventas';
-
-
         default:
             return 'Area no reconocida'
     }
@@ -507,6 +497,7 @@ const casos_produccion = (clickedElement) => {
         };
 
         document.querySelector("#"+_id+" .contenedor-areas").innerHTML = "";
+        document.querySelector("#"+_id+" .contenedor-areas").insertAdjacentHTML('beforeend', '<option value="planeacion">Planeación</option>');
 
         for (let i = 0; i < caso.length; i++) {
             let html_area_produccion = '<option value="'+caso[i]+'">'+area_produccion_bonita(caso[i])+'</option>'

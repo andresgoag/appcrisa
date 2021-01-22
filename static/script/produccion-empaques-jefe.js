@@ -153,6 +153,24 @@ const reportarError = (evento) => {
 
 } // OK
 
+const empacado = (evento) => {
+    let prenda = evento.target.parentElement.parentElement.parentElement.parentElement.parentElement;
+    let prenda_id = prenda.querySelector(".id_input").value;
+
+    let info = {
+        prenda_id:prenda_id,
+        estado:evento.target.checked
+    };
+
+    let info_json = JSON.stringify(info);
+
+    fetchData("POST", "/marcarempaque", (error, data) => {
+        if (error) return console.error(error);
+        alert(data['message'])
+    }, info_json);
+
+} // ok
+
 const addPrendaProduccion = (id_prenda_nueva) => {
 
     let div_nueva_prenda = document.createElement("div");
@@ -203,7 +221,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="casos_produccion(this);">
+        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="casos_produccion(this);" disabled>
             <option value="">Seleccionar proceso</option>
             <option value="1">Caso 1 (Sublimada)</option>
             <option value="2">Caso 2 (Unicolor)</option>
@@ -219,7 +237,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select class="form-control form-control-sm contenedor-areas" id="area_${id_prenda_nueva}" onchange="area_responsable_prenda(this);">
+        <select class="form-control form-control-sm contenedor-areas" id="area_${id_prenda_nueva}" onchange="area_responsable_prenda(this);" disabled>
             <option value="">Área responsable</option>
         </select>
     </div>
@@ -237,13 +255,19 @@ const addPrendaProduccion = (id_prenda_nueva) => {
         </div>
     </div>
     
-    <div class="col-12 mt-3 d-flex flex-wrap justify-content-around contenedor_estados_produccion">
+    <div class="col-12 mt-3 d-none contenedor_estados_produccion">
     
     </div>
     
     <div class="col-12 mt-3">
         <div class="d-flex justify-content-center">
             <button class="btn btn-primary btn-sm cargar_tiempos" id="cargar_tiempos_${id_prenda_nueva}" onclick="cargarTiempos(this);">Cargar tiempos</button>
+            <div class="d-flex align-items-center px-3">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" name="empacado_${id_prenda_nueva}" id="empacado_${id_prenda_nueva}">
+                    <label class="custom-control-label" for="empacado_${id_prenda_nueva}">Empacado</label>
+                </div>
+            </div>
             <button class="ml-1 btn btn-danger" type="button" name="button" data-toggle="modal" data-target="#modal_error_${id_prenda_nueva}">Reportar error</button>
         </div>
     </div>
@@ -288,6 +312,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     let div_prendas = document.getElementById("prendas");
     div_prendas.appendChild(div_nueva_prenda);
 
+    document.getElementById(`empacado_${id_prenda_nueva}`).addEventListener('click', empacado);
     document.getElementById(`boton_reportar_error_${id_prenda_nueva}`).addEventListener('click', reportarError);
     document.getElementById(`guardar_especificacion_${id_prenda_nueva}`).addEventListener('click', guardarEspecificacion);
 
@@ -328,6 +353,30 @@ const set_order_informacion = (error, data) => {
     set_element_value("numerodeorden", data["numero_orden"]);
     set_element_value("marcaorden", capitalize(data["marca"]));
     set_element_value("estado_orden", data["estado_orden"]);
+    set_element_value("opcion_envio", data["opcion_envio"]);
+    set_element_value("empresa_envio", data["empresa_envio"]);
+    set_element_value("guia_envio", data["guia_envio"]);
+    set_element_value("cliente_categoria", data["cliente"]["tipo"]);
+    set_element_value("cliente_nombre", data["cliente"]["nombre"]);
+    set_element_value("cliente_correo", data["cliente"]["correo"]);
+    set_element_value("cliente_tipodoc", data["cliente"]["tipodoc"]);
+    set_element_value("cliente_cedula", data["cliente"]["cedula"]);
+    set_element_value("cliente_telefono", data["cliente"]["telefono"]);
+    set_element_value("cliente_direccion", data["cliente"]["direccion"]);
+    set_element_value("cliente_barrio", data["cliente"]["barrio"]);
+    set_element_value("cliente_ciudad", data["cliente"]["ciudad"]);
+    set_element_value("cliente_departamento", data["cliente"]["departamento"]);
+    set_element_value("cliente_pais", data["cliente"]["pais"]);
+
+
+
+
+
+    if (data["pagado"] == "si") {
+        document.getElementById("pagado").checked = true;
+    } else {
+        document.getElementById("pagado").checked = false;
+    }
 
     for (let i = 0; i < data["prendas"].length; i++) {
 
@@ -357,6 +406,10 @@ const set_order_informacion = (error, data) => {
         set_element_value("usuario_"+i, data["prendas"][i]["usuario_responsable"]);
         set_element_value("area_"+i, data["prendas"][i]["area_responsable"]);
         casos_produccion_modal(data["prendas"][i]["caso_produccion"], document.getElementById(`caso_produccion_error_${i}`));
+
+        if (data["prendas"][i]["empacado"] == "si") {
+            document.getElementById(`empacado_${i}`).checked = true;
+        }
     }
 
     fetchData("GET", "/verificartiempos/"+get_element_value("numerodeorden"), verificar_tiempo_abierto)
