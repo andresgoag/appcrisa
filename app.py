@@ -85,6 +85,9 @@ def ordenes():
         elif session['area'] == "ventas":
             return render_template('ordenes-ventas.html')
 
+        elif session['area'] == "diseno" and session['role'] == 'jefe-area':
+            return render_template('ordenes-diseno.html')
+
         else:
             return redirect(url_for('informes'))
 
@@ -125,6 +128,9 @@ def produccion():
 
             elif session['area'] == "empaque":
                 return render_template("produccion-empaques-jefe.html") #ok
+            
+            elif session['area'] == "diseno":
+                return render_template("produccion-jefe-diseno.html") #ok
 
             else:
                 return render_template("produccion-jefe.html") #ok
@@ -173,6 +179,9 @@ def informes():
 
             elif session['area'] == "empaque":
                 return render_template("informes-empaque-jefe.html") #ok
+
+            elif session['area'] == "diseno":
+                return render_template("informes-jefe-diseno.html") #ok
 
             else:
                 return render_template("informes-jefe.html") #ok
@@ -377,6 +386,143 @@ def guardar_orden():
 
         if id_prenda == "":
             prenda = PrendasModel(tipo_prenda, subtipo, genero, talla, imagen, precio, cantidad, especificacion, orden_id)
+            prenda.save_to_db()
+        else:
+            id_prenda = int(id_prenda)
+            prenda = PrendasModel.find_by_id(id_prenda)
+            prenda.tipo_prenda = tipo_prenda
+            prenda.subtipo = subtipo
+            prenda.genero = genero
+            prenda.talla = talla
+            prenda.imagen = imagen
+            prenda.precio = precio
+            prenda.cantidad = cantidad
+            prenda.especificacion = especificacion
+            prenda.save_to_db()
+
+    return redirect(url_for('ordenes'))
+
+
+@app.route('/guardarordendiseno', methods=['POST'])
+def guardar_orden_diseno():
+
+    data = request.form
+
+    # Guardar datos del cliente
+    tipo = "interna"
+    nombre = "interna"
+    correo = "interna"
+    tipodoc = "interna"
+    cedula = "interna"
+    telefono = "interna"
+    direccion = "interna"
+    barrio = "interna"
+    ciudad = "interna"
+    departamento = "interna"
+    pais = "interna"
+    codigo_postal = "interna"
+
+    cliente = ClientesModel.find_by_cedula(cedula)
+
+    if cliente:
+        cliente.tipo = tipo
+        cliente.nombre = nombre
+        cliente.correo = correo
+        cliente.tipodoc = tipodoc
+        cliente.cedula = cedula
+        cliente.telefono = telefono
+        cliente.direccion = direccion
+        cliente.barrio = barrio
+        cliente.ciudad = ciudad
+        cliente.departamento = departamento
+        cliente.pais = pais
+        cliente.codigo_postal = codigo_postal
+        cliente.save_to_db()
+        cliente_id = cliente.id
+    else:
+        cliente = ClientesModel(tipo, nombre, correo, tipodoc, cedula, telefono, direccion, barrio, ciudad, departamento, pais, codigo_postal)
+        cliente.save_to_db()
+        cliente = ClientesModel.find_by_cedula(cedula)
+        cliente_id = cliente.id
+
+
+    # Registro del numero de orden
+    user = session['user']
+    numero_orden = data['numero_orden']
+    flash(numero_orden, 'orden')
+    prioridad = 'no'
+    estado_orden = data['estado_orden']
+    opcion_envio = "interna"
+    incluir_envio = "no"
+    empresa_envio = "interna"
+    precio_envio = "interna"
+    guia_envio = "interna"
+
+    abono = "interna"
+    precio_total = "interna"
+    marca = "interna"
+    medio_compra = "interna"
+    tiempo_estimado = "interna"
+    forma_pago = "interna"
+    pagado = 'no'
+    comentarios = data['comentario']
+
+    orden = OrdenesModel.find_by_orden(numero_orden)
+
+    if orden:
+        orden.numero_orden = numero_orden
+        orden.estado_orden = estado_orden
+        orden.user = user
+        orden.prioridad = prioridad
+        orden.incluir_envio = incluir_envio
+        orden.opcion_envio = opcion_envio
+        orden.empresa_envio = empresa_envio
+        orden.precio_envio = precio_envio
+        orden.guia_envio = guia_envio
+        orden.abono = abono
+        orden.precio_total = precio_total
+        orden.marca = marca
+        orden.medio_compra = medio_compra
+        orden.forma_pago = forma_pago
+        orden.pagado = pagado
+        orden.comentarios = comentarios
+        orden.cliente_id = cliente_id
+        orden.tiempo_estimado = tiempo_estimado
+        orden.save_to_db()
+        flash(f"Orden {numero_orden} actualizada exitosamente", 'success')
+        orden_id = orden.id
+
+    else:
+        orden = OrdenesModel(user,numero_orden, prioridad, estado_orden, incluir_envio, opcion_envio, empresa_envio, precio_envio, guia_envio, abono, precio_total, marca, medio_compra, forma_pago, pagado, comentarios, cliente_id, tiempo_estimado)
+        orden.save_to_db()
+        flash(f"Orden {numero_orden} creada exitosamente", 'success')
+        orden = OrdenesModel.find_by_orden(numero_orden)
+        orden_id = orden.id
+
+
+    # Guardar registro de las prendas de la orden
+    data_keys = data.keys()
+    prendas_index = list()
+    for i in data_keys:
+        if 'especificacion' in i:
+            prendas_index.append(i)
+
+    for i in prendas_index:
+        index = i[-1]
+
+        id_prenda = data[f'id_{index}']
+        tipo_prenda = "interna"
+        subtipo = "interna"
+        genero = "interna"
+        talla = "interna"
+        imagen = "interna"
+        precio = "interna"
+        cantidad = "interna"
+        especificacion = data[f'especificacion_{index}']
+
+        if id_prenda == "":
+            prenda = PrendasModel(tipo_prenda, subtipo, genero, talla, imagen, precio, cantidad, especificacion, orden_id)
+            prenda.area_responsable = "diseno"
             prenda.save_to_db()
         else:
             id_prenda = int(id_prenda)

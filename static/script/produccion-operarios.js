@@ -408,6 +408,9 @@ const set_order_informacion = (error, data) => {
                 set_element_value("especificacion_"+i, data["prendas"][i]["especificacion"]);
                 set_element_value("caso_produccion_"+i, data["prendas"][i]["caso_produccion"]);
                 casos_produccion(document.getElementById("caso_produccion_"+i))
+                if ((data["prendas"][i]["caso_produccion"] == "" && data["prendas"][i]["area_responsable"] == "diseno")) {
+                    document.getElementById("area_"+i).innerHTML = '<option value="diseno">Diseño</option>';
+                }
                 set_element_value("usuario_"+i, data["prendas"][i]["usuario_responsable"]);
                 set_element_value("area_"+i, data["prendas"][i]["area_responsable"]);
                 casos_produccion_modal(data["prendas"][i]["caso_produccion"], document.getElementById(`caso_produccion_error_${i}`));

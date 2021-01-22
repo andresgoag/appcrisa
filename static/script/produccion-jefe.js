@@ -219,7 +219,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select class="form-control form-control-sm contenedor-areas" id="area_${id_prenda_nueva}" onchange="area_responsable_prenda(this);" disabled>
+        <select class="form-control form-control-sm contenedor-areas" id="area_${id_prenda_nueva}" onchange="area_responsable_prenda(this);">
             <option value="">Área responsable</option>
         </select>
     </div>
@@ -352,6 +352,10 @@ const set_order_informacion = (error, data) => {
                     document.getElementById(caso[a]+"prenda_"+i).disabled=true;
                 }
             }
+        }
+
+        if ((caso == "" && data["prendas"][i]["area_responsable"] == "diseno")) {
+            document.getElementById("area_"+i).innerHTML = '<option value="diseno">Diseño</option>';
         }
 
         set_element_value("usuario_"+i, data["prendas"][i]["usuario_responsable"]);

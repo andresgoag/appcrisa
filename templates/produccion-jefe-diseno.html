@@ -1,0 +1,86 @@
+{%extends "navegacion-ventas.html"%}
+{%block content%}
+
+{% with messages = get_flashed_messages(category_filter=['error']) %}
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="container-fluid p-0">
+                <div class="alert alert-danger" id="alerta">
+                    {{msg}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with messages = get_flashed_messages(category_filter=['success']) %}
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="container-fluid p-0">
+                <div class="alert alert-success" id="alerta">
+                    {{msg}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="container-fluid">
+
+    <div class="row mt-3">
+
+        <div class="col-12">
+
+            <form action="/actualizarestadoorden" method="POST">
+
+                <div class="form-row form-group">
+
+                    <div class="col-12 col-md-3">
+                        <input type="text" name="numero_orden" placeholder="Número de orden" class="form-control" value="" id="numerodeorden" readonly>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <input type="text" placeholder="Marca" class="form-control" id="marcaorden" readonly>
+                    </div>
+            
+                    <div class="col-12 col-md-3">
+                        <select class="form-control" name="estado_orden" id="estado_orden">
+                            <option value="analisis">Análisis</option>
+                            <option value="produccion">Producción</option>
+                            <option value="almacen">Almacén</option>
+                            <option value="despachada">Despachada</option>
+                            <option value="cerrada">Cerrada</option>
+                            <option value="cancelada">Cancelada</option>
+                            <option value="cambios">Cambios</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-12 col-md-3">
+                        <button class="btn btn-primary btn-block" type="submit" id="actualizar_estado_orden">Actualizar estado</button>
+                    </div>
+
+                </div>
+
+            </form>
+
+            <h5 class="">Prendas</h5>
+
+            <div id="prendas">
+                
+            </div>
+        
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{url_for('static', filename='script/produccion-jefe.js')}}"></script>
+
+{%endblock%}
