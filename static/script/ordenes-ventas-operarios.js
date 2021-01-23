@@ -106,6 +106,8 @@ let tipos_prendas = {
 
 function addPrenda() {
 
+    id_prenda += 1
+
     console.log(id_prenda);
 
     let div_nueva_prenda = document.createElement("div");
@@ -119,19 +121,60 @@ function addPrenda() {
         </div>
         
         <div class="col-12 col-lg-2">
-            <input type="text" class="form-control form-control-sm" name="tipo_${id_prenda}" id="tipo_${id_prenda}" readonly required>
+            <select class="form-control form-control-sm" name="tipo_${id_prenda}" id="tipo_${id_prenda}" onchange="selectSubtipo(this);" required>
+                <option value="">Tipo de prenda</option>
+                <option value="falda">Falda</option>
+                <option value="pantalon">Pantalón</option>
+                <option value="short">Short</option>
+                <option value="buzo">Buzo</option>
+                <option value="camibuzo">Camibuzo</option>
+                <option value="camiseta">Camiseta</option>
+                <option value="croptop">Croptop</option>
+                <option value="camisilla">Camisilla</option>
+                <option value="camisa">Camisa de Botones</option>
+                <option value="vestido">Vestido</option>
+                <option value="correa">Correa</option>
+                <option value="medias">Medias</option>
+                <option value="gorro">Gorro</option>
+                <option value="gafas">Gafas</option>
+                <option value="tapabocas">Tapabocas</option>
+                <option value="arnes">Arnés</option>
+                <option value="panoleta">Pañoleta</option>
+                <option value="cobija">Cobija</option>
+                <option value="panties">Panties</option>
+                <option value="dakimakuras">Dakimakuras</option>
+                <option value="kimono">Kimono</option>
+            </select>
         </div>
         
         <div class="col-12 col-lg-2">
-            <input type="text" class="form-control form-control-sm subtipo" name="subtipo_${id_prenda}" id="subtipo_${id_prenda}" readonly required>
+            <select class="form-control form-control-sm subtipo" name="subtipo_${id_prenda}" id="subtipo_${id_prenda}" disabled required>
+                <option value="">Subtipo</option>
+            </select>
         </div>
         
         <div class="col-12 col-lg-2">
-            <input type="text" class="form-control form-control-sm" name="genero_${id_prenda}" id="genero_${id_prenda}" readonly required>
+            <select class="form-control form-control-sm" name="genero_${id_prenda}" id="genero_${id_prenda}" required>
+                <option value="">Género</option>
+                <option value="unisex">Unisex</option>
+                <option value="masculino">Masculino</option>
+                <option value="femenino">Femenino</option>
+            </select>
         </div>
         
         <div class="col-12 col-lg-2">
-            <input type="text" class="form-control form-control-sm" name="talla_${id_prenda}" id="talla_${id_prenda}" readonly required>
+            <select class="form-control form-control-sm" name="talla_${id_prenda}" id="talla_${id_prenda}" required>
+                <option value="">Talla</option>
+                <option value="talla_unica">Talla única</option>
+                <option value="junio">Junior</option>
+                <option value="xs">XS</option>
+                <option value="s">S</option>
+                <option value="m">M</option>
+                <option value="l">L</option>
+                <option value="xl">XL</option>
+                <option value="xxl">XXL</option>
+                <option value="xxxl">XXXL</option>
+            </select>
         </div>
         
         <div class="col-12 col-lg-2">
@@ -143,7 +186,7 @@ function addPrenda() {
         </div>
         
         <div class="col-12 col-lg-2">
-            <input type="number" name="cantidad_${id_prenda}" id="cantidad_${id_prenda}" placeholder="Cantidad" class="form-control form-control-sm cantidad" oninput="precioTotal(); sumCantidades();" readonly required>
+            <input type="number" name="cantidad_${id_prenda}" id="cantidad_${id_prenda}" placeholder="Cantidad" class="form-control form-control-sm cantidad" oninput="precioTotal(); sumCantidades();" required>
         </div>
         
         <div class="col-12 col-lg-10">
@@ -320,6 +363,8 @@ boton_buscar_cliente.addEventListener('click', buscarCliente);
 
 function crearNumeroOrden() {
     clearOrderPage();
+    id_prenda = 0;
+    document.getElementById("anadir-prenda").disabled = false;
     let request = new XMLHttpRequest();
     request.open("GET", "/crearnumerodeorden");
     request.onreadystatechange = function() {
@@ -337,9 +382,12 @@ let boton_crear_orden = document.getElementById("boton_crear_orden");
 boton_crear_orden.addEventListener('click', crearNumeroOrden);
 
 function buscarOrdenVentas() {
+
     order = document.getElementById("input_buscar_orden").value.trim();
 
     clearOrderPage();
+
+    id_prenda = 1;
 
     let request = new XMLHttpRequest();
     request.open("GET", "/getorder/"+order);
@@ -354,9 +402,10 @@ function buscarOrdenVentas() {
                 document.getElementById("prioritaria").checked = true;
             }
 
+
             for (let i = 0; i < data["prendas"].length; i++) {
                 
-                addPrenda();
+                addPrendaLectura();
                 document.getElementById("id_"+id_prenda).value = data["prendas"][i]["id"];
                 document.getElementById("tipo_"+id_prenda).value = data["prendas"][i]["tipo"];
                 selectSubtipo(document.getElementById("tipo_"+id_prenda));
@@ -367,9 +416,11 @@ function buscarOrdenVentas() {
                 document.getElementById("precio_"+id_prenda).value = data["prendas"][i]["precio"];
                 document.getElementById("cantidad_"+id_prenda).value = data["prendas"][i]["cantidad"];
                 document.getElementById("especificacion_"+id_prenda).value = data["prendas"][i]["especificacion"];
-                id_prenda += 1
-
+                id_prenda += 1;
+                
             }
+
+            document.getElementById("anadir-prenda").disabled = true;
 
             document.getElementById("opcion_envio").value = data["opcion_envio"]
 
@@ -428,15 +479,15 @@ boton_buscar_orden.addEventListener('click', buscarOrdenVentas);
 function clearOrderPage() {
     document.getElementById("numerodeorden").value = "";
     document.getElementById("prioritaria").checked = false;
-    document.getElementById("id_1").value = "";
-    document.getElementById("tipo_1").value = "";
-    selectSubtipo(document.getElementById("tipo_1"));
-    document.getElementById("genero_1").value = "";
-    document.getElementById("talla_1").value = "";
-    document.getElementById("imagen_1").value = "";
-    document.getElementById("precio_1").value = "";
-    document.getElementById("cantidad_1").value = "";
-    document.getElementById("especificacion_1").value = "";
+    // document.getElementById("id_1").value = "";
+    // document.getElementById("tipo_1").value = "";
+    // selectSubtipo(document.getElementById("tipo_1"));
+    // document.getElementById("genero_1").value = "";
+    // document.getElementById("talla_1").value = "";
+    // document.getElementById("imagen_1").value = "";
+    // document.getElementById("precio_1").value = "";
+    // document.getElementById("cantidad_1").value = "";
+    // document.getElementById("especificacion_1").value = "";
     
     prendas = document.querySelectorAll(".prenda");
     if (prendas.length > 0) {
@@ -477,8 +528,13 @@ function clearOrderPage() {
 
 
 const abono = () => {
-    let abono = parseInt(document.getElementById("abono").value);
-    let total = parseInt(document.getElementById("precio_total").value);
+    let abono = document.getElementById("abono").value
+    if (abono == "") {abono = 0}; 
+    abono = parseInt(abono);
+    let total = document.getElementById("precio_total").value;
+    if (total == "") {total = 0};
+    total = parseInt(total);
+
     let restante = total - abono;
     document.getElementById("debe").value = restante;
     if (restante == 0) {
@@ -523,3 +579,84 @@ const mercadoLibre = (evento) => {
 
 let input_medio_compra = document.getElementById("medio_compra");
 input_medio_compra.addEventListener("input", mercadoLibre);
+
+
+
+function addPrendaLectura() {
+
+    console.log(id_prenda);
+
+    let div_nueva_prenda = document.createElement("div");
+
+    div_nueva_prenda.setAttribute("class", "mt-3 form-row form-group prenda");
+
+    div_nueva_prenda.setAttribute("id", "prenda_"+id_prenda)
+
+    html_prenda = `<div style="display: none;">
+            <input type="text" class="id_input" name="id_${id_prenda}" id="id_${id_prenda}" value="">
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <input type="text" class="form-control form-control-sm" name="tipo_${id_prenda}" id="tipo_${id_prenda}" readonly required>
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <input type="text" class="form-control form-control-sm subtipo" name="subtipo_${id_prenda}" id="subtipo_${id_prenda}" readonly required>
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <input type="text" class="form-control form-control-sm" name="genero_${id_prenda}" id="genero_${id_prenda}" readonly required>
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <input type="text" class="form-control form-control-sm" name="talla_${id_prenda}" id="talla_${id_prenda}" readonly required>
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <input type="text" name="imagen_${id_prenda}" id="imagen_${id_prenda}" placeholder="URL Imagen" class="form-control form-control-sm">
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <input type="number" name="precio_${id_prenda}" id="precio_${id_prenda}" placeholder="Precio Unitario" class="form-control form-control-sm precio" oninput="precioTotal(); sumCantidades();" required>
+        </div>
+        
+        <div class="col-12 col-lg-2">
+            <input type="number" name="cantidad_${id_prenda}" id="cantidad_${id_prenda}" placeholder="Cantidad" class="form-control form-control-sm cantidad" oninput="precioTotal(); sumCantidades();" readonly required>
+        </div>
+        
+        <div class="col-12 col-lg-10">
+            <div class="input-group">
+                <input type="text" name="especificacion_${id_prenda}" id="especificacion_${id_prenda}" placeholder="Especificación del producto" class="form-control form-control-sm">
+                <button class="btn btn-danger btn-sm" type="button" id="remover_${id_prenda}">-</button>
+            </div>
+        </div>`;
+
+    div_nueva_prenda.insertAdjacentHTML('beforeend', html_prenda);
+
+    let div_prendas = document.getElementById("prendas");
+    div_prendas.appendChild(div_nueva_prenda);
+
+    let boton_remover = document.getElementById('remover_'+id_prenda)
+    boton_remover.addEventListener('click', function(){
+
+        let id_prenda_borrar = document.querySelector("#"+boton_remover.parentElement.parentElement.parentElement.id+" .id_input").value
+        if(id_prenda_borrar !== "") {
+            let request = new XMLHttpRequest();
+            request.open("DELETE", "/borrarprenda/"+id_prenda_borrar);
+            request.onreadystatechange = function() {
+                if (request.readyState === 4 && request.status === 200) {
+                    let data = JSON.parse(request.responseText);
+                    console.log(data["message"]);
+                }
+            }
+    
+            request.send();
+        }
+        
+        boton_remover.parentElement.parentElement.parentElement.remove()
+        id_prenda = id_prenda-1
+        sumCantidades();
+        precioTotal();
+    })
+
+}

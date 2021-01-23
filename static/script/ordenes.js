@@ -532,8 +532,13 @@ function clearOrderPage() {
 
 
 const abono = () => {
-    let abono = parseInt(document.getElementById("abono").value);
-    let total = parseInt(document.getElementById("precio_total").value);
+    let abono = document.getElementById("abono").value
+    if (abono == "") {abono = 0}; 
+    abono = parseInt();
+    let total = document.getElementById("precio_total").value;
+    if (total == "") {total = 0};
+    total = parseInt(total);
+
     let restante = total - abono;
     document.getElementById("debe").value = restante;
     if (restante == 0) {
