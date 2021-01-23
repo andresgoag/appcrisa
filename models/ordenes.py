@@ -89,6 +89,10 @@ class OrdenesModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
+
     @classmethod
     def find_by_orden(cls, numero_orden):
         return cls.query.filter_by(numero_orden=numero_orden).first()

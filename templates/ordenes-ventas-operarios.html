@@ -1,0 +1,386 @@
+{%extends "navegacion-ventas.html"%}
+{%block content%}
+
+
+{% with messages = get_flashed_messages(category_filter=['error']) %}
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="container-fluid p-0">
+                <div class="alert alert-danger" id="alerta">
+                    {{msg}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% with messages = get_flashed_messages(category_filter=['success']) %}
+    {% if messages %}
+        {% for msg in messages %}
+            <div class="container-fluid p-0">
+                <div class="alert alert-success" id="alerta">
+                    {{msg}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+<form action="/guardarorden" method="POST">
+
+    <div class="form-row form-group">
+
+        <div class="col-12 col-md-2 mt-1">
+            <button class="btn btn-primary btn-block" type="button" id="boton_crear_orden">Crear orden</button>
+        </div>
+
+        <div class="col-12 col-md-4 mt-1">
+            <input type="text" name="numero_orden" placeholder="Número de orden" class="form-control" value="" id="numerodeorden" readonly>
+        </div>
+
+        <div class="col-12 col-md-4 mt-1">
+            <select class="form-control" name="estado_orden" id="estado_orden">
+                <option value="analisis">Análisis</option>
+                <option value="produccion">Producción</option>
+                <option value="almacen">Almacén</option>
+                <option value="despachada">Despachada</option>
+                <option value="cerrada">Cerrada</option>
+                <option value="cancelada">Cancelada</option>
+                <option value="cambios">Cambios</option>
+            </select>
+        </div>
+
+        <div class="col-12 col-md-2 pt-1 mt-1">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input bg-danger" name="prioritaria" value="orden_prioritaria" id="prioritaria">
+                        <label class="custom-control-label" for="prioritaria">Prioritaria</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="form-row border mt-5 p-1">
+
+        <div class="col-12">
+
+            <div id="prendas">
+
+                <h5 class="mb-3">Prendas</h5>
+
+            </div>
+
+
+            <div class="form-row justify-content-center mt-3">
+
+                <div class="col-8 col-md-3 mt-2 mt-md-0">
+                    <button class="btn btn-primary btn-block" type="button" onclick="addPrenda();">Añadir prenda</button>
+                </div>
+
+            </div>
+
+            <div class="form-row justify-content-center mt-3">
+
+                <label for="numero_de_prendas" class="col-auto ml-0 ml-md-3 col-form-label">Total de prendas:</label>
+            
+                <div class="col-6 col-md-3">
+                    <input type="text" placeholder="" class="form-control" id="numero_de_prendas" disabled>
+                </div>
+            
+            </div>
+
+        </div>
+
+    </div>
+   
+
+
+    <div class="form-row border pt-3 mt-4">
+
+        <div class="form-group col-12 col-md-3">
+            <label for="marca">Marca</label>
+            <select class="form-control" name="marca" id="marca" required>
+                <option value="">Seleccione</option>
+                <option value="crisa">Productos Crisa</option>
+                <option value="river_caves">River Caves</option>
+                <option value="rosie_glam">Rosie Glam</option>
+                <option value="fighting">Fighting</option>
+                <option value="possession">Possession</option>
+                <option value="artemis">Artemis</option>
+                <option value="akihabara">Akihabara</option>
+                <option value="happy_banana">Happy Banana</option>
+            </select>
+        </div> 
+
+        <div class="form-group col-12 col-md-3">
+            <label for="medio_compra">Medio de compra</label>
+            <select class="form-control" name="medio_compra" id="medio_compra" required>
+                <option value="">Seleccione</option>
+                <option value="instagram">Instagram</option>
+                <option value="whatsapp">WhatsApp</option>
+                <option value="facebook">Facebook</option>
+                <option value="etsy">Etsy</option>
+                <option value="mercadolibre">MercadoLibre</option>
+                <option value="pagina_web">Página Web</option>
+                <option value="presencial">Presencial</option>
+                <option value="amazon">Amazon</option>
+                <option value="otro">Otro</option>
+            </select>
+        </div>
+
+        <div class="form-group col-12 col-md-3">
+            <label for="forma_pago">Forma de pago</label>
+            <select class="form-control" name="forma_pago" id="forma_pago" required>
+                <option value="">Seleccione</option>
+                <option value="nequi">Nequi</option>
+                <option value="bancolombia_consignacion">Bancolombia - Consignación</option>
+                <option value="bancolombia_transferencia">Bancolombia - Tranferencia</option>
+                <option value="daviplata">Daviplata</option>
+                <option value="giro_efecty">Giro - Efecty</option>
+                <option value="giro_gana">Giro - Gana</option>
+                <option value="giro_baloto">Giro - Baloto</option>
+                <option value="giro_otro">Giro - Otro</option>
+                <option value="davivienda">Davivienda</option>
+                <option value="payu">PayU</option>
+                <option value="paypal">PayPal</option>
+                <option value="mercadopago">MercadoPago</option>
+                <option value="western_union">Western Union</option>
+                <option value="efectivo">Efectivo</option>
+                <option value="nomina">Nómina</option>
+                <option value="movil">Móvil</option>
+                <option value="datafono">Datafono</option>
+                <option value="otro">Otro</option>
+            </select>
+        </div>
+
+        <div class="form-group col-12 col-md-3">
+            <label for="tiempo_estimado">Tiempo estimado de entrega</label>
+            <select class="form-control" name="tiempo_estimado" id="tiempo_estimado" required>
+                <option value="">Seleccione</option>
+                <option value="24h">24 horas</option>
+                <option value="a">CAT A: 1 a 3 días</option>
+                <option value="b">CAT B: 3 a 5 días</option>
+                <option value="c">CAT C: 5 a 7 días</option>
+                <option value="d">CAT D: 7 a 10 días</option>
+                <option value="e">CAT E: 10 a 15 días</option>
+            </select>
+        </div>
+
+    </div>
+
+
+
+
+    <div class="form-row mt-4 border">
+
+        <div class="col-12">
+
+            <div class="form-row justify-content-center">
+                <div class="form-group col-auto p-3">
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" name="incluir_envio" value="incluir_envio" oninput="habilitarEnvio(); precioTotal();" id="habilitar_envio">
+                        <label class="custom-control-label" for="habilitar_envio">Incluir envío</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-12 col-md-6">
+                    <label for="opcion_envio">Opción de Envio</label>
+                    <select class="form-control" name="opcion_envio" id="opcion_envio" required>
+                        <option value="">Seleccione</option>
+                        <option value="al_cobro">Al cobro</option>
+                        <option value="contado">Contado</option>
+                        <option value="contraentrega">Contraentrega</option>
+                        <option value="recoge_en_local">Recoge en local</option>
+                    </select>
+                </div>
+        
+                <div class="form-group col-12 col-md-6">
+                    <label for="empresa_envio">Empresa de envío</label>
+                    <select class="form-control form-envio" name="empresa_envio" id="empresa_envio" disabled>
+                        <option value="">Seleccione</option>
+                        <option value="interrapidisimo">Interrapidisimo</option>
+                        <option value="servientrega">Servientrega</option>
+                        <option value="472">4/72</option>
+                        <option value="mensajero">Mensajero</option>
+                        <option value="envia">Envia</option>
+                        <option value="coordinadora">Coordinadora</option>
+                        <option value="deprisa">Deprisa</option>
+                        <option value="tcc">TCC</option>
+                        <option value="saferbo">Saferbo</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-12 col-md-6">
+                    <label for="precio_envio">Valor del envío</label>
+                    <input type="number" name="precio_envio" class="form-control form-envio" id="precio_envio" oninput="precioTotal();" disabled>
+                </div>
+        
+                <div class="form-group col-12 col-md-6">
+                    <label for="guia_envio">Número de guía</label>
+                    <input type="text" name="guia_envio" class="form-control form-envio" id="guia_envio" disabled>
+                </div>
+            </div>
+    
+        </div>
+
+    </div>
+
+
+    
+
+
+    <div class="form-row pt-3 mt-4 border">
+
+        <div class="form-group col-12 col-md-3">
+            <label for="precio_total">Precio Total</label>
+            <input type="number" name="precio_total" class="form-control" id="precio_total" readonly>
+        </div>
+
+        <div class="form-group col-12 col-md-3">
+            <label for="abono">Abono</label>
+            <input type="number" name="abono" class="form-control" id="abono">
+        </div>
+
+        <div class="form-group col-12 col-md-3">
+            <label for="debe">Debe</label>
+            <input type="number" name="debe" class="form-control" id="debe" readonly>
+        </div>
+
+        <div class="form-group col-12 col-md-3 pt-0 pt-md-4">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" name="pagado" value="pagado" id="pagado">
+                        <label class="custom-control-label" for="pagado">Pago realizado</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div class="form-row mt-4 border">
+        
+        <div class="col-12 mb-3">
+            <h5>Cliente</h5>
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_categoria">Tipo</label>
+            <select class="form-control" name="cliente_categoria" id="cliente_categoria" required>
+                <option value="persona">Persona</option>
+                <option value="empresa">Empresa</option>
+                <option value="empleado">Empleado</option>
+            </select>
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_nombre">Nombre</label>
+            <input type="text" class="form-control" name="cliente_nombre" id="cliente_nombre" required>
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_correo">Correo electrónico</label>
+            <input type="email" class="form-control" name="cliente_correo" id="cliente_correo">
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_tipodoc">Tipo de documento</label>
+            <select class="form-control" name="cliente_tipodoc" id="cliente_tipodoc" required>
+                <option value="cc">Cédula de ciudadanía</option>
+                <option value="Nit">Nit</option>
+                <option value="ti">Tarjeta de identidad</option>
+                <option value="pasaporte">Pasaporte</option>
+                <option value="ce">Cédula de extranjería</option>
+            </select>
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_cedula">Número de documento</label>
+            <div class="input-group">
+                <input type="text" class="form-control" name="cliente_cedula" id="cliente_cedula" required>
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" id="boton_buscar_cliente">Buscar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_telefono">Teléfono</label>
+            <input type="text" class="form-control" name="cliente_telefono" id="cliente_telefono" required>
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_direccion">Dirección</label>
+            <input type="text" class="form-control" name="cliente_direccion" id="cliente_direccion" required>
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_barrio">Barrio</label>
+            <input type="text" class="form-control" name="cliente_barrio" id="cliente_barrio">
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_ciudad">Ciudad</label>
+            <input type="text" class="form-control" name="cliente_ciudad" id="cliente_ciudad" required> 
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_departamento">Departamento</label>
+            <input type="text" class="form-control" name="cliente_departamento" id="cliente_departamento" required>
+        </div>
+
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_pais">País</label>
+            <input type="text" class="form-control" name="cliente_pais" id="cliente_pais" required>
+        </div>
+    
+        <div class="form-group col-12 col-md-4">
+            <label for="cliente_postal">Código Postal</label>
+            <input type="text" class="form-control" name="cliente_postal" id="cliente_postal">
+        </div>
+        
+    </div>
+    
+
+    <div class="form-row border mt-4">
+        
+        <div class="form-group col-12">
+            <label for="comentario">Comentarios Adicionales</label>
+            <textarea class="form-control" name="comentario" id="comentario" maxlength="300"></textarea>
+        </div>
+
+    </div>
+
+
+    <div class="form-row justify-content-center my-3">
+
+        <div class="col-auto">
+            <button class="btn btn-primary" type="submit" id="boton_submit" disabled>Guardar información</button>
+        </div>
+
+    </div>
+
+</form>
+
+<script src="{{url_for('static', filename='script/ordenes-ventas-operarios.js')}}"></script>
+
+{%endblock%}

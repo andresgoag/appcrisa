@@ -41,6 +41,8 @@ def first_run():
 
 
 
+
+
 # Pagina web
 
 @app.route('/', methods=['GET', 'POST'])
@@ -83,7 +85,11 @@ def ordenes():
             return render_template('ordenes.html')
 
         elif session['area'] == "ventas":
-            return render_template('ordenes-ventas.html')
+
+            if session['role'] == "jefe-area":
+                return render_template('ordenes-ventas.html')
+            elif session['role'] == "operador":
+                return render_template('ordenes-ventas-operarios.html')
 
         elif session['area'] == "diseno" and session['role'] == 'jefe-area':
             return render_template('ordenes-diseno.html')
@@ -131,6 +137,9 @@ def produccion():
             
             elif session['area'] == "diseno":
                 return render_template("produccion-jefe-diseno.html") #ok
+            
+            elif session['area'] == "planeacion":
+                return render_template("produccion-planeacion.html") #ok
 
             else:
                 return render_template("produccion-jefe.html") #ok
@@ -574,14 +583,31 @@ def borrar_prenda(prenda_id):
     return{"message":"No se encontro la prenda con el id"+prenda_id}
 
 
-@app.route('/borrarusuario', methods=['DELETE'])
+@app.route('/borrarusuario', methods=['POST'])
 def borrar_usuario():
+    data = request.form
     usuario = data['eliminar-usuario']
     user = UserModel.find_by_usuario(usuario)
     if user:
         user.delete_from_db()
         flash("Usuario eliminado con exito", "success")
-    flash("Usuario no encontrado", "error")
+    else:
+        flash("Usuario no encontrado", "error")
+    return redirect(url_for('configuracion'))
+
+
+@app.route('/borrarorden', methods=['POST'])
+def borrar_orden():
+    data = request.form
+    numero_orden = data['eliminar-orden']
+
+    orden = OrdenesModel.find_by_orden(numero_orden)
+    if orden:
+        orden.delete_from_db()
+        flash("Orden eliminada exitosamente", "success")
+
+    else:
+        flash("Orden no encontrada", "error")
     return redirect(url_for('configuracion'))
     
 
