@@ -15,18 +15,18 @@ const switch_caso = (caso_produccion) => {
 
     switch (caso_produccion) {
     case 1:
-        caso = ['diseno', 'sublimacion', 'corte', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Sublimada
+        caso = ['diseno', 'impresion', 'sublimacion', 'corte', 'confeccion-preparacion1', 'confeccion-preparacion2', 'confeccion-terminacion', 'calidad', 'empaque']; // Sublimada
         break;
     case 2:
-        caso = ['corte', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Unicolor
+        caso = ['corte', 'confeccion-preparacion1', 'confeccion-preparacion2', 'confeccion-terminacion', 'calidad', 'empaque']; // Unicolor
         break;
 
     case 3:
-        caso = ['corte', 'diseno', 'sublimacion', 'confeccion-preparacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Medidas personalizadas
+        caso = ['corte', 'diseno', 'impresion', 'sublimacion', 'confeccion-preparacion1', 'confeccion-preparacion2', 'confeccion-terminacion', 'calidad', 'empaque']; // Medidas personalizadas
         break;
 
     case 4:
-        caso = ['diseno', 'sublimacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Apliques
+        caso = ['diseno', 'impresion', 'sublimacion', 'confeccion-terminacion', 'calidad', 'empaque']; // Apliques
         break;
 
     case 5:
@@ -34,15 +34,15 @@ const switch_caso = (caso_produccion) => {
         break;
 
     case 6:
-        caso = ['corte', 'preparacion', 'terminacion', 'diseno', 'sublimacion', 'calidad', 'empaque']; // Unicolor vinilo
+        caso = ['corte', 'confeccion-preparacion1', 'confeccion-preparacion2', 'confeccion-terminacion', 'diseno', 'impresion', 'sublimacion', 'calidad', 'empaque']; // Unicolor vinilo
         break;
 
     case 7:
-        caso = ['corte', 'diseno', 'sublimacion', 'preparacion', 'terminacion', 'calidad', 'empaque']; // Primero corte
+        caso = ['corte', 'diseno', 'impresion', 'sublimacion', 'confeccion-preparacion1', 'confeccion-preparacion2', 'confeccion-terminacion', 'calidad', 'empaque']; // Primero corte
         break;
 
     case 8:
-        caso = ['empaque', 'terminacion', 'calidad', 'empaque']; // Manualidad con costuras
+        caso = ['empaque', 'confeccion-terminacion', 'calidad', 'empaque']; // Manualidad con costuras
         break;
 
     case 9:
