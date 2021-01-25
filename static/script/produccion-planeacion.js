@@ -432,8 +432,9 @@ const area_produccion_bonita = (area) => {
 
 const verificar_casos_produccion = (clickedElement) => {
     if (clickedElement.value == '9' || clickedElement.value == '10') {
-        clickedElement.value = clickedElement.oldvalue;
         alert("El usuario de planeacion no puede modificar el estado de material");
+        console.log(clickedElement.oldvalue);
+        clickedElement.value = clickedElement.oldvalue;
     } else {
         casos_produccion(clickedElement);
     }
