@@ -203,7 +203,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="verificar_casos_produccion(this);">
+        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="this.oldvalue = this.value; verificar_casos_produccion(this);">
             <option value="">Seleccionar proceso</option>
             <option value="1">Caso 1 (Sublimada)</option>
             <option value="2">Caso 2 (Unicolor)</option>
@@ -432,6 +432,7 @@ const area_produccion_bonita = (area) => {
 
 const verificar_casos_produccion = (clickedElement) => {
     if (clickedElement.value == '9' || clickedElement.value == '10') {
+        clickedElement.value = clickedElement.oldvalue;
         alert("El usuario de planeacion no puede modificar el estado de material");
     } else {
         casos_produccion(clickedElement);
