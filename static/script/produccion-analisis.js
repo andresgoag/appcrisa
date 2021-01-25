@@ -336,14 +336,20 @@ const area_produccion_bonita = (area) => {
         case 'diseno':
             return "Diseño";
 
+        case 'impresion':
+            return "Impresión";
+
         case 'sublimacion':
             return "Sublimación";
 
         case 'corte':
             return "Corte";
 
-        case 'confeccion-preparacion':
-            return "Confección-preparación";
+        case 'confeccion-preparacion1':
+            return "Confección-preparación 1";
+
+        case 'confeccion-preparacion2':
+            return "Confección-preparación 2";
 
         case 'confeccion-terminacion':
             return "Confección-terminación";
