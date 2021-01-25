@@ -1,3 +1,7 @@
+let select_previous_value;
+
+
+
 // Funciones
 
 const set_element_value = (html_id, value) => {
@@ -203,7 +207,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="this.oldvalue = this.value; verificar_casos_produccion(this);">
+        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onfocus="select_previous(this);" onchange="verificar_casos_produccion(this);">
             <option value="">Seleccionar proceso</option>
             <option value="1">Caso 1 (Sublimada)</option>
             <option value="2">Caso 2 (Unicolor)</option>
@@ -430,15 +434,18 @@ const area_produccion_bonita = (area) => {
     }
 } // OK
 
+const select_previous = (clickedElement) => {
+    select_previous_value = clickedElement.value;
+} // OK
+
 const verificar_casos_produccion = (clickedElement) => {
     if (clickedElement.value == '9' || clickedElement.value == '10') {
         alert("El usuario de planeacion no puede modificar el estado de material");
-        console.log(clickedElement.oldvalue);
-        clickedElement.value = clickedElement.oldvalue;
+        clickedElement.value = select_previous_value;
     } else {
         casos_produccion(clickedElement);
     }
-}
+} // OK
 
 const casos_produccion = (clickedElement) => {
 
