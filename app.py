@@ -40,6 +40,10 @@ def first_run():
         admin.save_to_db()
 
 
+@app.after_request
+def add_header(response):
+    response.headers['Cache-Control'] = 'no-store'
+    return response
 
 
 
