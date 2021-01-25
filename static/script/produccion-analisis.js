@@ -208,8 +208,16 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     <div class="col-12 col-lg-6">
         <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onfocus="select_previous(this);" onchange="verificar_casos_produccion(this);">
             <option value="">Seleccionar disponibilidad de material</option>
-            <option value="9">Sin Material</option>
-            <option value="10">Con Material</option>
+            <option value="9">Sin material</option>
+            <option value="10">Con material</option>
+            <option value="1">Caso 1 (Sublimada)</option>
+            <option value="2">Caso 2 (Unicolor)</option>
+            <option value="3">Caso 3 (Medidas personalizadas)</option>
+            <option value="4">Caso 4 (Apliques)</option>
+            <option value="5">Caso 5 (Manualidad)</option>
+            <option value="6">Caso 6 (Unicolor vinilo)</option>
+            <option value="7">Caso 7 (Primero corte)</option>
+            <option value="8">Caso 8 (Manualidad con costuras)</option>
         </select>
     </div>
 
