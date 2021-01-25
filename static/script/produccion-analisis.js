@@ -1,3 +1,6 @@
+let select_previous_value;
+
+
 // Funciones
 
 const set_element_value = (html_id, value) => {
@@ -203,7 +206,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-6">
-        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="casos_produccion(this);">
+        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onfocus="select_previous(this);" onchange="verificar_casos_produccion(this);">
             <option value="">Seleccionar disponibilidad de material</option>
             <option value="9">Sin Material</option>
             <option value="10">Con Material</option>
@@ -368,6 +371,19 @@ const area_produccion_bonita = (area) => {
 
         default:
             return 'Area no reconocida'
+    }
+} // OK
+
+const select_previous = (clickedElement) => {
+    select_previous_value = clickedElement.value;
+} // OK
+
+const verificar_casos_produccion = (clickedElement) => {
+    if (clickedElement.value == '9' || clickedElement.value == '10') {
+        casos_produccion(clickedElement);
+    } else {
+        alert("El usuario de análisis no puede modificar los casos de producción");
+        clickedElement.value = select_previous_value;
     }
 } // OK
 
