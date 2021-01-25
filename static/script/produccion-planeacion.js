@@ -203,7 +203,7 @@ const addPrendaProduccion = (id_prenda_nueva) => {
     </div>
     
     <div class="col-12 col-lg-2">
-        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="casos_produccion(this);">
+        <select id="caso_produccion_${id_prenda_nueva}" class="form-control form-control-sm contenedor-caso-produccion" onchange="verificar_casos_produccion(this);">
             <option value="">Seleccionar proceso</option>
             <option value="1">Caso 1 (Sublimada)</option>
             <option value="2">Caso 2 (Unicolor)</option>
@@ -213,6 +213,8 @@ const addPrendaProduccion = (id_prenda_nueva) => {
             <option value="6">Caso 6 (Unicolor vinilo)</option>
             <option value="7">Caso 7 (Primero corte)</option>
             <option value="8">Caso 8 (Manualidad con costuras)</option>
+            <option value="9">Sin material</option>
+            <option value="10">Con material</option>
         </select>
     </div>
     
@@ -340,7 +342,6 @@ const set_order_informacion = (error, data) => {
         set_element_value("cantidad_"+i, data["prendas"][i]["cantidad"]);
         set_element_value("especificacion_"+i, data["prendas"][i]["especificacion"]);
         set_element_value("caso_produccion_"+i, data["prendas"][i]["caso_produccion"]);
-        
         casos_produccion(document.getElementById("caso_produccion_"+i))
         let caso = switch_caso(parseInt(data["prendas"][i]["caso_produccion"]))
         if (caso != "") {
@@ -428,6 +429,14 @@ const area_produccion_bonita = (area) => {
             return 'Area no reconocida'
     }
 } // OK
+
+const verificar_casos_produccion = (clickedElement) => {
+    if (clickedElement.value == '9' || clickedElement.value == '10') {
+        alert("El usuario de planeacion no puede modificar el estado de material");
+    } else {
+        casos_produccion(clickedElement);
+    }
+}
 
 const casos_produccion = (clickedElement) => {
 
