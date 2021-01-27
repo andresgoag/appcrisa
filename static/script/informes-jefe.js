@@ -72,6 +72,8 @@ const buscador_prendas = () => {
     let prioridad = document.getElementById("prioridad-prenda").value;
     let material = document.getElementById("material").value;
     let tabla = document.getElementById("tabla_prendas");
+    let medio_compra = document.getElementById("medio_compra_prenda").value;
+    let categoria = document.getElementById("tiempo_estimado_prenda").value;
 
     let request = new XMLHttpRequest();
     request.open("GET", "/verordenes");
@@ -88,6 +90,8 @@ const buscador_prendas = () => {
             for (let i = 0; i < data['ordenes'].length; i++) {
                 let prioritaria = data['ordenes'][i]['prioritaria'];
                 let numero_orden = data['ordenes'][i]['numero_orden'];
+                let medio_compra_orden = data['ordenes'][i]['medio_compra'];
+                let categoria_orden = data['ordenes'][i]['tiempo_estimado'];
                 let prendas = data['ordenes'][i]['prendas'];
 
                 for (let a = 0; a < prendas.length; a++) {
@@ -97,8 +101,18 @@ const buscador_prendas = () => {
                     let responsable_prenda = prendas[a]["usuario_responsable"];
 
                     if ((tipo == tipo_prenda || tipo == "todas") && (usuario == responsable_prenda || usuario == "") && (area == area_prenda || area == "") &&
-                    (prioridad == prioritaria|| prioridad == "todas") && (material == area_prenda || material == "todas") ) {
-                        html_orden = '<tr class="fila"><td>'+prioritaria+'</td><td>'+numero_orden+'</td><td>'+tipo_prenda+'</td><td>'+cantidad_prenda+'</td><td>'+area_prenda+'</td><td>'+responsable_prenda+'</td></tr>'
+                    (prioridad == prioritaria|| prioridad == "todas") && (material == area_prenda || material == "todas") && (medio_compra == medio_compra_orden || medio_compra == "todas") &&
+                    (categoria == categoria_orden || categoria == "todas") ) {
+                        html_orden = `<tr class="fila">
+                            <td>${prioritaria}</td>
+                            <td>${numero_orden}</td>
+                            <td>${tipo_prenda}</td>
+                            <td>${cantidad_prenda}</td>
+                            <td>${medio_compra_orden}</td>
+                            <td>${categoria_orden}</td>
+                            <td>${area_prenda}</td>
+                            <td>${responsable_prenda}</td>
+                        </tr>`
                         tabla.insertAdjacentHTML('beforeend', html_orden);
                     }
                 }

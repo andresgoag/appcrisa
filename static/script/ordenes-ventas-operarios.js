@@ -99,7 +99,7 @@ let tipos_prendas = {
     dakimakuras:[
         "Tipo Único"
     ],
-    Kimono:[
+    kimono:[
         "Tipo Único"
     ]
 }

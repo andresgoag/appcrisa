@@ -65,6 +65,7 @@ const buscador_ordenes = () => {
                         <td>${cantidad_prendas}</td>
                         <td>${cliente_nombre}</td>
                         <td>${cliente_identificacion}</td>
+                        <td>${cliente_telefono}</td>
                         <td>${estado_orden}</td>
                         <td>${total}</td>
                         <td>${abono}</td>
