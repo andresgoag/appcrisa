@@ -72,11 +72,6 @@ const buscador_ordenes = () => {
                         <td>${responsable}</td>
                     </tr>`;
                     tabla.insertAdjacentHTML('beforeend', html_orden);
-                    let checkbox_pago = document.getElementById(`check_pago_${i}`)
-                    if (data['ordenes'][i]['pagado'] == "si") {
-                        checkbox_pago.checked = true;
-                    }
-                    checkbox_pago.addEventListener('click',checkPago)
                 }
             }
         }

@@ -143,7 +143,7 @@
                 <div class="col-12">
                     <div class="form-row">
 
-                        <div class="col-12 col-lg-2 form-group">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="tipo-prenda">Tipo de prenda</label>
                             <select name="tipo-prenda" id="tipo-prenda" class="form-control">
                                 <option value="todas">Todas</option>
@@ -169,12 +169,12 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-2 form-group">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="usuario-responsable-prenda">Usuario responsable</label>
                             <input type="text" class="form-control" name="usuario-responsable-prenda" id="usuario-responsable-prenda">
                         </div>
 
-                        <div class="col-12 col-lg-2 form-group">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="area-responsable-prenda">Área responsable</label>
                             <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control">
                                 <option value="">Todas</option>
@@ -193,7 +193,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-2 form-group">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="prioridad-prenda">Prioritaria</label>
                             <select name="prioridad-prenda" id="prioridad-prenda" class="form-control">
                                 <option value="todas">Todas</option>
@@ -202,7 +202,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-2 form-group">
+                        <div class="col-12 col-lg-3 form-group">
                             <label for="material">Sin material</label>
                             <select name="material" id="material" class="form-control">
                                 <option value="todas">Todas</option>
@@ -210,7 +210,36 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-lg-2 form-group align-self-end">
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="medio_compra_prenda">Medio de compra</label>
+                            <select class="form-control" name="medio_compra_prenda" id="medio_compra_prenda">
+                                <option value="todas">Todas</option>
+                                <option value="instagram">Instagram</option>
+                                <option value="whatsapp">WhatsApp</option>
+                                <option value="facebook">Facebook</option>
+                                <option value="etsy">Etsy</option>
+                                <option value="mercadolibre">MercadoLibre</option>
+                                <option value="pagina_web">Página Web</option>
+                                <option value="presencial">Presencial</option>
+                                <option value="amazon">Amazon</option>
+                                <option value="otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="tiempo_estimado_prenda">Tiempo estimado de entrega</label>
+                            <select class="form-control" name="tiempo_estimado_prenda" id="tiempo_estimado_prenda">
+                                <option value="todas">Todas</option>
+                                <option value="24h">24 horas</option>
+                                <option value="a">CAT A: 1 a 3 días</option>
+                                <option value="b">CAT B: 3 a 5 días</option>
+                                <option value="c">CAT C: 5 a 7 días</option>
+                                <option value="d">CAT D: 7 a 10 días</option>
+                                <option value="e">CAT E: 10 a 15 días</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group align-self-end">
                             <button class="btn btn-primary btn-block" id="buscador_prendas">Buscar</button>
                         </div>
 
@@ -229,6 +258,8 @@
                             <th>Numero de órden</th>
                             <th>Tipo</th>
                             <th>Cantidad</th>
+                            <th>Medio de Compra</th>
+                            <th>Categoría</th>
                             <th>Área</th>
                             <th>Responsable</th>
                         </thead>
