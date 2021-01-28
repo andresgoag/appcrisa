@@ -660,3 +660,19 @@ function addPrendaLectura() {
     })
 
 }
+
+
+
+let checkbox_pagado = document.getElementById("pagado");
+checkbox_pagado.addEventListener('click', (evento) => {
+    check = evento.target.checked;
+
+    if (check) {
+        document.getElementById("abono").value = document.getElementById("precio_total").value;
+        document.getElementById("debe").value = 0;
+    } else {
+        document.getElementById("abono").value = "";
+        document.getElementById("debe").value = "";
+    }
+
+})

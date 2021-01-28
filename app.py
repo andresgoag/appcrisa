@@ -970,8 +970,10 @@ def marcar_pago():
     if orden:
         if data['estado']:
             orden.pagado = "si"
+            orden.abono = orden.precio_total
         else:
             orden.pagado = "no"
+            orden.abono = ""
         
         try:
             orden.save_to_db()

@@ -583,3 +583,19 @@ const mercadoLibre = (evento) => {
 
 let input_medio_compra = document.getElementById("medio_compra");
 input_medio_compra.addEventListener("input", mercadoLibre);
+
+
+
+let checkbox_pagado = document.getElementById("pagado");
+checkbox_pagado.addEventListener('click', (evento) => {
+    check = evento.target.checked;
+
+    if (check) {
+        document.getElementById("abono").value = document.getElementById("precio_total").value;
+        document.getElementById("debe").value = 0;
+    } else {
+        document.getElementById("abono").value = "";
+        document.getElementById("debe").value = "";
+    }
+
+})
