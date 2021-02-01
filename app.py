@@ -647,6 +647,17 @@ def actualizar_estado_orden():
         else:
             flash(f"La orden {data['numero_orden']} no se encuentra en almacen", 'error')
 
+    elif data['estado_orden'] == 'cerrada':
+
+        for prenda in order.prendas:
+            prenda_model = PrendasModel.find_by_id(prenda.id)
+            prenda_model.user_responsable = ""
+            prenda_model.save_to_db()
+
+        order.estado_orden = data['estado_orden']
+        order.save_to_db()
+        flash("Estado actualizado exitosamente", 'success')
+
 
     else:
         order.estado_orden = data['estado_orden']
