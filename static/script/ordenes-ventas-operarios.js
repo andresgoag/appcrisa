@@ -101,6 +101,12 @@ let tipos_prendas = {
     ],
     kimono:[
         "Tipo Único"
+    ],
+    cadena:[
+        "Tipo Único"
+    ],
+    otro:[
+        "Tipo Único"
     ]
 }
 
@@ -144,6 +150,8 @@ function addPrenda() {
                 <option value="panties">Panties</option>
                 <option value="dakimakuras">Dakimakuras</option>
                 <option value="kimono">Kimono</option>
+                <option value="cadena">Cadena</option>
+                <option value="otro">Otro</option>
             </select>
         </div>
         
