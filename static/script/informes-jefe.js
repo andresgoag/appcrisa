@@ -38,7 +38,7 @@ const buscador_ordenes = () => {
                 let orden_tiempo_estimado = data['ordenes'][i]['tiempo_estimado'];
                 
 
-                if ((estado == estado_orden || estado == "todas") && (marca == marca_orden || marca == "todas") && (prioridad == prioritaria || prioridad == "todas") &&
+                if ((estado == estado_orden || (estado == "todas" && estado_orden != "cerrada" && estado_orden != "cancelada")) && (marca == marca_orden || marca == "todas") && (prioridad == prioritaria || prioridad == "todas") &&
                 (fecha == orden_fecha || fecha == "") && (medio_compra == orden_medio_compra || medio_compra == "todas") && 
                 (tiempo_estimado == orden_tiempo_estimado || tiempo_estimado == "todas") ) {
                     
