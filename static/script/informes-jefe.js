@@ -95,6 +95,7 @@ const buscador_prendas = () => {
                 let categoria_orden = data['ordenes'][i]['tiempo_estimado'];
                 let marca_orden = data['ordenes'][i]['marca'];
                 let prendas = data['ordenes'][i]['prendas'];
+                let estado_orden = data['ordenes'][i]['estado_orden'];
 
                 for (let a = 0; a < prendas.length; a++) {
                     let tipo_prenda = prendas[a]["tipo"];
@@ -102,7 +103,7 @@ const buscador_prendas = () => {
                     let area_prenda = prendas[a]["area_responsable"];
                     let responsable_prenda = prendas[a]["usuario_responsable"];
 
-                    if ((tipo == tipo_prenda || tipo == "todas") && (usuario == responsable_prenda || usuario == "") && (area == area_prenda || area == "") &&
+                    if ( (estado_orden != "cerrada" && estado_orden != "cancelada") && (tipo == tipo_prenda || tipo == "todas") && (usuario == responsable_prenda || usuario == "") && (area == area_prenda || area == "") &&
                     (prioridad == prioritaria|| prioridad == "todas") && (material == area_prenda || material == "todas") && (medio_compra == medio_compra_orden || medio_compra == "todas") &&
                     (categoria == categoria_orden || categoria == "todas") && (marca == marca_orden || marca == "todas") ) {
                         html_orden = `<tr class="fila">
