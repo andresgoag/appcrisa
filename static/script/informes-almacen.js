@@ -69,14 +69,64 @@ const buscador_ordenes = () => {
                         <td>${total}</td>
                         <td>${abono}</td>
                         <td>${debe}</td>
+
+                        <td>                
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox" class="custom-control-input" name="check_despachado_${i}" id="check_despachado_${i}">
+                                <label class="custom-control-label" for="check_despachado_${i}">Despachado</label>
+                            </div>
+                        </td>
+
                         <td>${responsable}</td>
                     </tr>`;
                     tabla.insertAdjacentHTML('beforeend', html_orden);
+
+                    let checkbox_despachado = document.getElementById(`check_despachado_${i}`)
+                    if (data['ordenes'][i]['estado_orden'] == "despachada") {
+                        checkbox_despachado.checked = true;
+                        checkbox_despachado.disabled = true;
+                    }
+                    checkbox_despachado.addEventListener('click',checkDespacho)
                 }
             }
         }
     }
     request.send();
+}
+
+
+const checkDespacho = (evento) => {
+    let fila = evento.target.parentElement.parentElement.parentElement;
+    let orden = fila.querySelector(".orden").textContent;
+    let estado = "";
+
+    if (evento.target.checked) {
+        
+        confirmation = confirm("Desea marcar esta orden como despachada? Esta acción es irreversible")
+    
+        if (confirmation) {
+            
+            estado = "despachada";
+    
+            info = {numero_orden:orden, estado_orden:estado}
+            info_json = JSON.stringify(info)
+            
+            fetchData("POST", "/actualizardespacho", (error, data) => {
+                
+                alert(data['message'])
+
+                if (data['message'] == "Estado actualizado exitosamente") {
+                    evento.target.disabled = true;
+                }
+
+            }, info_json)
+        
+        } else {
+            evento.target.checked = false;
+        }
+
+    }
+
 }
 
 let boton_buscador_ordenes = document.getElementById("buscador_ordenes");

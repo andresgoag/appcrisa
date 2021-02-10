@@ -668,6 +668,26 @@ def actualizar_estado_orden():
     return redirect(url_for('produccion'))
 
 
+@app.route('/actualizardespacho', methods=["POST"])
+def actualizar_despacho():
+
+    data = request.form
+    order = OrdenesModel.find_by_orden(data['numero_orden'])
+
+    if data['estado_orden'] == 'despachada':
+        if orden.estado_orden == "almacen":
+            if order.pagado == 'si':
+                order.estado_orden = data['estado_orden']
+                order.save_to_db()
+                return {"message":"Estado actualizado exitosamente"}
+            else:
+                return{"message":f"La orden {data['numero_orden']} aun no ha sido pagada, aun no puede ser despachada"}
+        else:
+            return{"message":f"La orden {data['numero_orden']} no se encuentra en almacen"}
+
+    return {"message":"La orden no se marco como despachada"}
+
+
 @app.route('/logout')  
 def logout():  
     if 'user' in session:  
