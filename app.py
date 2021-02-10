@@ -637,7 +637,7 @@ def actualizar_estado_orden():
 
 
     elif data['estado_orden'] == 'despachada':
-        if orden.estado_orden == "almacen":
+        if order.estado_orden == "almacen":
             if order.pagado == 'si':
                 order.estado_orden = data['estado_orden']
                 order.save_to_db()
@@ -676,7 +676,7 @@ def actualizar_despacho():
     print('2')
     if data['estado_orden'] == 'despachada':
         print('3')
-        if orden.estado_orden == "almacen":
+        if order.estado_orden == "almacen":
             print('4')
             if order.pagado == 'si':
                 print('5')
