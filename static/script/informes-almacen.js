@@ -110,6 +110,8 @@ const checkDespacho = (evento) => {
     
             info = {numero_orden:orden, estado_orden:estado}
             info_json = JSON.stringify(info)
+
+            console.log(info_json);
             
             fetchData("POST", "/actualizardespacho", (error, data) => {
                    
