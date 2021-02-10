@@ -110,8 +110,6 @@ const checkDespacho = (evento) => {
     
             info = {numero_orden:orden, estado_orden:estado}
             info_json = JSON.stringify(info)
-
-            console.log(info_json);
             
             fetchData("POST", "/actualizardespacho", (error, data) => {
                    
@@ -126,9 +124,7 @@ const checkDespacho = (evento) => {
         } else {
             evento.target.checked = false;
         }
-
     }
-
 }
 
 let boton_buscador_ordenes = document.getElementById("buscador_ordenes");

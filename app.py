@@ -671,8 +671,7 @@ def actualizar_estado_orden():
 @app.route('/actualizardespacho', methods=["POST"])
 def actualizar_despacho():
 
-    print('1')
-    data = request.form
+    data = request.get_json()
     order = OrdenesModel.find_by_orden(data['numero_orden'])
     print('2')
     if data['estado_orden'] == 'despachada':
