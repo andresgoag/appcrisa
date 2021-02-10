@@ -112,7 +112,7 @@ const checkDespacho = (evento) => {
             info_json = JSON.stringify(info)
             
             fetchData("POST", "/actualizardespacho", (error, data) => {
-                
+                   
                 alert(data['message'])
 
                 if (data['message'] == "Estado actualizado exitosamente") {

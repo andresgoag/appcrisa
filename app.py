@@ -671,12 +671,16 @@ def actualizar_estado_orden():
 @app.route('/actualizardespacho', methods=["POST"])
 def actualizar_despacho():
 
+    print('1')
     data = request.form
     order = OrdenesModel.find_by_orden(data['numero_orden'])
-
+    print('2')
     if data['estado_orden'] == 'despachada':
+        print('3')
         if orden.estado_orden == "almacen":
+            print('4')
             if order.pagado == 'si':
+                print('5')
                 order.estado_orden = data['estado_orden']
                 order.save_to_db()
                 return {"message":"Estado actualizado exitosamente"}
