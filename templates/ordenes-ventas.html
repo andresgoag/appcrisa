@@ -1,4 +1,7 @@
 {%extends "navegacion-ventas.html"%}
+
+{% import 'macros.html' as macros %}
+
 {%block content%}
 
 
@@ -47,13 +50,7 @@
 
         <div class="col-12 col-md-4 mt-1">
             <select class="form-control" name="estado_orden" id="estado_orden">
-                <option value="analisis">Análisis</option>
-                <option value="produccion">Producción</option>
-                <option value="almacen">Almacén</option>
-                <option value="despachada">Despachada</option>
-                <option value="cerrada">Cerrada</option>
-                <option value="cancelada">Cancelada</option>
-                <option value="cambios">Cambios</option>
+                {{ macros.estados_orden_options(estados_orden) }}
             </select>
         </div>
 
@@ -88,29 +85,7 @@
                     <div class="col-12 col-lg-2">
                         <select class="form-control form-control-sm" name="tipo_1" id="tipo_1" onchange="selectSubtipo(this);" required>
                             <option value="">Tipo de prenda</option>
-                            <option value="falda">Falda</option>
-                            <option value="pantalon">Pantalón</option>
-                            <option value="short">Short</option>
-                            <option value="buzo">Buzo</option>
-                            <option value="camibuzo">Camibuzo</option>
-                            <option value="camiseta">Camiseta</option>
-                            <option value="croptop">Croptop</option>
-                            <option value="camisilla">Camisilla</option>
-                            <option value="camisa">Camisa de Botones</option>
-                            <option value="vestido">Vestido</option>
-                            <option value="correa">Correa</option>
-                            <option value="medias">Medias</option>
-                            <option value="gorro">Gorro</option>
-                            <option value="gafas">Gafas</option>
-                            <option value="tapabocas">Tapabocas</option>
-                            <option value="arnes">Arnés</option>
-                            <option value="panoleta">Pañoleta</option>
-                            <option value="cobija">Cobija</option>
-                            <option value="panties">Panties</option>
-                            <option value="dakimakuras">Dakimakuras</option>
-                            <option value="kimono">Kimono</option>
-                            <option value="cadena">Cadena</option>
-                            <option value="otro">Otro</option>
+                            {{ macros.prendas_options(prendas)}}
                         </select>
                     </div>
 
@@ -132,15 +107,7 @@
                     <div class="col-12 col-lg-2">
                         <select class="form-control form-control-sm" name="talla_1" id="talla_1" required>
                             <option value="">Talla</option>
-                            <option value="talla_unica">Talla única</option>
-                            <option value="junio">Junior</option>
-                            <option value="xs">XS</option>
-                            <option value="s">S</option>
-                            <option value="m">M</option>
-                            <option value="l">L</option>
-                            <option value="xl">XL</option>
-                            <option value="xxl">XXL</option>
-                            <option value="xxxl">XXXL</option>
+                            {{ macros.tallas_options(tallas) }}
                         </select>
                     </div>
 
@@ -195,14 +162,7 @@
             <label for="marca">Marca</label>
             <select class="form-control" name="marca" id="marca" required>
                 <option value="">Seleccione</option>
-                <option value="crisa">Productos Crisa</option>
-                <option value="river_caves">River Caves</option>
-                <option value="rosie_glam">Rosie Glam</option>
-                <option value="fighting">Fighting</option>
-                <option value="possession">Possession</option>
-                <option value="artemis">Artemis</option>
-                <option value="akihabara">Akihabara</option>
-                <option value="happy_banana">Happy Banana</option>
+                {{ macros.marcas_options(marcas) }}
             </select>
         </div> 
 
@@ -210,15 +170,7 @@
             <label for="medio_compra">Medio de compra</label>
             <select class="form-control" name="medio_compra" id="medio_compra" required>
                 <option value="">Seleccione</option>
-                <option value="instagram">Instagram</option>
-                <option value="whatsapp">WhatsApp</option>
-                <option value="facebook">Facebook</option>
-                <option value="etsy">Etsy</option>
-                <option value="mercadolibre">MercadoLibre</option>
-                <option value="pagina_web">Página Web</option>
-                <option value="presencial">Presencial</option>
-                <option value="amazon">Amazon</option>
-                <option value="otro">Otro</option>
+                {{ macros.medios_compra_options(medios_compra) }}
             </select>
         </div>
 
@@ -226,24 +178,7 @@
             <label for="forma_pago">Forma de pago</label>
             <select class="form-control" name="forma_pago" id="forma_pago" required>
                 <option value="">Seleccione</option>
-                <option value="nequi">Nequi</option>
-                <option value="bancolombia_consignacion">Bancolombia - Consignación</option>
-                <option value="bancolombia_transferencia">Bancolombia - Tranferencia</option>
-                <option value="daviplata">Daviplata</option>
-                <option value="giro_efecty">Giro - Efecty</option>
-                <option value="giro_gana">Giro - Gana</option>
-                <option value="giro_baloto">Giro - Baloto</option>
-                <option value="giro_otro">Giro - Otro</option>
-                <option value="davivienda">Davivienda</option>
-                <option value="payu">PayU</option>
-                <option value="paypal">PayPal</option>
-                <option value="mercadopago">MercadoPago</option>
-                <option value="western_union">Western Union</option>
-                <option value="efectivo">Efectivo</option>
-                <option value="nomina">Nómina</option>
-                <option value="movil">Móvil</option>
-                <option value="datafono">Datafono</option>
-                <option value="otro">Otro</option>
+                {{ macros.medios_pago_options(medios_pago) }}
             </select>
         </div>
 
@@ -251,12 +186,7 @@
             <label for="tiempo_estimado">Tiempo estimado de entrega</label>
             <select class="form-control" name="tiempo_estimado" id="tiempo_estimado" required>
                 <option value="">Seleccione</option>
-                <option value="24h">24 horas</option>
-                <option value="a">CAT A: 1 a 3 días</option>
-                <option value="b">CAT B: 3 a 5 días</option>
-                <option value="c">CAT C: 5 a 7 días</option>
-                <option value="d">CAT D: 7 a 10 días</option>
-                <option value="e">CAT E: 10 a 15 días</option>
+                {{ macros.categorias_envio_options(categorias_envio) }}
             </select>
         </div>
 
@@ -283,27 +213,15 @@
                     <label for="opcion_envio">Opción de Envio</label>
                     <select class="form-control" name="opcion_envio" id="opcion_envio" required>
                         <option value="">Seleccione</option>
-                        <option value="al_cobro">Al cobro</option>
-                        <option value="contado">Contado</option>
-                        <option value="contraentrega">Contraentrega</option>
-                        <option value="recoge_en_local">Recoge en local</option>
+                        {{ macros.opciones_envio_options(opciones_envio) }}
                     </select>
                 </div>
         
                 <div class="form-group col-12 col-md-6">
                     <label for="empresa_envio">Empresa de envío</label>
-                    <select class="form-control form-envio" name="empresa_envio" id="empresa_envio" disabled>
+                    <select class="form-control form-envio" name="empresa_envio" id="empresa_envio" required disabled>
                         <option value="">Seleccione</option>
-                        <option value="interrapidisimo">Interrapidisimo</option>
-                        <option value="servientrega">Servientrega</option>
-                        <option value="472">4/72</option>
-                        <option value="mensajero">Mensajero</option>
-                        <option value="envia">Envia</option>
-                        <option value="coordinadora">Coordinadora</option>
-                        <option value="deprisa">Deprisa</option>
-                        <option value="tcc">TCC</option>
-                        <option value="saferbo">Saferbo</option>
-                        <option value="otro">Otro</option>
+                        {{ macros.empresas_envio_options(empresas_envio) }}
                     </select>
                 </div>
             </div>

@@ -1,4 +1,7 @@
 {%extends "navegacion-ventas.html"%}
+
+{% import 'macros.html' as macros %}
+
 {%block content%}
 
 
@@ -18,6 +21,10 @@
                     <a href="#tabprendas" class="nav-link" data-toggle="tab">Prendas</a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="#tabestadisticas" class="nav-link" data-toggle="tab">Estadísticas</a>
+                </li>
+
             </ul>
         
         </div>
@@ -26,7 +33,7 @@
 
     <div class="tab-content">
 
-        <div class="tab-pane active" id="tabordenes" role="tabpanel">
+        <div class="tab-pane fade show active" id="tabordenes" role="tabpanel">
 
             <div class="row mt-2">
                 <div class="col-12">
@@ -36,13 +43,7 @@
                             <label for="estado_orden">Estado</label>
                             <select name="estado_orden" id="estado_orden" class="form-control">
                                 <option value="todas">Todas</option>
-                                <option value="analisis">Análisis</option>
-                                <option value="produccion">Producción</option>
-                                <option value="almacen">Almacén</option>
-                                <option value="despachada">Despachada</option>
-                                <option value="cerrada">Cerrada</option>
-                                <option value="cancelada">Cancelada</option>
-                                <option value="cambios">Cambios</option>
+                                {{ macros.estados_orden_options(estados_orden) }}
                             </select>
                         </div>
 
@@ -50,14 +51,7 @@
                             <label for="marca">Marca</label>
                             <select name="marca" id="marca" class="form-control">
                                 <option value="todas">Todas</option>
-                                <option value="crisa">Productos Crisa</option>
-                                <option value="river_caves">River Caves</option>
-                                <option value="rosie_glam">Rosie Glam</option>
-                                <option value="fighting">Fighting</option>
-                                <option value="possession">Possession</option>
-                                <option value="artemis">Artemis</option>
-                                <option value="akihabara">Akihabara</option>
-                                <option value="happy_banana">Happy Banana</option>
+                                {{ macros.marcas_options(marcas) }}
                             </select>
                         </div>
 
@@ -98,15 +92,7 @@
                             <label for="fecha">Medio de compra</label>
                             <select class="form-control" name="medio_compra" id="medio_compra">
                                 <option value="todas">Todas</option>
-                                <option value="instagram">Instagram</option>
-                                <option value="whatsapp">WhatsApp</option>
-                                <option value="facebook">Facebook</option>
-                                <option value="etsy">Etsy</option>
-                                <option value="mercadolibre">MercadoLibre</option>
-                                <option value="pagina_web">Página Web</option>
-                                <option value="presencial">Presencial</option>
-                                <option value="amazon">Amazon</option>
-                                <option value="otro">Otro</option>
+                                {{ macros.medios_compra_options(medios_compra) }}
                             </select>
                         </div>
 
@@ -114,10 +100,7 @@
                             <label for="opcion_envio">Opción de envío</label>
                             <select class="form-control" name="opcion_envio" id="opcion_envio">
                                 <option value="todas">Todas</option>
-                                <option value="al_cobro">Al cobro</option>
-                                <option value="contado">Contado</option>
-                                <option value="contraentrega">Contraentrega</option>
-                                <option value="recoge_en_local">Recoge en local</option>
+                                {{ macros.opciones_envio_options(opciones_envio) }}
                             </select>
                         </div>
 
@@ -126,16 +109,7 @@
                             <select class="form-control" name="empresa_envio" id="empresa_envio">
                                 <option value="todas">Todas</option>
                                 <option value="">Sin asignar</option>
-                                <option value="interrapidisimo">Interrapidisimo</option>
-                                <option value="servientrega">Servientrega</option>
-                                <option value="472">4/72</option>
-                                <option value="mensajero">Mensajero</option>
-                                <option value="envia">Envia</option>
-                                <option value="coordinadora">Coordinadora</option>
-                                <option value="deprisa">Deprisa</option>
-                                <option value="tcc">TCC</option>
-                                <option value="saferbo">Saferbo</option>
-                                <option value="otro">Otro</option>
+                                {{ macros.empresas_envio_options(empresas_envio) }}
                             </select>
                         </div>
 
@@ -143,12 +117,7 @@
                             <label for="tiempo_estimado">Tiempo estimado de entrega</label>
                             <select class="form-control" name="tiempo_estimado" id="tiempo_estimado">
                                 <option value="todas">Todas</option>
-                                <option value="24h">24 horas</option>
-                                <option value="a">CAT A: 1 a 3 días</option>
-                                <option value="b">CAT B: 3 a 5 días</option>
-                                <option value="c">CAT C: 5 a 7 días</option>
-                                <option value="d">CAT D: 7 a 10 días</option>
-                                <option value="e">CAT E: 10 a 15 días</option>
+                                {{ macros.categorias_envio_options(categorias_envio) }}
                             </select>
                         </div>
 
@@ -164,7 +133,7 @@
 
                 <div class="col-12">
                     
-                    <table class="table table-bordered table-hover table-sm table-responsive-lg" id="tabla_ordenes">
+                    <table class="table table-bordered table-hover table-sm table-responsive" id="tabla_ordenes">
 
                         <thead>
                             <th>Prioritaria</th>
@@ -189,7 +158,7 @@
 
         </div>
 
-        <div class="tab-pane" id="tabprendas" role="tabpanel">
+        <div class="tab-pane fade" id="tabprendas" role="tabpanel">
 
             <div class="row mt-2">
                 <div class="col-12">
@@ -204,29 +173,7 @@
                             <label for="tipo-prenda">Tipo de prenda</label>
                             <select name="tipo-prenda" id="tipo-prenda" class="form-control">
                                 <option value="todas">Todas</option>
-                                <option value="falda">Falda</option>
-                                <option value="pantalon">Pantalón</option>
-                                <option value="short">Short</option>
-                                <option value="buzo">Buzo</option>
-                                <option value="camibuzo">Camibuzo</option>
-                                <option value="camiseta">Camiseta</option>
-                                <option value="croptop">Croptop</option>
-                                <option value="camisilla">Camisilla</option>
-                                <option value="camisa">Camisa de Botones</option>
-                                <option value="vestido">Vestido</option>
-                                <option value="correa">Correa</option>
-                                <option value="medias">Medias</option>
-                                <option value="gorro">Gorro</option>
-                                <option value="gafas">Gafas</option>
-                                <option value="tapabocas">Tapabocas</option>
-                                <option value="arnes">Arnés</option>
-                                <option value="panoleta">Pañoleta</option>
-                                <option value="cobija">Cobija</option>
-                                <option value="panties">Panties</option>
-                                <option value="dakimakuras">Dakimakuras</option>
-                                <option value="kimono">Kimono</option>
-                                <option value="cadena">Cadena</option>
-                                <option value="otro">Otro</option>
+                                {{ macros.prendas_options(prendas)}}
                             </select>
                         </div>
 
@@ -239,17 +186,7 @@
                             <label for="area-responsable-prenda">Área responsable</label>
                             <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control">
                                 <option value="">Todas</option>
-                                <option value="analisis">Análisis</option>
-                                <option value="planeacion">Planeación</option>
-                                <option value="diseno">Diseño</option>
-                                <option value="sublimacion">Sublimación</option>
-                                <option value="corte">Corte</option>
-                                <option value="confeccion-terminacion">Confección-terminación</option>
-                                <option value="calidad">Calidad</option>
-                                <option value="empaque">Empaque</option>
-                                <option value="impresion">Impresión</option>
-                                <option value="confeccion-preparacion1">Confección-preparación 1</option>
-                                <option value="confeccion-preparacion2">Confección-preparación 2</option>
+                                {{ macros.areas_options(areas) }}
                             </select>
                         </div>
 
@@ -282,7 +219,7 @@
 
                 <div class="col-12">
                     
-                    <table class="table table-bordered table-sm table-hover table-responsive-md" id="tabla_prendas">
+                    <table class="table table-bordered table-sm table-hover table-responsive" id="tabla_prendas">
 
                         <thead>
                             <th>Prioritaria</th>
@@ -297,6 +234,129 @@
 
                 </div>
 
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade" id="tabestadisticas" role="tabpanel">
+
+            <div class="row mt-2">
+                <div class="col-12">
+                    <div class="form-row">
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="estadisticas-fecha-desde">Desde</label>
+                            <input type="date" class="form-control" name="estadisticas-fecha-desde" id="estadisticas-fecha-desde">
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="estadisticas-fecha-hasta">Hasta</label>
+                            <input type="date" class="form-control" name="estadisticas-fecha-hasta" id="estadisticas-fecha-hasta">
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="estadisticas-tipo-prenda">Tipo de prenda</label>
+                            <select name="estadisticas-tipo-prenda" id="estadisticas-tipo-prenda" class="form-control">
+                                <option value="todas">Todas</option>
+                                {{ macros.prendas_options(prendas)}}
+                            </select>
+                        </div>
+                    
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="estadisticas-estado_orden">Estado</label>
+                            <select name="estadisticas-estado_orden" id="estadisticas-estado_orden" class="form-control">
+                                <option value="todas">Todas</option>
+                                {{ macros.estados_orden_options(estados_orden) }}
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="estadisticas-marca">Marca</label>
+                            <select name="estadisticas-marca" id="estadisticas-marca" class="form-control">
+                                <option value="todas">Todas</option>
+                                {{ macros.marcas_options(marcas) }}
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="estadisticas-identificacion">Identificación del cliente</label>
+                            <input type="text" class="form-control" name="estadisticas-identificacion" id="estadisticas-identificacion">
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="estadisticas-medio_compra">Medio de compra</label>
+                            <select class="form-control" name="estadisticas-medio_compra" id="estadisticas-medio_compra">
+                                <option value="todas">Todas</option>
+                                {{ macros.medios_compra_options(medios_compra) }}
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="estadisticas-opcion_envio">Opción de envío</label>
+                            <select class="form-control" name="estadisticas-opcion_envio" id="estadisticas-opcion_envio">
+                                <option value="todas">Todas</option>
+                                {{ macros.opciones_envio_options(opciones_envio) }}
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="estadisticas-empresa_envio">Empresa envío</label>
+                            <select class="form-control" name="estadisticas-empresa_envio" id="estadisticas-empresa_envio">
+                                <option value="todas">Todas</option>
+                                <option value="">Sin asignar</option>
+                                {{ macros.empresas_envio_options(empresas_envio) }}
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="estadisticas-tiempo_estimado">Tiempo estimado de entrega</label>
+                            <select class="form-control" name="estadisticas-tiempo_estimado" id="estadisticas-tiempo_estimado">
+                                <option value="todas">Todas</option>
+                                {{ macros.categorias_envio_options(categorias_envio) }}
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group align-self-end">
+                            <button class="btn btn-primary btn-block" id="buscador_estadisticas">Buscar</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12 col-md-6 form-group">
+                    <label for="estadisticas-total-prendas">Total prendas</label>
+                    <input type="text" class="form-control" name="estadisticas-total-prendas" id="estadisticas-total-prendas" readonly>
+                </div>
+                <div class="col-12 col-md-6 form-group">
+                    <label for="estadisticas-total-dinero">Total dinero</label>
+                    <input type="text" class="form-control" name="estadisticas-total-dinero" id="estadisticas-total-dinero" readonly>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12">
+                    <table class="table table-bordered table-sm table-hover table-responsive" id="tabla_estadisticas">
+                        <thead>
+                            <th>Número de órden</th>
+                            <th>Cliente</th>
+                            <th>Marca</th>
+                            <th>Medio de compra</th>
+                            <th>Opcion de envío</th>
+                            <th>Empresa de envío</th>
+                            <th>Categoría</th>
+                            <th>Número de prendas</th>
+                            <th>Valor</th>
+                        </thead>
+                    </table>
+                </div>
             </div>
 
         </div>

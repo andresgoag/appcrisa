@@ -79,6 +79,8 @@ const buscador_ordenes = () => {
                         </td>
                         <td>${responsable}</td>
                     </tr>`;
+
+
                     tabla.insertAdjacentHTML('beforeend', html_orden);
                     let checkbox_pago = document.getElementById(`check_pago_${i}`)
                     if (data['ordenes'][i]['pagado'] == "si") {
@@ -156,3 +158,113 @@ const buscador_prendas = () => {
 
 const boton_buscador_prendas = document.getElementById("buscador_prendas");
 boton_buscador_prendas.addEventListener('click', buscador_prendas);
+
+
+
+
+const buscador_estadisticas = () => {
+
+    let fecha_desde_str = document.getElementById("estadisticas-fecha-desde").value;
+    let fecha_hasta_str = document.getElementById("estadisticas-fecha-hasta").value;
+    if (fecha_desde_str === '' || fecha_hasta_str === '') {
+        return alert('Se requiere llenar los campos de fecha')
+    }
+    let fecha_desde = new Date(fecha_desde_str);
+    let fecha_hasta = new Date(fecha_hasta_str);
+    let tipo_prenda = document.getElementById("estadisticas-tipo-prenda").value;
+    let estado = document.getElementById("estadisticas-estado_orden").value;
+    let marca = document.getElementById("estadisticas-marca").value;
+    let identificacion = document.getElementById("estadisticas-identificacion").value;
+    let medio_compra = document.getElementById("estadisticas-medio_compra").value;
+    let opcion_envio = document.getElementById("estadisticas-opcion_envio").value;
+    let empresa_envio = document.getElementById("estadisticas-empresa_envio").value;
+    let tiempo_estimado = document.getElementById("estadisticas-tiempo_estimado").value;
+    let tabla = document.getElementById("tabla_estadisticas");
+
+
+    let request = new XMLHttpRequest();
+    request.open("GET", "/verordenes");
+
+    request.onreadystatechange = () => {
+        if (request.readyState === 4 && request.status === 200) {
+
+            filas = document.querySelectorAll('#tabla_estadisticas .fila')
+
+            for (let i = 0; i < filas.length; i++) {
+                filas[i].remove()
+            }
+
+            let data = JSON.parse(request.responseText);
+            let total_dinero = 0;
+            let total_prendas = 0;
+            for (let i = 0; i < data['ordenes'].length; i++) {
+
+                let orden_fecha_str = data['ordenes'][i]['fecha'];
+                let orden_fecha = new Date(orden_fecha_str);
+
+                if (orden_fecha >= fecha_desde && orden_fecha <= fecha_hasta) {
+
+                    let numero_orden = data['ordenes'][i]['numero_orden'];
+                    let estado_orden = data['ordenes'][i]['estado_orden'];
+                    let marca_orden = data['ordenes'][i]['marca'];
+                    let cliente_identificacion = data['ordenes'][i]['cliente']['cedula'];
+                    let orden_medio_compra = data['ordenes'][i]['medio_compra'];
+                    let orden_opcion_envio = data['ordenes'][i]['opcion_envio'];
+                    let orden_empresa_envio = data['ordenes'][i]['empresa_envio'];
+                    let orden_tiempo_estimado = data['ordenes'][i]['tiempo_estimado'];
+                    
+    
+                    if ((estado == estado_orden || estado == "todas") && (marca == marca_orden || marca == "todas") && (identificacion == cliente_identificacion || identificacion == "") 
+                    && (medio_compra == orden_medio_compra || medio_compra == "todas") && (opcion_envio == orden_opcion_envio || opcion_envio == "todas") 
+                    && (empresa_envio == orden_empresa_envio || empresa_envio == "todas") && (tiempo_estimado == orden_tiempo_estimado || tiempo_estimado == "todas") ) {
+
+                        let prendas = data['ordenes'][i]['prendas'];
+                        let flag = false;
+                        let cantidad_prendas = 0;
+                        let valor_total = 0;
+        
+                        for (let i = 0; i < prendas.length; i++) {
+                            if (tipo_prenda === prendas[i]['tipo'] || tipo_prenda === 'todas') {
+                                cantidad_prendas += parseInt(prendas[i]['cantidad']);
+                                valor_total += (parseInt(prendas[i]['precio'])*parseInt(prendas[i]['cantidad']))
+                                flag = true;
+                            }
+                        }
+
+                        total_dinero += valor_total;
+                        total_prendas += cantidad_prendas;
+
+                        if (flag) {
+
+                            let html_orden = `
+                            <tr class="fila">
+                                <td>${numero_orden}</td>
+                                <td>${cliente_identificacion}</td>
+                                <td>${marca_orden}</td>
+                                <td>${orden_medio_compra}</td>
+                                <td>${orden_opcion_envio}</td>
+                                <td>${orden_empresa_envio}</td>
+                                <td>${orden_tiempo_estimado}</td>
+                                <td>${cantidad_prendas}</td>
+                                <td>${valor_total}</td>
+                            </tr>`;
+
+                            tabla.insertAdjacentHTML('beforeend', html_orden);
+
+                        }
+                    }
+                }
+            }
+
+            document.getElementById("estadisticas-total-prendas").value = total_prendas;
+            document.getElementById("estadisticas-total-dinero").value = total_dinero;
+        }
+    }
+    request.send();
+}
+
+
+
+
+const boton_buscador_estadisticas = document.getElementById("buscador_estadisticas");
+boton_buscador_estadisticas.addEventListener('click', buscador_estadisticas);

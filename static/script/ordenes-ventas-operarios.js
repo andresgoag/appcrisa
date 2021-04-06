@@ -105,6 +105,9 @@ let tipos_prendas = {
     cadena:[
         "Tipo Único"
     ],
+    sudadera:[
+        "Tipo Único"
+    ],
     otro:[
         "Tipo Único"
     ]
@@ -114,124 +117,112 @@ function addPrenda() {
 
     id_prenda += 1
 
-    console.log(id_prenda);
-
     let div_nueva_prenda = document.createElement("div");
 
     div_nueva_prenda.setAttribute("class", "mt-3 form-row form-group prenda");
 
     div_nueva_prenda.setAttribute("id", "prenda_"+id_prenda)
 
-    html_prenda = `<div style="display: none;">
-            <input type="text" class="id_input" name="id_${id_prenda}" id="id_${id_prenda}" value="">
-        </div>
-        
-        <div class="col-12 col-lg-2">
-            <select class="form-control form-control-sm" name="tipo_${id_prenda}" id="tipo_${id_prenda}" onchange="selectSubtipo(this);" required>
-                <option value="">Tipo de prenda</option>
-                <option value="falda">Falda</option>
-                <option value="pantalon">Pantalón</option>
-                <option value="short">Short</option>
-                <option value="buzo">Buzo</option>
-                <option value="camibuzo">Camibuzo</option>
-                <option value="camiseta">Camiseta</option>
-                <option value="croptop">Croptop</option>
-                <option value="camisilla">Camisilla</option>
-                <option value="camisa">Camisa de Botones</option>
-                <option value="vestido">Vestido</option>
-                <option value="correa">Correa</option>
-                <option value="medias">Medias</option>
-                <option value="gorro">Gorro</option>
-                <option value="gafas">Gafas</option>
-                <option value="tapabocas">Tapabocas</option>
-                <option value="arnes">Arnés</option>
-                <option value="panoleta">Pañoleta</option>
-                <option value="cobija">Cobija</option>
-                <option value="panties">Panties</option>
-                <option value="dakimakuras">Dakimakuras</option>
-                <option value="kimono">Kimono</option>
-                <option value="cadena">Cadena</option>
-                <option value="otro">Otro</option>
-            </select>
-        </div>
-        
-        <div class="col-12 col-lg-2">
-            <select class="form-control form-control-sm subtipo" name="subtipo_${id_prenda}" id="subtipo_${id_prenda}" disabled required>
-                <option value="">Subtipo</option>
-            </select>
-        </div>
-        
-        <div class="col-12 col-lg-2">
-            <select class="form-control form-control-sm" name="genero_${id_prenda}" id="genero_${id_prenda}" required>
-                <option value="">Género</option>
-                <option value="unisex">Unisex</option>
-                <option value="masculino">Masculino</option>
-                <option value="femenino">Femenino</option>
-            </select>
-        </div>
-        
-        <div class="col-12 col-lg-2">
-            <select class="form-control form-control-sm" name="talla_${id_prenda}" id="talla_${id_prenda}" required>
-                <option value="">Talla</option>
-                <option value="talla_unica">Talla única</option>
-                <option value="junio">Junior</option>
-                <option value="xs">XS</option>
-                <option value="s">S</option>
-                <option value="m">M</option>
-                <option value="l">L</option>
-                <option value="xl">XL</option>
-                <option value="xxl">XXL</option>
-                <option value="xxxl">XXXL</option>
-            </select>
-        </div>
-        
-        <div class="col-12 col-lg-2">
-            <input type="text" name="imagen_${id_prenda}" id="imagen_${id_prenda}" placeholder="URL Imagen" class="form-control form-control-sm">
-        </div>
-        
-        <div class="col-12 col-lg-2">
-            <input type="number" name="precio_${id_prenda}" id="precio_${id_prenda}" placeholder="Precio Unitario" class="form-control form-control-sm precio" oninput="precioTotal(); sumCantidades();" required>
-        </div>
-        
-        <div class="col-12 col-lg-2">
-            <input type="number" name="cantidad_${id_prenda}" id="cantidad_${id_prenda}" placeholder="Cantidad" class="form-control form-control-sm cantidad" oninput="precioTotal(); sumCantidades();" required>
-        </div>
-        
-        <div class="col-12 col-lg-10">
-            <div class="input-group">
-                <input type="text" name="especificacion_${id_prenda}" id="especificacion_${id_prenda}" placeholder="Especificación del producto" class="form-control form-control-sm">
-                <button class="btn btn-danger btn-sm" type="button" id="remover_${id_prenda}">-</button>
-            </div>
-        </div>`;
-
-    div_nueva_prenda.insertAdjacentHTML('beforeend', html_prenda);
-
-    let div_prendas = document.getElementById("prendas");
-    div_prendas.appendChild(div_nueva_prenda);
-
-    let boton_remover = document.getElementById('remover_'+id_prenda)
-    boton_remover.addEventListener('click', function(){
-
-        let id_prenda_borrar = document.querySelector("#"+boton_remover.parentElement.parentElement.parentElement.id+" .id_input").value
-        if(id_prenda_borrar !== "") {
-            let request = new XMLHttpRequest();
-            request.open("DELETE", "/borrarprenda/"+id_prenda_borrar);
-            request.onreadystatechange = function() {
-                if (request.readyState === 4 && request.status === 200) {
-                    let data = JSON.parse(request.responseText);
-                    console.log(data["message"]);
-                }
+    fetchData('GET', "/config_getprendas", (error1, data1) => {
+        if (!error1) {
+            let prendasOptions = '';
+            for (let i = 0; i < data1.items.length; i++) {
+                const item1 = data1.items[i];
+                prendasOptions += `<option value="${item1}">${item1.charAt(0).toUpperCase()+item1.slice(1)}</option>`;
             }
-    
-            request.send();
-        }
-        
-        boton_remover.parentElement.parentElement.parentElement.remove()
-        id_prenda = id_prenda-1
-        sumCantidades();
-        precioTotal();
-    })
 
+            fetchData('GET', "/config_gettallas", (error2, data2) => {
+                if (!error2) {
+                    let tallasOptions = '';
+                    for (let i = 0; i < data2.items.length; i++) {
+                        const item2 = data2.items[i];
+                        tallasOptions += `<option value="${item2}">${item2}</option>`;
+                    }
+
+                    html_prenda = `
+                    <div style="display: none;">
+                        <input type="text" class="id_input" name="id_${id_prenda}" id="id_${id_prenda}" value="">
+                    </div>
+                    
+                    <div class="col-12 col-lg-2">
+                        <select class="form-control form-control-sm" name="tipo_${id_prenda}" id="tipo_${id_prenda}" onchange="selectSubtipo(this);" required>
+                            <option value="">Tipo de prenda</option>
+                            ${prendasOptions}
+                        </select>
+                    </div>
+                    
+                    <div class="col-12 col-lg-2">
+                        <select class="form-control form-control-sm subtipo" name="subtipo_${id_prenda}" id="subtipo_${id_prenda}" disabled required>
+                            <option value="">Subtipo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-12 col-lg-2">
+                        <select class="form-control form-control-sm" name="genero_${id_prenda}" id="genero_${id_prenda}" required>
+                            <option value="">Género</option>
+                            <option value="unisex">Unisex</option>
+                            <option value="masculino">Masculino</option>
+                            <option value="femenino">Femenino</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-12 col-lg-2">
+                        <select class="form-control form-control-sm" name="talla_${id_prenda}" id="talla_${id_prenda}" required>
+                            <option value="">Talla</option>
+                            ${tallasOptions}
+                        </select>
+                    </div>
+                    
+                    <div class="col-12 col-lg-2">
+                        <input type="text" name="imagen_${id_prenda}" id="imagen_${id_prenda}" placeholder="URL Imagen" class="form-control form-control-sm">
+                    </div>
+                    
+                    <div class="col-12 col-lg-2">
+                        <input type="number" name="precio_${id_prenda}" id="precio_${id_prenda}" placeholder="Precio Unitario" class="form-control form-control-sm precio" oninput="precioTotal(); sumCantidades();" required>
+                    </div>
+                    
+                    <div class="col-12 col-lg-2">
+                        <input type="number" name="cantidad_${id_prenda}" id="cantidad_${id_prenda}" placeholder="Cantidad" class="form-control form-control-sm cantidad" oninput="precioTotal(); sumCantidades();" required>
+                    </div>
+                    
+                    <div class="col-12 col-lg-10">
+                        <div class="input-group">
+                            <input type="text" name="especificacion_${id_prenda}" id="especificacion_${id_prenda}" placeholder="Especificación del producto" class="form-control form-control-sm">
+                            <button class="btn btn-danger btn-sm" type="button" id="remover_${id_prenda}">-</button>
+                        </div>
+                    </div>`;
+
+                    div_nueva_prenda.insertAdjacentHTML('beforeend', html_prenda);
+
+                    let div_prendas = document.getElementById("prendas");
+                    div_prendas.appendChild(div_nueva_prenda);
+
+                    let boton_remover = document.getElementById('remover_'+id_prenda)
+                    boton_remover.addEventListener('click', function(){
+
+                        let id_prenda_borrar = document.querySelector("#"+boton_remover.parentElement.parentElement.parentElement.id+" .id_input").value
+                        if(id_prenda_borrar !== "") {
+                            let request = new XMLHttpRequest();
+                            request.open("DELETE", "/borrarprenda/"+id_prenda_borrar);
+                            request.onreadystatechange = function() {
+                                if (request.readyState === 4 && request.status === 200) {
+                                    let data = JSON.parse(request.responseText);
+                                    console.log(data["message"]);
+                                }
+                            }
+                    
+                            request.send();
+                        }
+                        
+                        boton_remover.parentElement.parentElement.parentElement.remove()
+                        id_prenda = id_prenda-1
+                        sumCantidades();
+                        precioTotal();
+                    })
+                }
+            })
+        }
+    })
 }
 
 function sumCantidades() {

@@ -1,4 +1,7 @@
 {%extends "navegacion-operarios.html"%}
+
+{% import 'macros.html' as macros %}
+
 {%block content%}
 
 {% with messages = get_flashed_messages(category_filter=['error']) %}
@@ -55,13 +58,7 @@
                 
                         <div class="col-12 col-md-3">
                             <select class="form-control" name="estado_orden" id="estado_orden">
-                                <option value="analisis">Análisis</option>
-                                <option value="produccion">Producción</option>
-                                <option value="almacen">Almacén</option>
-                                <option value="despachada">Despachada</option>
-                                <option value="cerrada">Cerrada</option>
-                                <option value="cancelada">Cancelada</option>
-                                <option value="cambios">Cambios</option>
+                                {{ macros.estados_orden_options(estados_orden) }}
                             </select>
                         </div>
 
@@ -167,10 +164,7 @@
                                 <label for="opcion_envio">Opción de Envio</label>
                                 <select class="form-control" name="opcion_envio" id="opcion_envio" disabled>
                                     <option value="">Seleccione</option>
-                                    <option value="al_cobro">Al cobro</option>
-                                    <option value="contado">Contado</option>
-                                    <option value="contraentrega">Contraentrega</option>
-                                    <option value="recoge_en_local">Recoge en local</option>
+                                    {{ macros.opciones_envio_options(opciones_envio) }}
                                 </select>
                             </div>
                     
@@ -178,16 +172,7 @@
                                 <label for="empresa_envio">Empresa de envío</label>
                                 <select class="form-control form-envio" name="empresa_envio" id="empresa_envio" disabled>
                                     <option value="">Seleccione</option>
-                                    <option value="interrapidisimo">Interrapidisimo</option>
-                                    <option value="servientrega">Servientrega</option>
-                                    <option value="472">4/72</option>
-                                    <option value="mensajero">Mensajero</option>
-                                    <option value="envia">Envia</option>
-                                    <option value="coordinadora">Coordinadora</option>
-                                    <option value="deprisa">Deprisa</option>
-                                    <option value="tcc">TCC</option>
-                                    <option value="saferbo">Saferbo</option>
-                                    <option value="otro">Otro</option>
+                                    {{ macros.empresas_envio_options(empresas_envio) }}
                                 </select>
                             </div>
 

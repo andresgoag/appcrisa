@@ -1,17 +1,28 @@
 import os
 import ast
 import bcrypt
+
 from datetime import datetime
-
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-
+from db import db
 from models.clientes import ClientesModel
 from models.prendas import PrendasModel
 from models.ordenes import OrdenesModel
 from models.user import UserModel
 from models.tiempos import TiemposModel
-
-from db import db
+from models.config import (
+    ConfigPrendasModel,
+    ConfigAreasModel,
+    ConfigCategoriaEnvioModel,
+    ConfigEmpresaEnvioModel,
+    ConfigOpcionesEnvioModel,
+    ConfigMediosCompraModel,
+    ConfigMarcasModel,
+    ConfigEstadosOrdenModel,
+    ConfigMediosPagoModel,
+    ConfigTallasModel,
+    ConfigSubtipoPrendasModel,
+)
 
 
 app = Flask(__name__)
@@ -22,6 +33,28 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 salt = bcrypt.gensalt()
 
+
+
+
+# PRENDAS = ['falda', 'pantalon', 'short', 'buzo', 'camibuzo', 'camiseta', 'croptop', 'camisilla', 'camisa', 'vestido', 'correa', 'medias', 'gorro', 'gafas', 'tapabocas', 'arnes', 'panoleta', 'cobija', 'panties', 'dakimakuras', 'kimono', 'cadena', 'sudadera', 'otro']
+
+# AREAS = ["analisis", "planeacion", "diseno", "impresion", "sublimacion", "corte", "confeccion-preparacion1", "confeccion-preparacion2", "confeccion-terminacion", "calidad", "empaque", "almacen", "ventas"]
+
+# CATEGORIA_ENVIOS = ["24H", "CAT A", "CAT B", "CAT C", "CAT D", "CAT E"]
+
+# EMPRESAS_ENVIO = ["interrapidisimo", "servientrega", "472", "mensajero", "envia", "coordinadora", "deprisa", "tcc", "saferbo", "otro"]
+
+# OPCIONES_ENVIO = ["al cobro", "contado", "contraentrega", "recoge en local"]
+
+# MEDIOS_COMPRA = ["instagram", "whatsapp", "facebook", "etsy", "mercadolibre", "pagina web", "presencial", "amazon", "otro"]
+
+# MARCAS = ["crisa", "river caves", "rosie glam", "fighting", "possession", "artemis", "artemis", "akihabara", "happy banana"]
+
+# ESTADOS_ORDEN = ["analisis", "produccion", "almacen", "despachada", "cerrada", "cancelada", "cambios", "reembolso"]
+
+# MEDIOS_PAGO = ["nequi", "bancolombia consignacion", "bancolombia transferencia", "daviplata", "efecty", "gana", "baloto", "giro-otro", "davivienda", "payu", "paypal", "mercadopago", "western union", "efectivo", "nomina", "movil", "datafono", "otro"]
+
+# TALLAS = ["Talla unica", "junior", "XS", "S", "M", "L", "XL", "XXL", "XXXL", "Personalizada"]
 
 
 
@@ -38,220 +71,6 @@ def first_run():
         area = "administrador"
         admin = UserModel(usuario, password, role, area)
         admin.save_to_db()
-
-
-@app.after_request
-def add_header(response):
-    response.headers['Cache-Control'] = 'no-store'
-    return response
-
-
-
-# Pagina web
-
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    if 'user' in session:
-        return redirect(url_for('ordenes'))
-    else:
-        if request.method == "POST":
-            input_usuario = request.form['usuario']
-            input_password = request.form['password'].encode("utf-8")
-            password_encrypted = bcrypt.hashpw(input_password, salt)
-
-            usuario = UserModel.find_by_usuario(input_usuario)
-
-            if usuario:
-                if bcrypt.checkpw(input_password, usuario.password):
-                    session['user'] = usuario.usuario
-                    session['role'] = usuario.role
-                    session['area'] = usuario.area
-
-                    return redirect(url_for('ordenes'))
-
-                else:
-                    flash("Email o contraseña incorrecta", "error")
-                    return render_template('login.html')
-
-            else:
-                flash("Email o contraseña incorrecta", "error")
-                return render_template('login.html')
-
-        else:
-            return render_template('login.html')
-
-
-@app.route('/ordenes')
-def ordenes():
-    if 'user' in session:
-
-        if session['role'] == "administrador":
-            return render_template('ordenes.html')
-
-        elif session['area'] == "ventas":
-
-            if session['role'] == "jefe-area":
-                return render_template('ordenes-ventas.html')
-            elif session['role'] == "operador":
-                return render_template('ordenes-ventas-operarios.html')
-
-        elif session['area'] == "diseno" and session['role'] == 'jefe-area':
-            return render_template('ordenes-diseno.html')
-
-        else:
-            return redirect(url_for('informes'))
-
-    else:
-        return redirect(url_for('home'))
-
-
-@app.route('/produccion')
-def produccion():
-    if 'user' in session:
-
-        if session['role'] == 'operador':
-            if session['area'] == 'ventas':
-                return render_template("produccion-ventas.html") #ok
-
-            elif session['area'] == 'almacen':
-                return redirect(url_for('informes'))
-
-            elif session['area'] == "analisis":
-                return render_template("produccion-analisis.html") #ok
-            
-            elif session['area'] == "empaque":
-                return render_template("produccion-empaques.html") #ok
-
-            else:
-                return render_template("produccion-operarios.html") #ok
-
-
-        elif session['role'] == 'jefe-area':
-            if session['area'] == 'ventas':
-                return render_template("produccion-ventas.html") #ok
-
-            elif session['area'] == 'almacen':
-                return redirect(url_for('informes'))
-
-            elif session['area'] == "analisis":
-                return render_template("produccion-analisis.html") #ok
-
-            elif session['area'] == "empaque":
-                return render_template("produccion-empaques-jefe.html") #ok
-            
-            elif session['area'] == "diseno":
-                return render_template("produccion-jefe-diseno.html") #ok
-            
-            elif session['area'] == "planeacion":
-                return render_template("produccion-planeacion.html") #ok
-
-            else:
-                return render_template("produccion-jefe.html") #ok
-
-
-        elif session['role'] == 'administrador':
-            return render_template("produccion.html") #ok
-
-        else:
-            return{"message":"Role no reconocido"}
-
-    else:
-        return redirect(url_for('home'))
-
-
-@app.route('/informes')
-def informes():
-    if 'user' in session:
-
-        if session['role'] == 'operador':
-            if session['area'] == 'ventas':
-                return render_template("informes-ventas.html") #ok
-
-            elif session['area'] == 'almacen':
-                return render_template("informes-almacen.html")
-
-            elif session['area'] == "analisis":
-                return render_template("informes-analisis.html") #ok
-            
-            elif session['area'] == "empaque":
-                return render_template("informes-empaque.html") #ok
-
-            else:
-                return render_template("informes-operarios.html") #ok
-
-
-        elif session['role'] == 'jefe-area':
-            if session['area'] == 'ventas':
-                return render_template("informes-ventas.html") #ok
-
-            elif session['area'] == 'almacen':
-                return render_template("informes-almacen.html")
-
-            elif session['area'] == "analisis":
-                return render_template("informes-analisis-jefe.html") #ok
-
-            elif session['area'] == "empaque":
-                return render_template("informes-empaque-jefe.html") #ok
-
-            elif session['area'] == "diseno":
-                return render_template("informes-jefe-diseno.html") #ok
-
-            else:
-                return render_template("informes-jefe.html") #ok
-
-
-        elif session['role'] == 'administrador':
-            return render_template("informes.html") #ok
-
-        else:
-            return{"message":"Role no reconocido"}
-
-            
-    else:
-        return redirect(url_for('home'))
-
-
-@app.route('/configuracion')
-def configuracion():
-    if 'user' in session:
-        if session['role'] == "administrador":
-            return render_template("configuracion.html")
-        else:
-            return redirect(url_for('informes'))
-    else:
-        return redirect(url_for('home'))
-
-
-@app.route('/cambiarcontrasena', methods=["POST", "GET"])
-def cambiar_contrasena():
-    if request.method == "POST":
-
-        data = request.form
-
-        user = UserModel.find_by_usuario(data['usuario'])
-        if user:
-            if bcrypt.checkpw(data['contrasena-actual'].encode("utf-8"), user.password):
-                user.password = bcrypt.hashpw(data['contrasena-nueva'].encode("utf-8"), salt)
-                try:
-                    user.save_to_db()
-                except:
-                    flash("Error en el servidor, trate nuevamente", "error")
-                    return redirect(url_for('home'))
-
-                flash("Contraseña actualizada exitosamente", "success")
-                return redirect(url_for('home'))
-
-            else:
-                flash("Contraseña incorrecta", "error")
-                return redirect(url_for('home'))
-
-        else:
-            flash("Usuario no encontrado", "error")
-            return redirect(url_for('home'))
-
-    else:
-        return render_template('contrasena.html')
-
 
 
 # Rest API
@@ -415,7 +234,6 @@ def guardar_orden():
 
     return redirect(url_for('ordenes'))
 
-
 @app.route('/guardarordendiseno', methods=['POST'])
 def guardar_orden_diseno():
 
@@ -552,12 +370,10 @@ def guardar_orden_diseno():
 
     return redirect(url_for('ordenes'))
 
-
 @app.route('/crearnumerodeorden')
 def new_order():
     fecha = datetime.now().strftime("%y%m%d%H%M%S")
     return {'numero_orden': fecha}
-
 
 @app.route('/getuser/<string:cedula>')
 def get_user(cedula):
@@ -567,7 +383,6 @@ def get_user(cedula):
     else:
         return {"message":"Usuario no enconotrado"}, 400
 
-
 @app.route('/getorder/<string:order>')
 def get_order(order):
     orden = OrdenesModel.find_by_orden(order)
@@ -575,7 +390,6 @@ def get_order(order):
         return orden.json()
     else:
         return {"message":"Orden no encontrada"}, 400
-
 
 @app.route('/borrarprenda/<int:prenda_id>', methods=['DELETE'])
 def borrar_prenda(prenda_id):
@@ -585,7 +399,6 @@ def borrar_prenda(prenda_id):
         prenda.delete_from_db()
         return{"message":"Prenda eliminada con exito"}
     return{"message":"No se encontro la prenda con el id"+prenda_id}
-
 
 @app.route('/borrarusuario', methods=['POST'])
 def borrar_usuario():
@@ -598,7 +411,6 @@ def borrar_usuario():
     else:
         flash("Usuario no encontrado", "error")
     return redirect(url_for('configuracion'))
-
 
 @app.route('/borrarorden', methods=['POST'])
 def borrar_orden():
@@ -613,8 +425,6 @@ def borrar_orden():
     else:
         flash("Orden no encontrada", "error")
     return redirect(url_for('configuracion'))
-    
-
 
 @app.route('/actualizarestadoorden', methods=["POST"])
 def actualizar_estado_orden():
@@ -667,7 +477,6 @@ def actualizar_estado_orden():
 
     return redirect(url_for('produccion'))
 
-
 @app.route('/actualizardespacho', methods=["POST"])
 def actualizar_despacho():
 
@@ -690,13 +499,11 @@ def actualizar_despacho():
 
     return {"message":"La orden no se marco como despachada"}
 
-
 @app.route('/logout')  
 def logout():  
     if 'user' in session:  
         session.pop('user',None)  
         return redirect(url_for('home'))
-
 
 @app.route('/tiempos', methods=['POST'])
 def cargar_tiempos():
@@ -725,7 +532,6 @@ def cargar_tiempos():
 
     return tiempo.json()
 
-
 @app.route('/verificartiempos/<string:order>')
 def verificar_tiempos(order):
     user = UserModel.find_by_usuario(session['user'])
@@ -742,7 +548,6 @@ def verificar_tiempos(order):
 
     else:
         return {"message":"Orden no encontrada"}
-
 
 @app.route('/casoproduccion', methods=['POST'])
 def casoproduccion():
@@ -764,7 +569,6 @@ def casoproduccion():
     
     return {'message':'Prenda no encontrada'}
 
-
 @app.route('/marcarproduccion', methods=['POST'])
 def marcarproduccion():
     data = request.get_json()
@@ -784,7 +588,6 @@ def marcarproduccion():
     else:
         return {"message":"Servicio no disponible", "status":""}
 
-
 @app.route('/getprendaestado/<int:prenda_id>')
 def getprendaestado(prenda_id):
     prenda = PrendasModel.find_by_id(prenda_id)
@@ -792,7 +595,6 @@ def getprendaestado(prenda_id):
         return{"estados":prenda.json()["estados_produccion"]}
     else:
         return {"message":"prenda no encontrada"}
-
 
 @app.route('/crearusuario', methods=["POST"])
 def crear_usuario():
@@ -817,7 +619,6 @@ def crear_usuario():
         except:
             flash(f"Error al crear el usuario {usuario}, por favor intentelo nuevamente", "error")
             return(redirect(url_for('configuracion')))
-
 
 @app.route('/modificarusuario', methods=["POST"])
 def modificar_usuario():
@@ -846,7 +647,6 @@ def modificar_usuario():
         flash("Usuario no encontrado", "error")
         return(redirect(url_for('configuracion')))
 
-
 @app.route('/arearesponsableprenda', methods=["POST"])
 def area_responsable_prenda():
     data = request.get_json()
@@ -857,7 +657,6 @@ def area_responsable_prenda():
         return {"message":f"Se asigno exitosamente a {data['area']}"}
     else:
         return {"message":"Error al asignar área, por favor recargue la página e inténtelo nuevamente"}
-
 
 @app.route('/usuarioresponsableprenda', methods=["POST"])
 def usuario_responsable_prenda():
@@ -881,7 +680,6 @@ def usuario_responsable_prenda():
     else:
         return {"message":"Error al asignar usuario, por favor recargue la página e inténtelo nuevamente"}
 
-
 @app.route('/cambiarusuariovacio/<int:prenda_id>')
 def cambiar_usuario_vacio(prenda_id):
 
@@ -898,7 +696,6 @@ def cambiar_usuario_vacio(prenda_id):
     else:
         return {"message":"prenda no encontrada"}
 
-
 @app.route('/verordenes')
 def ver_ordenes():
     x = OrdenesModel.find()
@@ -906,7 +703,6 @@ def ver_ordenes():
     for i in x:
         y.append(i.json())
     return {'ordenes':y}
-    
 
 @app.route('/vertiempos')
 def ver_tiempos():
@@ -917,7 +713,6 @@ def ver_tiempos():
         y[cont] = i.json()
         cont = cont + 1
     return y
-
 
 @app.route('/getsession')
 def getsession():
@@ -931,7 +726,6 @@ def getsession():
         }
     else:
         return {"message":"none"}
-
 
 @app.route('/getuserinfo')
 def getuserinfo():
@@ -958,7 +752,6 @@ def getuserinfo():
             flash(f"Error al crear el usuario {usuario}, por favor intentelo nuevamente", "error")
             return(redirect(url_for('configuracion')))
 
-
 @app.route('/agregarcomentario', methods=["POST"])
 def agregar_comentario():
     data = request.get_json()
@@ -976,7 +769,6 @@ def agregar_comentario():
     else:
         return {"message":"prenda no encontrada"}
 
-
 @app.route('/modificarcomentario', methods=["POST"])
 def modificar_comentario():
     data = request.get_json()
@@ -993,7 +785,6 @@ def modificar_comentario():
             return {"message":"Error en el servidor"}
     else:
         return {"message":"prenda no encontrada"}
-
 
 @app.route('/marcarpago', methods=["POST"])
 def marcar_pago():
@@ -1016,7 +807,6 @@ def marcar_pago():
             return{"message":"Servidor no disponible, intentelo mas tarde"},500
     else:
         return {"message":"Orden no encontrada"},400
-
 
 @app.route('/marcarempaque', methods=['POST'])
 def marcar_empaque():
@@ -1043,9 +833,432 @@ def marcar_empaque():
     
     return {"message":"Prenda no encontrada"}
 
+def config_add_item(item, cls):
+    nuevo_item = cls.find_one(item)
+
+    if nuevo_item:
+        flash(f"El item {item} ya existe", "error")
+        return False
+
+    nuevo_item = cls(item)
+    try:
+        nuevo_item.save_to_db()
+        flash(f"Item {item} creada exitosamente", "success")
+        return True
+
+    except:
+        flash("Error interno del servidor, vuelva a intentarlo", "error")
+        return False
+
+def config_get_items(cls):
+    items_list = []
+    items = cls.find()
+
+    for item in items:
+        item_json = item.json()
+        items_list.append(item_json.get("item"))
+
+    return {"items": items_list}
+
+@app.route("/config_addprenda", methods=['POST'])
+def config_addprenda():
+    item = request.form.get("item")
+    result = config_add_item(item, ConfigPrendasModel)
+    return redirect(url_for('configuracion'))
+
+@app.route("/config_getprendas")
+def config_get_prendas():
+    return config_get_items(ConfigPrendasModel)
+
+@app.route("/config_addareas", methods=['POST'])
+def config_addareas():
+    item = request.form.get("item")
+    result = config_add_item(item, ConfigAreasModel)
+    return redirect(url_for('configuracion'))
+
+@app.route("/config_getareas")
+def config_get_areas():
+    return config_get_items(ConfigAreasModel)
+
+@app.route("/config_addcategoriaenvio", methods=['POST'])
+def config_addcategoriaenvio():
+    item = request.form.get("item")
+    result = config_add_item(item, ConfigCategoriaEnvioModel)
+    return redirect(url_for('configuracion'))
+
+@app.route("/config_getcategoriaenvio")
+def config_get_categoriaenvio():
+    return config_get_items(ConfigCategoriaEnvioModel)
+
+@app.route("/config_addempresaenvio", methods=['POST'])
+def config_addempresaenvio():
+    item = request.form.get("item")
+    result = config_add_item(item, ConfigEmpresaEnvioModel)
+    return redirect(url_for('configuracion'))
+
+@app.route("/config_getempresaenvio")
+def config_get_empresaenvio():
+    return config_get_items(ConfigEmpresaEnvioModel)
+
+@app.route("/config_addopcionesenvio", methods=['POST'])
+def config_addopcionesenvio():
+    item = request.form.get("item")
+    result = config_add_item(item, ConfigOpcionesEnvioModel)
+    return redirect(url_for('configuracion'))
+
+@app.route("/config_getopcionesenvio")
+def config_get_opcionesenvio():
+    return config_get_items(ConfigOpcionesEnvioModel)
+
+@app.route("/config_addmedioscompra", methods=['POST'])
+def config_addmedioscompra():
+    item = request.form.get("item")
+    result = config_add_item(item, ConfigMediosCompraModel)
+    return redirect(url_for('configuracion'))
+
+@app.route("/config_getmedioscompra")
+def config_get_medioscompra():
+    return config_get_items(ConfigMediosCompraModel)
+
+@app.route("/config_addmarcas", methods=['POST'])
+def config_addmarcas():
+    item = request.form.get("item")
+    result = config_add_item(item, ConfigMarcasModel)
+    return redirect(url_for('configuracion'))
+
+@app.route("/config_getmarcas")
+def config_get_marcas():
+    return config_get_items(ConfigMarcasModel)
+
+@app.route("/config_addestadosorden", methods=['POST'])
+def config_addestadosorden():
+    item = request.form.get("item")
+    result = config_add_item(item, ConfigEstadosOrdenModel)
+    return redirect(url_for('configuracion'))
+
+@app.route("/config_getestadosorden")
+def config_get_estadosorden():
+    return config_get_items(ConfigEstadosOrdenModel)
+
+@app.route("/config_addmediospago", methods=['POST'])
+def config_addmediospago():
+    item = request.form.get("item")
+    result = config_add_item(item, ConfigMediosPagoModel)
+    return redirect(url_for('configuracion'))
+
+@app.route("/config_getmediospago")
+def config_get_mediospago():
+    return config_get_items(ConfigMediosPagoModel)
+
+@app.route("/config_addtallas", methods=['POST'])
+def config_addtallas():
+    item = request.form.get("item")
+    result = config_add_item(item, ConfigTallasModel)
+    return redirect(url_for('configuracion'))
+
+@app.route("/config_gettallas")
+def config_get_tallas():
+    return config_get_items(ConfigTallasModel)
+
+@app.route("/config_addsubtipo", methods=['POST'])
+def config_addsubtipo():
+    prenda = request.form.get("prenda")
+    item = request.form.get("item")
+    nuevo_item = ConfigSubtipoPrendasModel.find_one(item)
+
+    if nuevo_item:
+        flash(f"El item {item} ya existe", "error")
+        return redirect(url_for('configuracion'))
+
+    prenda_obj = ConfigPrendasModel.find_one(prenda)
+
+    if prenda_obj:
+        nuevo_item = ConfigSubtipoPrendasModel(item, prenda_obj.id)
+
+        try:
+            nuevo_item.save_to_db()
+            flash(f"Item {item} creada exitosamente", "success")
+            return redirect(url_for('configuracion'))
+
+        except:
+            flash("Error interno del servidor, vuelva a intentarlo", "error")
+            return redirect(url_for('configuracion'))
+
+
+        return redirect(url_for('configuracion'))
+
+    flash(f"La prenda {prenda} no existe", "error")
+    return redirect(url_for('configuracion'))
+
+
+@app.route("/config_getsubtipo/<string:prenda>")
+def config_get_subtipo(prenda):
+    items_list = []
+    prenda = ConfigPrendasModel.find_one(prenda)
+    if prenda:
+        subtipos_obj = ConfigSubtipoPrendasModel.find_by_prenda(prenda.id)
+        for subtipo in subtipos_obj:
+            items_list.append(subtipo.item)
+        
+    return {'items': items_list}
 
 
 
+
+# Pagina web
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    if 'user' in session:
+        return redirect(url_for('ordenes'))
+    else:
+        if request.method == "POST":
+            input_usuario = request.form['usuario']
+            input_password = request.form['password'].encode("utf-8")
+            password_encrypted = bcrypt.hashpw(input_password, salt)
+
+            usuario = UserModel.find_by_usuario(input_usuario)
+
+            if usuario:
+                if bcrypt.checkpw(input_password, usuario.password):
+                    session['user'] = usuario.usuario
+                    session['role'] = usuario.role
+                    session['area'] = usuario.area
+
+                    return redirect(url_for('ordenes'))
+
+                else:
+                    flash("Email o contraseña incorrecta", "error")
+                    return render_template('login.html')
+
+            else:
+                flash("Email o contraseña incorrecta", "error")
+                return render_template('login.html')
+
+        else:
+            return render_template('login.html')
+
+@app.route('/ordenes')
+def ordenes():
+
+    GLOBAL_CONTEXT = {
+        "prendas": config_get_prendas()["items"],
+        "areas": config_get_areas()["items"],
+        "categorias_envio": config_get_categoriaenvio()["items"],
+        "empresas_envio": config_get_empresaenvio()["items"],
+        "opciones_envio": config_get_opcionesenvio()["items"],
+        "medios_compra": config_get_medioscompra()["items"],
+        "marcas": config_get_marcas()["items"],
+        "estados_orden": config_get_estadosorden()["items"],
+        "medios_pago": config_get_mediospago()["items"],
+        "tallas": config_get_tallas()["items"],
+    }
+
+    if 'user' in session:
+
+        if session['role'] == "administrador":
+            return render_template('ordenes.html', **GLOBAL_CONTEXT)
+
+        elif session['area'] == "ventas":
+
+            if session['role'] == "jefe-area":
+                return render_template('ordenes-ventas.html', **GLOBAL_CONTEXT)
+            elif session['role'] == "operador":
+                return render_template('ordenes-ventas-operarios.html', **GLOBAL_CONTEXT)
+
+        elif session['area'] == "diseno" and session['role'] == 'jefe-area':
+            return render_template('ordenes-diseno.html')
+
+        else:
+            return redirect(url_for('informes'))
+
+    else:
+        return redirect(url_for('home'))
+
+@app.route('/produccion')
+def produccion():
+
+    GLOBAL_CONTEXT = {
+        "prendas": config_get_prendas()["items"],
+        "areas": config_get_areas()["items"],
+        "categorias_envio": config_get_categoriaenvio()["items"],
+        "empresas_envio": config_get_empresaenvio()["items"],
+        "opciones_envio": config_get_opcionesenvio()["items"],
+        "medios_compra": config_get_medioscompra()["items"],
+        "marcas": config_get_marcas()["items"],
+        "estados_orden": config_get_estadosorden()["items"],
+        "medios_pago": config_get_mediospago()["items"],
+        "tallas": config_get_tallas()["items"],
+    }
+
+    if 'user' in session:
+
+        if session['role'] == 'operador':
+            if session['area'] == 'ventas':
+                return render_template("produccion-ventas.html", **GLOBAL_CONTEXT) #ok
+
+            elif session['area'] == 'almacen':
+                return redirect(url_for('informes'))
+
+            elif session['area'] == "analisis":
+                return render_template("produccion-analisis.html") #ok
+            
+            elif session['area'] == "empaque":
+                return render_template("produccion-empaques.html", **GLOBAL_CONTEXT) #ok
+
+            else:
+                return render_template("produccion-operarios.html") #ok
+
+
+        elif session['role'] == 'jefe-area':
+            if session['area'] == 'ventas':
+                return render_template("produccion-ventas.html", **GLOBAL_CONTEXT) #ok
+
+            elif session['area'] == 'almacen':
+                return redirect(url_for('informes'))
+
+            elif session['area'] == "analisis":
+                return render_template("produccion-analisis.html") #ok
+
+            elif session['area'] == "empaque":
+                return render_template("produccion-empaques-jefe.html", **GLOBAL_CONTEXT) #ok
+            
+            elif session['area'] == "diseno":
+                return render_template("produccion-jefe-diseno.html", **GLOBAL_CONTEXT) #ok
+            
+            elif session['area'] == "planeacion":
+                return render_template("produccion-planeacion.html", **GLOBAL_CONTEXT) #ok
+
+            else:
+                return render_template("produccion-jefe.html", GLOBAL_CONTEXT) #ok
+
+
+        elif session['role'] == 'administrador':
+            return render_template("produccion.html", **GLOBAL_CONTEXT) #ok
+
+        else:
+            return{"message":"Role no reconocido"}
+
+    else:
+        return redirect(url_for('home'))
+
+@app.route('/informes')
+def informes():
+
+    GLOBAL_CONTEXT = {
+        "prendas": config_get_prendas()["items"],
+        "areas": config_get_areas()["items"],
+        "categorias_envio": config_get_categoriaenvio()["items"],
+        "empresas_envio": config_get_empresaenvio()["items"],
+        "opciones_envio": config_get_opcionesenvio()["items"],
+        "medios_compra": config_get_medioscompra()["items"],
+        "marcas": config_get_marcas()["items"],
+        "estados_orden": config_get_estadosorden()["items"],
+        "medios_pago": config_get_mediospago()["items"],
+        "tallas": config_get_tallas()["items"],
+    }
+
+    if 'user' in session:
+
+        if session['role'] == 'operador':
+            if session['area'] == 'ventas':
+                return render_template("informes-ventas.html", **GLOBAL_CONTEXT) #ok
+
+            elif session['area'] == 'almacen':
+                return render_template("informes-almacen.html", **GLOBAL_CONTEXT)
+
+            elif session['area'] == "analisis":
+                return render_template("informes-analisis.html", **GLOBAL_CONTEXT) #ok
+            
+            elif session['area'] == "empaque":
+                return render_template("informes-empaque.html", **GLOBAL_CONTEXT) #ok
+
+            else:
+                return render_template("informes-operarios.html", **GLOBAL_CONTEXT) #ok
+
+
+        elif session['role'] == 'jefe-area':
+            if session['area'] == 'ventas':
+                return render_template("informes-ventas.html", **GLOBAL_CONTEXT) #ok
+
+            elif session['area'] == 'almacen':
+                return render_template("informes-almacen.html", **GLOBAL_CONTEXT)
+
+            elif session['area'] == "analisis":
+                return render_template("informes-analisis-jefe.html", **GLOBAL_CONTEXT) #ok
+
+            elif session['area'] == "empaque":
+                return render_template("informes-empaque-jefe.html", **GLOBAL_CONTEXT) #ok
+
+            elif session['area'] == "diseno":
+                return render_template("informes-jefe-diseno.html", **GLOBAL_CONTEXT) #ok
+
+            else:
+                return render_template("informes-jefe.html", **GLOBAL_CONTEXT) #ok
+
+
+        elif session['role'] == 'administrador':
+            return render_template("informes.html", **GLOBAL_CONTEXT) #ok
+
+        else:
+            return{"message":"Role no reconocido"}
+            
+    else:
+        return redirect(url_for('home'))
+
+@app.route('/configuracion')
+def configuracion():
+
+    GLOBAL_CONTEXT = {
+        "prendas": config_get_prendas()["items"],
+        "areas": config_get_areas()["items"],
+        "categorias_envio": config_get_categoriaenvio()["items"],
+        "empresas_envio": config_get_empresaenvio()["items"],
+        "opciones_envio": config_get_opcionesenvio()["items"],
+        "medios_compra": config_get_medioscompra()["items"],
+        "marcas": config_get_marcas()["items"],
+        "estados_orden": config_get_estadosorden()["items"],
+        "medios_pago": config_get_mediospago()["items"],
+        "tallas": config_get_tallas()["items"],
+    }
+
+    if 'user' in session:
+        if session['role'] == "administrador":
+            return render_template("configuracion.html", **GLOBAL_CONTEXT)
+        else:
+            return redirect(url_for('informes'))
+    else:
+        return redirect(url_for('home'))
+
+@app.route('/cambiarcontrasena', methods=["POST", "GET"])
+def cambiar_contrasena():
+    if request.method == "POST":
+
+        data = request.form
+
+        user = UserModel.find_by_usuario(data['usuario'])
+        if user:
+            if bcrypt.checkpw(data['contrasena-actual'].encode("utf-8"), user.password):
+                user.password = bcrypt.hashpw(data['contrasena-nueva'].encode("utf-8"), salt)
+                try:
+                    user.save_to_db()
+                except:
+                    flash("Error en el servidor, trate nuevamente", "error")
+                    return redirect(url_for('home'))
+
+                flash("Contraseña actualizada exitosamente", "success")
+                return redirect(url_for('home'))
+
+            else:
+                flash("Contraseña incorrecta", "error")
+                return redirect(url_for('home'))
+
+        else:
+            flash("Usuario no encontrado", "error")
+            return redirect(url_for('home'))
+
+    else:
+        return render_template('contrasena.html')
 
 
 

@@ -1,4 +1,7 @@
 {%extends "navegacion-operarios.html"%}
+
+{% import 'macros.html' as macros %}
+
 {%block content%}
 
 {% with messages = get_flashed_messages(category_filter=['error']) %}
@@ -51,13 +54,7 @@
             
                     <div class="col-12 col-md-3">
                         <select class="form-control" name="estado_orden" id="estado_orden">
-                            <option value="analisis">Análisis</option>
-                            <option value="produccion">Producción</option>
-                            <option value="almacen">Almacén</option>
-                            <option value="despachada">Despachada</option>
-                            <option value="cerrada">Cerrada</option>
-                            <option value="cancelada">Cancelada</option>
-                            <option value="cambios">Cambios</option>
+                            {{ macros.estados_orden_options(estados_orden) }}
                         </select>
                     </div>
                     

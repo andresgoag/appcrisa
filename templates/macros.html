@@ -1,0 +1,89 @@
+{% macro prendas_options(prendas) %}
+
+    {% for prenda in prendas %}
+        <option value="{{ prenda }}">{{ prenda|capitalize }}</option>
+    {% endfor %}
+
+{% endmacro %}
+
+
+{% macro areas_options(areas) %}
+
+    {% for area in areas %}
+        <option value="{{ area }}">{{ area|capitalize }}</option>
+    {% endfor %}
+
+{% endmacro %}
+
+
+{% macro categorias_envio_options(categorias_envio) %}
+
+    {% for categoria in categorias_envio %}
+        <option value="{{ categoria }}">{{ categoria }}</option>
+    {% endfor %}
+
+{% endmacro %}
+
+
+{% macro empresas_envio_options(empresas_envio) %}
+
+    {% for empresa in empresas_envio %}
+        <option value="{{ empresa }}">{{ empresa|capitalize }}</option>
+    {% endfor %}
+
+{% endmacro %}
+
+
+{% macro opciones_envio_options(opciones_envio) %}
+
+    {% for opcion in opciones_envio %}
+        <option value="{{ opcion }}">{{ opcion|capitalize }}</option>
+    {% endfor %}
+
+{% endmacro %}
+
+
+{% macro medios_compra_options(medios_compra) %}
+
+    {% for medio in medios_compra %}
+        <option value="{{ medio }}">{{ medio|capitalize }}</option>
+    {% endfor %}
+
+{% endmacro %}
+
+
+{% macro marcas_options(marcas) %}
+
+    {% for marca in marcas %}
+        <option value="{{ marca }}">{{ marca|capitalize }}</option>
+    {% endfor %}
+
+{% endmacro %}
+
+
+
+{% macro estados_orden_options(estados_orden) %}
+
+    {% for estado in estados_orden %}
+        <option value="{{ estado }}">{{ estado|capitalize }}</option>
+    {% endfor %}
+    
+{% endmacro %}
+
+
+{% macro medios_pago_options(medios_pago) %}
+
+    {% for medio in medios_pago %}
+        <option value="{{ medio }}">{{ medio|capitalize }}</option>
+    {% endfor %}
+
+{% endmacro %}
+
+
+{% macro tallas_options(tallas) %}
+
+    {% for talla in tallas %}
+        <option value="{{ talla }}">{{ talla }}</option>
+    {% endfor %}
+
+{% endmacro %}

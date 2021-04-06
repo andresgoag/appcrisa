@@ -1,4 +1,7 @@
 {%extends "navegacion-operarios.html"%}
+
+{% import 'macros.html' as macros %}
+
 {%block content%}
 
 
@@ -17,7 +20,7 @@
     </div>
 
     <div class="tab-content">
-        <div class="tab-pane active" id="tabprendas" role="tabpanel">
+        <div class="tab-pane fade show active" id="tabprendas" role="tabpanel">
 
             <div class="row mt-2">
                 <div class="col-12">
@@ -27,29 +30,7 @@
                             <label for="tipo-prenda">Tipo de prenda</label>
                             <select name="tipo-prenda" id="tipo-prenda" class="form-control">
                                 <option value="todas">Todas</option>
-                                <option value="falda">Falda</option>
-                                <option value="pantalon">Pantalón</option>
-                                <option value="short">Short</option>
-                                <option value="buzo">Buzo</option>
-                                <option value="camibuzo">Camibuzo</option>
-                                <option value="camiseta">Camiseta</option>
-                                <option value="croptop">Croptop</option>
-                                <option value="camisilla">Camisilla</option>
-                                <option value="camisa">Camisa de Botones</option>
-                                <option value="vestido">Vestido</option>
-                                <option value="correa">Correa</option>
-                                <option value="medias">Medias</option>
-                                <option value="gorro">Gorro</option>
-                                <option value="gafas">Gafas</option>
-                                <option value="tapabocas">Tapabocas</option>
-                                <option value="arnes">Arnés</option>
-                                <option value="panoleta">Pañoleta</option>
-                                <option value="cobija">Cobija</option>
-                                <option value="panties">Panties</option>
-                                <option value="dakimakuras">Dakimakuras</option>
-                                <option value="kimono">Kimono</option>
-                                <option value="cadena">Cadena</option>
-                                <option value="otro">Otro</option>
+                                {{ macros.prendas_options(prendas)}}
                             </select>
                         </div>
 
@@ -79,7 +60,7 @@
 
                 <div class="col-12">
                     
-                    <table class="table table-bordered table-sm table-hover table-responsive-md" id="tabla_prendas">
+                    <table class="table table-bordered table-sm table-hover table-responsive" id="tabla_prendas">
 
                         <thead>
                             <th>Prioritaria</th>
