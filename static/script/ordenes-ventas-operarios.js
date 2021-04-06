@@ -1,117 +1,5 @@
 let id_prenda = 1;
 
-let tipos_prendas = {
-    falda:[
-        "Prensada",
-        "Ajustada",
-        "Rotonda",
-        "Short",
-        "Overol"
-    ],
-    pantalon:[
-        "Sencillo",
-        "Cargo",
-        "Sudadera",
-        "Camuflado",
-        "Overol"
-    ],
-    short:[
-        "Sencillo",
-        "Cargo",
-        "Overol",
-        "Pantaloneta",
-        "Bermuda"
-    ],
-    buzo:[
-        "Sencillo",
-        "Capota + bolsillos laterales",
-        "Capota + bolsillo canguro",
-        "Capota + bolsillos laterales + cremallera",
-        "Capota + bolsillo canguro + cremallera"
-    ],
-    camibuzo:[
-        "Cuello redondo",
-        "Cuello tortuga",
-        "Cuello bandeja",
-        "Croptop cuello redondo",
-        "Croptop cuello tortuga",
-        "Croptop cuello bandeja",
-        "Oversize",
-        "Cremallera yaro"
-    ],
-    camiseta:[
-        "Sencilla",
-        "Oversize",
-        "Cuello peter pan",
-    ],
-    croptop:[
-        "Straple",
-        "Campesino",
-        "Esqueleto",
-        "De tiritas"
-    ],
-    camisilla:[
-        "Tipo Único"
-    ],
-    camisa:[
-        "Manga corta + cuello normal",
-        "Manga corta + cuello sport",
-        "Manga larga + cuello normal",
-        "Manga larga + cuello sport",
-        "Sin mangas"
-    ],
-    vestido:[
-        "Cuello peter pan",
-        "Ajustado de tiras",
-        "Semitransparente"
-    ],
-    correa:[
-        "Tipo único"
-    ],
-    medias:[
-        "Bucaneras",
-        "Media caña",
-        "Malla",
-        "Tobilleras"
-    ],
-    gorro:[
-        "Pesqueros",
-        "Lana"
-    ],
-    gafas:[
-        "Tipo Único"
-    ],
-    tapabocas:[
-        "Tipo Único"
-    ],
-    arnes:[
-        "Tipo Único"
-    ],
-    panoleta:[
-        "Tipo Único"
-    ],
-    cobija:[
-        "Tipo Único"
-    ],
-    panties:[
-        "Tipo Único"
-    ],
-    dakimakuras:[
-        "Tipo Único"
-    ],
-    kimono:[
-        "Tipo Único"
-    ],
-    cadena:[
-        "Tipo Único"
-    ],
-    sudadera:[
-        "Tipo Único"
-    ],
-    otro:[
-        "Tipo Único"
-    ]
-}
 
 function addPrenda() {
 
@@ -268,8 +156,12 @@ function selectSubtipo(clickedElement) {
 
                 let data = JSON.parse(request.responseText);
 
-                for (let i = 0; i < data['items'].length; i++) {
-                    html_str = html_str + `<option value="${data['items'][i]}">${data['items'][i]}</option>`;
+                if (data['items'].length === 0) {
+                    html_str = `<option value="Tipo unico">Tipo unico</option>`
+                } else {
+                    for (let i = 0; i < data['items'].length; i++) {
+                        html_str = html_str + `<option value="${data['items'][i]}">${data['items'][i]}</option>`;
+                    }
                 }
         
                 select_subtipo.insertAdjacentHTML('beforeend', html_str) 
