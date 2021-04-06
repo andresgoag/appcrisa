@@ -260,11 +260,24 @@ function selectSubtipo(clickedElement) {
         }
 
         let html_str = ''
-        for (let i = 0; i < tipos_prendas[clickedElement.value].length; i++) {
-            html_str = html_str + '<option value="'+tipos_prendas[clickedElement.value][i].toLowerCase()+'">'+tipos_prendas[clickedElement.value][i]+'</option>';
+
+        let request = new XMLHttpRequest();
+        request.open("GET", "/config_getsubtipo/"+clickedElement.value);
+        request.onreadystatechange = () => {
+            if (request.readyState === 4 && request.status === 200) {
+
+                let data = JSON.parse(request.responseText);
+
+                for (let i = 0; i < data['items'].length; i++) {
+                    html_str = html_str + `<option value="${data['items'][i]}">${data['items'][i]}</option>`;
+                }
+        
+                select_subtipo.insertAdjacentHTML('beforeend', html_str) 
+            }
         }
 
-        select_subtipo.insertAdjacentHTML('beforeend', html_str) 
+        request.send()
+         
 
     } else {
         select_subtipo.disabled = true;
