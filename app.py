@@ -27,8 +27,7 @@ from models.config import (
 
 app = Flask(__name__)
 app.secret_key = "appcrisaapp" 
-
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://app:appcrisa1029$@localhost:5432/app'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 salt = bcrypt.gensalt()
@@ -64,6 +63,7 @@ def first_run():
     db.create_all()
 
     usuario = UserModel.find_by_usuario("main_admin")
+
     if not usuario:
         usuario = "main_admin"
         password = bcrypt.hashpw("appcrisa1029$".encode("utf-8"), salt)
@@ -1009,18 +1009,20 @@ def config_get_subtipo(prenda):
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    print(os.environ.get('DATABASE_URI'))
     if 'user' in session:
         return redirect(url_for('ordenes'))
     else:
         if request.method == "POST":
             input_usuario = request.form['usuario']
             input_password = request.form['password'].encode("utf-8")
-            password_encrypted = bcrypt.hashpw(input_password, salt)
 
             usuario = UserModel.find_by_usuario(input_usuario)
 
             if usuario:
-                if bcrypt.checkpw(input_password, usuario.password):
+                password_comparar = bytes.fromhex(usuario.password[2:])
+
+                if bcrypt.checkpw(input_password, password_comparar):
                     session['user'] = usuario.usuario
                     session['role'] = usuario.role
                     session['area'] = usuario.area
@@ -1102,7 +1104,7 @@ def produccion():
 
             elif session['area'] == "analisis":
                 return render_template("produccion-analisis.html") #ok
-            
+
             elif session['area'] == "empaque":
                 return render_template("produccion-empaques.html", **GLOBAL_CONTEXT) #ok
 
@@ -1238,7 +1240,8 @@ def cambiar_contrasena():
 
         user = UserModel.find_by_usuario(data['usuario'])
         if user:
-            if bcrypt.checkpw(data['contrasena-actual'].encode("utf-8"), user.password):
+            password_comparar = bytes.fromhex(user.password[2:])
+            if bcrypt.checkpw(data['contrasena-actual'].encode("utf-8"), password_comparar):
                 user.password = bcrypt.hashpw(data['contrasena-nueva'].encode("utf-8"), salt)
                 try:
                     user.save_to_db()

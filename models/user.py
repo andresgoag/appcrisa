@@ -6,7 +6,7 @@ class UserModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     usuario = db.Column(db.String(100))
-    password = db.Column(db.String(100))
+    password = db.Column(db.Unicode(500))
     role = db.Column(db.String(100))
     area = db.Column(db.String(100))
 
