@@ -1132,7 +1132,7 @@ def produccion():
                 return render_template("produccion-planeacion.html", **GLOBAL_CONTEXT) #ok
 
             else:
-                return render_template("produccion-jefe.html", GLOBAL_CONTEXT) #ok
+                return render_template("produccion-jefe.html", **GLOBAL_CONTEXT) #ok
 
 
         elif session['role'] == 'administrador':
