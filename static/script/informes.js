@@ -214,9 +214,10 @@ const buscador_estadisticas = () => {
                     let orden_tiempo_estimado = data['ordenes'][i]['tiempo_estimado'];
                     
     
-                    if ((estado == estado_orden || estado == "todas") && (marca == marca_orden || marca == "todas") && (identificacion == cliente_identificacion || identificacion == "") 
-                    && (medio_compra == orden_medio_compra || medio_compra == "todas") && (opcion_envio == orden_opcion_envio || opcion_envio == "todas") 
-                    && (empresa_envio == orden_empresa_envio || empresa_envio == "todas") && (tiempo_estimado == orden_tiempo_estimado || tiempo_estimado == "todas") ) {
+                    if ((estado == estado_orden || estado == "todas") && (marca == marca_orden || marca == "todas") && (marca !== 'interna') 
+                    && (identificacion == cliente_identificacion || identificacion == "") && (medio_compra == orden_medio_compra || medio_compra == "todas") 
+                    && (opcion_envio == orden_opcion_envio || opcion_envio == "todas") && (empresa_envio == orden_empresa_envio || empresa_envio == "todas") 
+                    && (tiempo_estimado == orden_tiempo_estimado || tiempo_estimado == "todas") ) {
 
                         let prendas = data['ordenes'][i]['prendas'];
                         let flag = false;
