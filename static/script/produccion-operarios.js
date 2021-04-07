@@ -42,7 +42,7 @@ const switch_caso = (caso_produccion) => {
         break;
 
     case 8:
-        caso = ['empaque', 'confeccion-terminacion', 'calidad', 'empaque']; // Manualidad con costuras
+        caso = ['confeccion-preparacion2', 'calidad', 'empaque']; // Manualidad con costuras
         break;
 
     case 9:
