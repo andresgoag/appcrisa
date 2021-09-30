@@ -1020,8 +1020,8 @@ def home():
             usuario = UserModel.find_by_usuario(input_usuario)
 
             if usuario:
-                # password_comparar = bytes.fromhex(usuario.password[2:])
-                password_comparar = usuario.password
+                password_comparar = bytes.fromhex(usuario.password[2:])
+                # password_comparar = usuario.password
 
                 if bcrypt.checkpw(input_password, password_comparar):
                     session['user'] = usuario.usuario
