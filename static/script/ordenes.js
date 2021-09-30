@@ -141,7 +141,7 @@ function sumCantidades() {
     }
 }
 
-function selectSubtipo(clickedElement) {
+const selectSubtipo = (clickedElement, elementId=false, value=false) => {
 
     let select_subtipo = document.querySelector("#"+clickedElement.parentElement.parentElement.id+" .subtipo")
 
@@ -170,7 +170,11 @@ function selectSubtipo(clickedElement) {
                     }
                 }
 
-                select_subtipo.insertAdjacentHTML('beforeend', html_str) 
+                select_subtipo.insertAdjacentHTML('beforeend', html_str);
+
+                if (elementId && value) {
+                    document.getElementById(elementId).value = value;
+                }
             }
         }
 
@@ -288,6 +292,7 @@ function crearNumeroOrden() {
 let boton_crear_orden = document.getElementById("boton_crear_orden");
 boton_crear_orden.addEventListener('click', crearNumeroOrden);
 
+
 function buscarOrdenVentas() {
     order = document.getElementById("input_buscar_orden").value.trim();
 
@@ -311,8 +316,7 @@ function buscarOrdenVentas() {
                 if (i == 0) {
                     document.getElementById("id_1").value = data["prendas"][i]["id"];
                     document.getElementById("tipo_1").value = data["prendas"][i]["tipo"];
-                    selectSubtipo(document.getElementById("tipo_1"));
-                    document.getElementById("subtipo_1").value = data["prendas"][i]["subtipo"];
+                    selectSubtipo(document.getElementById("tipo_1"), "subtipo_1", data["prendas"][i]["subtipo"]);
                     document.getElementById("genero_1").value = data["prendas"][i]["genero"];
                     document.getElementById("talla_1").value = data["prendas"][i]["talla"];
                     document.getElementById("imagen_1").value = data["prendas"][i]["imagen"];
@@ -323,8 +327,7 @@ function buscarOrdenVentas() {
                     await addPrenda();
                     document.getElementById("id_"+id_prenda).value = data["prendas"][i]["id"];
                     document.getElementById("tipo_"+id_prenda).value = data["prendas"][i]["tipo"];
-                    selectSubtipo(document.getElementById("tipo_"+id_prenda));
-                    document.getElementById("subtipo_"+id_prenda).value = data["prendas"][i]["subtipo"];
+                    selectSubtipo(document.getElementById("tipo_"+id_prenda), "subtipo_"+id_prenda, data["prendas"][i]["subtipo"]);
                     document.getElementById("genero_"+id_prenda).value = data["prendas"][i]["genero"];
                     document.getElementById("talla_"+id_prenda).value = data["prendas"][i]["talla"];
                     document.getElementById("imagen_"+id_prenda).value = data["prendas"][i]["imagen"];

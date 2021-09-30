@@ -3,5 +3,4 @@ __pycache__/
 uwsgi.ini
 wsgi.py
 log/
-requirements.txt
 data.db

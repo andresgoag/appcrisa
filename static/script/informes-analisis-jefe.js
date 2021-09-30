@@ -126,7 +126,7 @@ const buscador_prendas = () => {
                     let area_prenda = prendas[a]["area_responsable"];
                     let responsable_prenda = prendas[a]["usuario_responsable"];
 
-                    if ((tipo == tipo_prenda || tipo == "todas") && (usuario == responsable_prenda || usuario == "") && (area == area_prenda || area == "") &&
+                    if ((tipo == tipo_prenda || tipo == "todas") && (tipo_prenda !== 'interna') && (usuario == responsable_prenda || usuario == "") && (area == area_prenda || area == "") &&
                     (prioridad == prioritaria|| prioridad == "todas") && (material == area_prenda || material == "todas") && (orden == numero_orden || orden == "") ) {
                         html_orden = '<tr class="fila"><td>'+prioritaria+'</td><td>'+numero_orden+'</td><td>'+tipo_prenda+'</td><td>'+cantidad_prenda+'</td><td>'+area_prenda+'</td><td>'+responsable_prenda+'</td></tr>'
                         tabla.insertAdjacentHTML('beforeend', html_orden);

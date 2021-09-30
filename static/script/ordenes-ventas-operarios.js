@@ -135,7 +135,7 @@ function sumCantidades() {
     }
 }
 
-function selectSubtipo(clickedElement) {
+function selectSubtipo(clickedElement, elementId=false, value=false) {
 
     let select_subtipo = document.querySelector("#"+clickedElement.parentElement.parentElement.id+" .subtipo")
 
@@ -164,7 +164,11 @@ function selectSubtipo(clickedElement) {
                     }
                 }
         
-                select_subtipo.insertAdjacentHTML('beforeend', html_str) 
+                select_subtipo.insertAdjacentHTML('beforeend', html_str);
+
+                if (elementId && value) {
+                    document.getElementById(elementId).value = value;
+                }
             }
         }
 

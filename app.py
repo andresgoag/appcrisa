@@ -2,7 +2,7 @@ import os
 import ast
 import bcrypt
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from db import db
 from models.clientes import ClientesModel
@@ -27,12 +27,10 @@ from models.config import (
 
 app = Flask(__name__)
 app.secret_key = "appcrisaapp" 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://app:appcrisa1029$@localhost:5432/app'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI', 'sqlite:///data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 salt = bcrypt.gensalt()
-
-
 
 
 # PRENDAS = ['falda', 'pantalon', 'short', 'buzo', 'camibuzo', 'camiseta', 'croptop', 'camisilla', 'camisa', 'vestido', 'correa', 'medias', 'gorro', 'gafas', 'tapabocas', 'arnes', 'panoleta', 'cobija', 'panties', 'dakimakuras', 'kimono', 'cadena', 'sudadera', 'otro']
@@ -372,7 +370,9 @@ def guardar_orden_diseno():
 
 @app.route('/crearnumerodeorden')
 def new_order():
-    fecha = datetime.now().strftime("%y%m%d%H%M%S")
+    utc_date = datetime.now()
+    col_date = utc_date - timedelta(hours=5)
+    fecha = col_date.strftime("%y%m%d%H%M%S")
     return {'numero_orden': fecha}
 
 @app.route('/getuser/<string:cedula>')
@@ -670,15 +670,15 @@ def usuario_responsable_prenda():
             if usuario.area == data['area']:
                 prenda.user_responsable = data["usuario"]
                 prenda.save_to_db()
-                return {"message":f"Se asigno exitosamente a {data['usuario']}"}
+                return {"message": f"Se asigno exitosamente a {data['usuario']}"}
             
-            return {'message':f'El usuario seleccionado no es del area {data["area"]}'}
+            return {'message': f'El usuario seleccionado no es del area {data["area"]}'}
         
         else:
-            return {"message":f"el usuario {data['usuario']} no existe"}
+            return {"message": f"el usuario {data['usuario']} no existe"}
             
     else:
-        return {"message":"Error al asignar usuario, por favor recargue la página e inténtelo nuevamente"}
+        return {"message": "Error al asignar usuario, por favor recargue la página e inténtelo nuevamente"}
 
 @app.route('/cambiarusuariovacio/<int:prenda_id>')
 def cambiar_usuario_vacio(prenda_id):
@@ -689,12 +689,12 @@ def cambiar_usuario_vacio(prenda_id):
         prenda.user_responsable = ""
         try:
             prenda.save_to_db()
-            return {"message":f"Se asigno exitosamente a {data['usuario']}"}
+            return {"message": "Usuarios desasignados exitosamente"}
         except:
-            return {"message":"Servidor no disponible"}
+            return {"message": "Servidor no disponible"}
             
     else:
-        return {"message":"prenda no encontrada"}
+        return {"message": "prenda no encontrada"}
 
 @app.route('/verordenes')
 def ver_ordenes():
@@ -862,7 +862,7 @@ def config_get_items(cls):
 
 @app.route("/config_addprenda", methods=['POST'])
 def config_addprenda():
-    item = request.form.get("item")
+    item = request.form.get("item").strip().lower()
     result = config_add_item(item, ConfigPrendasModel)
     return redirect(url_for('configuracion'))
 
@@ -872,7 +872,7 @@ def config_get_prendas():
 
 @app.route("/config_addareas", methods=['POST'])
 def config_addareas():
-    item = request.form.get("item")
+    item = request.form.get("item").strip().lower()
     result = config_add_item(item, ConfigAreasModel)
     return redirect(url_for('configuracion'))
 
@@ -882,7 +882,7 @@ def config_get_areas():
 
 @app.route("/config_addcategoriaenvio", methods=['POST'])
 def config_addcategoriaenvio():
-    item = request.form.get("item")
+    item = request.form.get("item").strip().lower()
     result = config_add_item(item, ConfigCategoriaEnvioModel)
     return redirect(url_for('configuracion'))
 
@@ -892,7 +892,7 @@ def config_get_categoriaenvio():
 
 @app.route("/config_addempresaenvio", methods=['POST'])
 def config_addempresaenvio():
-    item = request.form.get("item")
+    item = request.form.get("item").strip().lower()
     result = config_add_item(item, ConfigEmpresaEnvioModel)
     return redirect(url_for('configuracion'))
 
@@ -902,7 +902,7 @@ def config_get_empresaenvio():
 
 @app.route("/config_addopcionesenvio", methods=['POST'])
 def config_addopcionesenvio():
-    item = request.form.get("item")
+    item = request.form.get("item").strip().lower()
     result = config_add_item(item, ConfigOpcionesEnvioModel)
     return redirect(url_for('configuracion'))
 
@@ -912,7 +912,7 @@ def config_get_opcionesenvio():
 
 @app.route("/config_addmedioscompra", methods=['POST'])
 def config_addmedioscompra():
-    item = request.form.get("item")
+    item = request.form.get("item").strip().lower()
     result = config_add_item(item, ConfigMediosCompraModel)
     return redirect(url_for('configuracion'))
 
@@ -922,7 +922,7 @@ def config_get_medioscompra():
 
 @app.route("/config_addmarcas", methods=['POST'])
 def config_addmarcas():
-    item = request.form.get("item")
+    item = request.form.get("item").strip().lower()
     result = config_add_item(item, ConfigMarcasModel)
     return redirect(url_for('configuracion'))
 
@@ -932,7 +932,7 @@ def config_get_marcas():
 
 @app.route("/config_addestadosorden", methods=['POST'])
 def config_addestadosorden():
-    item = request.form.get("item")
+    item = request.form.get("item").strip().lower()
     result = config_add_item(item, ConfigEstadosOrdenModel)
     return redirect(url_for('configuracion'))
 
@@ -942,7 +942,7 @@ def config_get_estadosorden():
 
 @app.route("/config_addmediospago", methods=['POST'])
 def config_addmediospago():
-    item = request.form.get("item")
+    item = request.form.get("item").strip().lower()
     result = config_add_item(item, ConfigMediosPagoModel)
     return redirect(url_for('configuracion'))
 
@@ -952,7 +952,7 @@ def config_get_mediospago():
 
 @app.route("/config_addtallas", methods=['POST'])
 def config_addtallas():
-    item = request.form.get("item")
+    item = request.form.get("item").strip().lower()
     result = config_add_item(item, ConfigTallasModel)
     return redirect(url_for('configuracion'))
 
@@ -962,8 +962,8 @@ def config_get_tallas():
 
 @app.route("/config_addsubtipo", methods=['POST'])
 def config_addsubtipo():
-    prenda = request.form.get("prenda")
-    item = request.form.get("item")
+    prenda = request.form.get("prenda").strip().lower()
+    item = request.form.get("item").strip().lower()
     nuevo_item = ConfigSubtipoPrendasModel.find_one(item)
 
     if nuevo_item:
@@ -1020,7 +1020,8 @@ def home():
             usuario = UserModel.find_by_usuario(input_usuario)
 
             if usuario:
-                password_comparar = bytes.fromhex(usuario.password[2:])
+                # password_comparar = bytes.fromhex(usuario.password[2:])
+                password_comparar = usuario.password
 
                 if bcrypt.checkpw(input_password, password_comparar):
                     session['user'] = usuario.usuario
