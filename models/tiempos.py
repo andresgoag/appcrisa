@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from db import db
 
@@ -24,7 +24,7 @@ class TiemposModel(db.Model):
         self.usuario_id = usuario_id
         self.orden_id = orden_id
         self.prenda_id = prenda_id
-        self.inicio = datetime.now().strftime("%Y %m %d %H %M %S")
+        self.inicio = (datetime.now() - timedelta(hours=5)).strftime("%Y %m %d %H %M %S")
         self.final = ""
         self.area_produccion = area_produccion
 
@@ -53,3 +53,16 @@ class TiemposModel(db.Model):
     @classmethod
     def find(cls):
         return cls.query.all()
+
+    @classmethod
+    def find_query(cls, orden, usuario, area):
+        filters = []
+        if orden:
+            filters.append(cls.orden_id == orden)
+        if usuario:
+            filters.append(cls.usuario_id == usuario)
+        if area:
+            filters.append(cls.area_produccion == area)
+
+        return cls.query.filter(*filters)
+

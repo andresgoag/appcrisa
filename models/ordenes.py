@@ -100,4 +100,7 @@ class OrdenesModel(db.Model):
     @classmethod
     def find(cls):
         return cls.query.all()
-        
+
+    @classmethod
+    def find_by_date(cls, desde, hasta):
+        return cls.query.filter(*[cls.numero_orden >= desde, cls.numero_orden <= hasta])

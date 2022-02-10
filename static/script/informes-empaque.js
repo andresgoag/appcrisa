@@ -12,47 +12,61 @@ const buscador_ordenes = () => {
     let tiempo_estimado = document.getElementById("tiempo_estimado").value;
     let tabla = document.getElementById("tabla_ordenes");
 
-    let request = new XMLHttpRequest();
-    request.open("GET", "/verordenes");
-
-    request.onreadystatechange = () => {
-        if (request.readyState === 4 && request.status === 200) {
-
-            filas = document.querySelectorAll('#tabla_ordenes .fila')
+    fetch("/verordenesbydate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ desde: fecha, hasta: "" }),
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            filas = document.querySelectorAll("#tabla_ordenes .fila");
 
             for (let i = 0; i < filas.length; i++) {
-                filas[i].remove()
+                filas[i].remove();
             }
 
-            let data = JSON.parse(request.responseText);
-            for (let i = 0; i < data['ordenes'].length; i++) {
-                let prioritaria = data['ordenes'][i]['prioritaria'];
-                let numero_orden = data['ordenes'][i]['numero_orden'];
-                let prendas = data['ordenes'][i]['prendas'];
+            for (let i = 0; i < data["ordenes"].length; i++) {
+                let prioritaria = data["ordenes"][i]["prioritaria"];
+                let numero_orden = data["ordenes"][i]["numero_orden"];
+                let prendas = data["ordenes"][i]["prendas"];
                 let cantidad_prendas = 0;
                 for (let i = 0; i < prendas.length; i++) {
-                     cantidad_prendas += parseInt(prendas[i]['cantidad']);
+                    cantidad_prendas += parseInt(prendas[i]["cantidad"]);
                 }
-                let cliente_nombre = data['ordenes'][i]['cliente']['nombre'];
-                let cliente_identificacion = data['ordenes'][i]['cliente']['cedula'];
-                let cliente_telefono = data['ordenes'][i]['cliente']['telefono'];
-                let estado_orden = data['ordenes'][i]['estado_orden'];
-                let marca_orden = data['ordenes'][i]['marca'];
-                let orden_medio_compra = data['ordenes'][i]['medio_compra'];
-                let responsable = data['ordenes'][i]['usuario_responsable'];
-                let orden_fecha = data['ordenes'][i]['fecha'];
-                let orden_pagado = data['ordenes'][i]['pagado'];
-                let orden_opcion_envio = data['ordenes'][i]['opcion_envio'];
-                let orden_tiempo_estimado = data['ordenes'][i]['tiempo_estimado'];
-                let orden_empresa_envio = data['ordenes'][i]['empresa_envio'];
-                
+                let cliente_nombre = data["ordenes"][i]["cliente"]["nombre"];
+                let cliente_identificacion =
+                    data["ordenes"][i]["cliente"]["cedula"];
+                let cliente_telefono =
+                    data["ordenes"][i]["cliente"]["telefono"];
+                let estado_orden = data["ordenes"][i]["estado_orden"];
+                let marca_orden = data["ordenes"][i]["marca"];
+                let orden_medio_compra = data["ordenes"][i]["medio_compra"];
+                let responsable = data["ordenes"][i]["usuario_responsable"];
+                let orden_fecha = data["ordenes"][i]["fecha"];
+                let orden_pagado = data["ordenes"][i]["pagado"];
+                let orden_opcion_envio = data["ordenes"][i]["opcion_envio"];
+                let orden_tiempo_estimado =
+                    data["ordenes"][i]["tiempo_estimado"];
+                let orden_empresa_envio = data["ordenes"][i]["empresa_envio"];
 
-                if ((estado == estado_orden || estado == "todas") && (marca == marca_orden || marca == "todas") && (prioridad == prioritaria || prioridad == "todas") &&
-                (identificacion == cliente_identificacion || identificacion == "") && (telefono == cliente_telefono || telefono == "")
-                && (fecha == orden_fecha || fecha == "") && (medio_compra == orden_medio_compra || medio_compra == "todas") && (pagado == orden_pagado || pagado == "todas") &&
-                (opcion_envio == orden_opcion_envio || opcion_envio == "todas") && (empresa_envio == orden_empresa_envio || empresa_envio == "todas") && 
-                (tiempo_estimado == orden_tiempo_estimado || tiempo_estimado == "todas") ) {
-                    
+                if (
+                    (estado == estado_orden || estado == "todas") &&
+                    (marca == marca_orden || marca == "todas") &&
+                    (prioridad == prioritaria || prioridad == "todas") &&
+                    (identificacion == cliente_identificacion ||
+                        identificacion == "") &&
+                    (telefono == cliente_telefono || telefono == "") &&
+                    (fecha == orden_fecha || fecha == "") &&
+                    (medio_compra == orden_medio_compra ||
+                        medio_compra == "todas") &&
+                    (pagado == orden_pagado || pagado == "todas") &&
+                    (opcion_envio == orden_opcion_envio ||
+                        opcion_envio == "todas") &&
+                    (empresa_envio == orden_empresa_envio ||
+                        empresa_envio == "todas") &&
+                    (tiempo_estimado == orden_tiempo_estimado ||
+                        tiempo_estimado == "todas")
+                ) {
                     html_orden = `<tr class="fila">
                         <td>${prioritaria}</td>
                         <td class="orden">${numero_orden}</td>
@@ -63,31 +77,32 @@ const buscador_ordenes = () => {
                         <td>${responsable}</td>
                         <td>${orden_pagado}</td>
                     </tr>`;
-                    tabla.insertAdjacentHTML('beforeend', html_orden);
-
+                    tabla.insertAdjacentHTML("beforeend", html_orden);
                 }
             }
-        }
-    }
-    request.send();
-}
+        })
+        .catch((error) => console.error(error));
+};
 
 let boton_buscador_ordenes = document.getElementById("buscador_ordenes");
-boton_buscador_ordenes.addEventListener('click', buscador_ordenes);
+boton_buscador_ordenes.addEventListener("click", buscador_ordenes);
 
 const checkPago = (evento) => {
     let fila = evento.target.parentElement.parentElement.parentElement;
     let orden = fila.querySelector(".orden").textContent;
 
-    info = {orden:orden, estado:evento.target.checked}
-    info_json = JSON.stringify(info)
-    
-    fetchData("POST", "/marcarpago", (error, data) => {
-        alert(data['message'])
-    }, info_json)
+    info = { orden: orden, estado: evento.target.checked };
+    info_json = JSON.stringify(info);
 
-}
-
+    fetchData(
+        "POST",
+        "/marcarpago",
+        (error, data) => {
+            alert(data["message"]);
+        },
+        info_json
+    );
+};
 
 const buscador_prendas = () => {
     let tipo = document.getElementById("tipo-prenda").value;
@@ -97,22 +112,23 @@ const buscador_prendas = () => {
     let material = document.getElementById("material").value;
     let tabla = document.getElementById("tabla_prendas");
 
-    let request = new XMLHttpRequest();
-    request.open("GET", "/verordenes");
-    request.onreadystatechange = () => {
-        if (request.readyState === 4 && request.status === 200) {
-
-            filas = document.querySelectorAll('#tabla_prendas .fila')
+    fetch("/verordenesbydate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ desde: "", hasta: "" }),
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            filas = document.querySelectorAll("#tabla_prendas .fila");
 
             for (let i = 0; i < filas.length; i++) {
-                filas[i].remove()
+                filas[i].remove();
             }
 
-            let data = JSON.parse(request.responseText);
-            for (let i = 0; i < data['ordenes'].length; i++) {
-                let prioritaria = data['ordenes'][i]['prioritaria'];
-                let numero_orden = data['ordenes'][i]['numero_orden'];
-                let prendas = data['ordenes'][i]['prendas'];
+            for (let i = 0; i < data["ordenes"].length; i++) {
+                let prioritaria = data["ordenes"][i]["prioritaria"];
+                let numero_orden = data["ordenes"][i]["numero_orden"];
+                let prendas = data["ordenes"][i]["prendas"];
 
                 for (let a = 0; a < prendas.length; a++) {
                     let tipo_prenda = prendas[a]["tipo"];
@@ -120,18 +136,35 @@ const buscador_prendas = () => {
                     let area_prenda = prendas[a]["area_responsable"];
                     let responsable_prenda = prendas[a]["usuario_responsable"];
 
-                    if ((tipo == tipo_prenda || tipo == "todas") && (tipo_prenda !== 'interna') && (usuario == responsable_prenda || usuario == "") && (area == area_prenda || area == "") &&
-                    (prioridad == prioritaria|| prioridad == "todas") && (material == area_prenda || material == "todas") ) {
-                        html_orden = '<tr class="fila"><td>'+prioritaria+'</td><td>'+numero_orden+'</td><td>'+tipo_prenda+'</td><td>'+cantidad_prenda+'</td><td>'+area_prenda+'</td><td>'+responsable_prenda+'</td></tr>'
-                        tabla.insertAdjacentHTML('beforeend', html_orden);
+                    if (
+                        (tipo == tipo_prenda || tipo == "todas") &&
+                        tipo_prenda !== "interna" &&
+                        (usuario == responsable_prenda || usuario == "") &&
+                        (area == area_prenda || area == "") &&
+                        (prioridad == prioritaria || prioridad == "todas") &&
+                        (material == area_prenda || material == "todas")
+                    ) {
+                        html_orden =
+                            '<tr class="fila"><td>' +
+                            prioritaria +
+                            "</td><td>" +
+                            numero_orden +
+                            "</td><td>" +
+                            tipo_prenda +
+                            "</td><td>" +
+                            cantidad_prenda +
+                            "</td><td>" +
+                            area_prenda +
+                            "</td><td>" +
+                            responsable_prenda +
+                            "</td></tr>";
+                        tabla.insertAdjacentHTML("beforeend", html_orden);
                     }
                 }
             }
-        }
-    }
-    request.send();
-}
-
+        })
+        .catch((error) => console.error(error));
+};
 
 const boton_buscador_prendas = document.getElementById("buscador_prendas");
-boton_buscador_prendas.addEventListener('click', buscador_prendas);
+boton_buscador_prendas.addEventListener("click", buscador_prendas);

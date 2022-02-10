@@ -1,54 +1,68 @@
-{%extends "navegacion.html"%}
-
-{% import 'macros.html' as macros %}
-
-{%block content%}
-
+{%extends "navegacion.html"%} {% import 'macros.html' as macros %} {%block
+content%}
 
 <div class="container-fluid">
-
     <div class="row">
-
         <div class="col-12">
-
             <ul class="nav nav-tabs">
-
                 <li class="nav-item">
-                    <a href="#tabordenes" class="nav-link active" data-toggle="tab">Órdenes</a>
+                    <a
+                        href="#tabordenes"
+                        class="nav-link active"
+                        data-toggle="tab"
+                        >Órdenes</a
+                    >
                 </li>
 
                 <li class="nav-item">
-                    <a href="#tabprendas" class="nav-link" data-toggle="tab">Prendas</a>
+                    <a href="#tabprendas" class="nav-link" data-toggle="tab"
+                        >Prendas</a
+                    >
                 </li>
 
                 <li class="nav-item">
-                    <a href="#tabestadisticas" class="nav-link" data-toggle="tab">Estadísticas</a>
+                    <a
+                        href="#tabestadisticas"
+                        class="nav-link"
+                        data-toggle="tab"
+                        >Estadísticas</a
+                    >
+                </li>
+
+                <li class="nav-item">
+                    <a href="#tabtiempos" class="nav-link" data-toggle="tab"
+                        >Tiempos</a
+                    >
                 </li>
             </ul>
-        
         </div>
-
     </div>
 
     <div class="tab-content">
-
         <div class="tab-pane fade show active" id="tabordenes" role="tabpanel">
-
             <div class="row mt-2">
                 <div class="col-12">
                     <div class="form-row">
-
                         <div class="col-12 col-lg-3 form-group">
                             <label for="estado_orden">Estado</label>
-                            <select name="estado_orden" id="estado_orden" class="form-control">
+                            <select
+                                name="estado_orden"
+                                id="estado_orden"
+                                class="form-control"
+                            >
                                 <option value="todas">Todas</option>
-                                {{ macros.estados_orden_options(estados_orden) }}
+                                {{ macros.estados_orden_options(estados_orden)
+                                }}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="marca">Marca</label>
-                            <select name="marca" id="marca" class="form-control">
+                            <select
+                                name="marca"
+                                id="marca"
+                                class="form-control"
+                            >
                                 <option value="todas">Todas</option>
                                 {{ macros.marcas_options(marcas) }}
                             </select>
@@ -56,7 +70,11 @@
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="prioridad">Prioritaria</label>
-                            <select name="prioridad" id="prioridad" class="form-control">
+                            <select
+                                name="prioridad"
+                                id="prioridad"
+                                class="form-control"
+                            >
                                 <option value="todas">Todas</option>
                                 <option value="si">Si</option>
                                 <option value="no">No</option>
@@ -65,7 +83,11 @@
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="pagado">Orden paga</label>
-                            <select name="pagado" id="pagado" class="form-control">
+                            <select
+                                name="pagado"
+                                id="pagado"
+                                class="form-control"
+                            >
                                 <option value="todas">Todas</option>
                                 <option value="si">Si</option>
                                 <option value="no">No</option>
@@ -73,66 +95,111 @@
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
-                            <label for="identificacion">Identificación del cliente</label>
-                            <input type="text" class="form-control" name="identificacion" id="identificacion">
+                            <label for="identificacion"
+                                >Identificación del cliente</label
+                            >
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="identificacion"
+                                id="identificacion"
+                            />
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="telefono">Telefono del cliente</label>
-                            <input type="text" class="form-control" name="telefono" id="telefono">
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="telefono"
+                                id="telefono"
+                            />
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="fecha">Fecha de creación</label>
-                            <input type="date" class="form-control" name="fecha" id="fecha">
+                            <input
+                                type="date"
+                                class="form-control"
+                                name="fecha"
+                                id="fecha"
+                            />
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="fecha">Medio de compra</label>
-                            <select class="form-control" name="medio_compra" id="medio_compra">
+                            <select
+                                class="form-control"
+                                name="medio_compra"
+                                id="medio_compra"
+                            >
                                 <option value="todas">Todas</option>
-                                {{ macros.medios_compra_options(medios_compra) }}
+                                {{ macros.medios_compra_options(medios_compra)
+                                }}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="opcion_envio">Opción de envío</label>
-                            <select class="form-control" name="opcion_envio" id="opcion_envio">
+                            <select
+                                class="form-control"
+                                name="opcion_envio"
+                                id="opcion_envio"
+                            >
                                 <option value="todas">Todas</option>
-                                {{ macros.opciones_envio_options(opciones_envio) }}
+                                {{ macros.opciones_envio_options(opciones_envio)
+                                }}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="empresa_envio">Empresa envío</label>
-                            <select class="form-control" name="empresa_envio" id="empresa_envio">
+                            <select
+                                class="form-control"
+                                name="empresa_envio"
+                                id="empresa_envio"
+                            >
                                 <option value="todas">Todas</option>
                                 <option value="">Sin asignar</option>
-                                {{ macros.empresas_envio_options(empresas_envio) }}
+                                {{ macros.empresas_envio_options(empresas_envio)
+                                }}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
-                            <label for="tiempo_estimado">Tiempo estimado de entrega</label>
-                            <select class="form-control" name="tiempo_estimado" id="tiempo_estimado">
+                            <label for="tiempo_estimado"
+                                >Tiempo estimado de entrega</label
+                            >
+                            <select
+                                class="form-control"
+                                name="tiempo_estimado"
+                                id="tiempo_estimado"
+                            >
                                 <option value="todas">Todas</option>
-                                {{ macros.categorias_envio_options(categorias_envio) }}
+                                {{
+                                macros.categorias_envio_options(categorias_envio)
+                                }}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group align-self-end">
-                            <button class="btn btn-primary btn-block" id="buscador_ordenes">Buscar</button>
+                            <button
+                                class="btn btn-primary btn-block"
+                                id="buscador_ordenes"
+                            >
+                                Buscar
+                            </button>
                         </div>
-
                     </div>
                 </div>
             </div>
 
             <div class="row mt-2">
-
                 <div class="col-12">
-
-                    <table class="table table-bordered table-hover table-sm table-responsive" id="tabla_ordenes">
+                    <table
+                        class="table table-bordered table-hover table-sm table-responsive"
+                        id="tabla_ordenes"
+                    >
                         <thead>
                             <th>Prioritaria</th>
                             <th>Número de órden</th>
@@ -148,38 +215,57 @@
                             <th>Creada por</th>
                         </thead>
                     </table>
-
                 </div>
             </div>
         </div>
 
         <div class="tab-pane fade" id="tabprendas" role="tabpanel">
-
             <div class="row mt-2">
                 <div class="col-12">
                     <div class="form-row">
-
                         <div class="col-12 col-lg-3 form-group">
                             <label for="orden-prenda">Orden</label>
-                            <input type="text" class="form-control" name="orden-prenda" id="orden-prenda">
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="orden-prenda"
+                                id="orden-prenda"
+                            />
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="tipo-prenda">Tipo de prenda</label>
-                            <select name="tipo-prenda" id="tipo-prenda" class="form-control">
+                            <select
+                                name="tipo-prenda"
+                                id="tipo-prenda"
+                                class="form-control"
+                            >
                                 <option value="todas">Todas</option>
                                 {{ macros.prendas_options(prendas)}}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
-                            <label for="usuario-responsable-prenda">Usuario responsable</label>
-                            <input type="text" class="form-control" name="usuario-responsable-prenda" id="usuario-responsable-prenda">
+                            <label for="usuario-responsable-prenda"
+                                >Usuario responsable</label
+                            >
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="usuario-responsable-prenda"
+                                id="usuario-responsable-prenda"
+                            />
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
-                            <label for="area-responsable-prenda">Área responsable</label>
-                            <select name="area-responsable-prenda" id="area-responsable-prenda" class="form-control">
+                            <label for="area-responsable-prenda"
+                                >Área responsable</label
+                            >
+                            <select
+                                name="area-responsable-prenda"
+                                id="area-responsable-prenda"
+                                class="form-control"
+                            >
                                 <option value="">Todas</option>
                                 {{ macros.areas_options(areas) }}
                             </select>
@@ -187,7 +273,11 @@
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="prioridad-prenda">Prioritaria</label>
-                            <select name="prioridad-prenda" id="prioridad-prenda" class="form-control">
+                            <select
+                                name="prioridad-prenda"
+                                id="prioridad-prenda"
+                                class="form-control"
+                            >
                                 <option value="todas">Todas</option>
                                 <option value="si">Si</option>
                                 <option value="no">No</option>
@@ -196,26 +286,36 @@
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="material">Sin material</label>
-                            <select name="material" id="material" class="form-control">
+                            <select
+                                name="material"
+                                id="material"
+                                class="form-control"
+                            >
                                 <option value="todas">Todas</option>
-                                <option value="sin material">Sin material</option>
+                                <option value="sin material">
+                                    Sin material
+                                </option>
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group align-self-end">
-                            <button class="btn btn-primary btn-block" id="buscador_prendas">Buscar</button>
+                            <button
+                                class="btn btn-primary btn-block"
+                                id="buscador_prendas"
+                            >
+                                Buscar
+                            </button>
                         </div>
-
                     </div>
                 </div>
             </div>
 
             <div class="row mt-2">
-
                 <div class="col-12">
-                    
-                    <table class="table table-bordered table-sm table-hover table-responsive" id="tabla_prendas">
-
+                    <table
+                        class="table table-bordered table-sm table-hover table-responsive"
+                        id="tabla_prendas"
+                    >
                         <thead>
                             <th>Prioritaria</th>
                             <th>Numero de órden</th>
@@ -224,123 +324,195 @@
                             <th>Área</th>
                             <th>Responsable</th>
                         </thead>
-
                     </table>
-
                 </div>
-
             </div>
-
         </div>
 
-
-
         <div class="tab-pane fade" id="tabestadisticas" role="tabpanel">
-
             <div class="row mt-2">
                 <div class="col-12">
                     <div class="form-row">
-
                         <div class="col-12 col-lg-3 form-group">
                             <label for="estadisticas-fecha-desde">Desde</label>
-                            <input type="date" class="form-control" name="estadisticas-fecha-desde" id="estadisticas-fecha-desde">
+                            <input
+                                type="date"
+                                class="form-control"
+                                name="estadisticas-fecha-desde"
+                                id="estadisticas-fecha-desde"
+                            />
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="estadisticas-fecha-hasta">Hasta</label>
-                            <input type="date" class="form-control" name="estadisticas-fecha-hasta" id="estadisticas-fecha-hasta">
+                            <input
+                                type="date"
+                                class="form-control"
+                                name="estadisticas-fecha-hasta"
+                                id="estadisticas-fecha-hasta"
+                            />
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
-                            <label for="estadisticas-tipo-prenda">Tipo de prenda</label>
-                            <select name="estadisticas-tipo-prenda" id="estadisticas-tipo-prenda" class="form-control">
+                            <label for="estadisticas-tipo-prenda"
+                                >Tipo de prenda</label
+                            >
+                            <select
+                                name="estadisticas-tipo-prenda"
+                                id="estadisticas-tipo-prenda"
+                                class="form-control"
+                            >
                                 <option value="todas">Todas</option>
                                 {{ macros.prendas_options(prendas)}}
                             </select>
                         </div>
-                    
                     </div>
 
-
                     <div class="form-row">
-
                         <div class="col-12 col-lg-3 form-group">
-                            <label for="estadisticas-estado_orden">Estado</label>
-                            <select name="estadisticas-estado_orden" id="estadisticas-estado_orden" class="form-control">
+                            <label for="estadisticas-estado_orden"
+                                >Estado</label
+                            >
+                            <select
+                                name="estadisticas-estado_orden"
+                                id="estadisticas-estado_orden"
+                                class="form-control"
+                            >
                                 <option value="todas">Todas</option>
-                                {{ macros.estados_orden_options(estados_orden) }}
+                                {{ macros.estados_orden_options(estados_orden)
+                                }}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
                             <label for="estadisticas-marca">Marca</label>
-                            <select name="estadisticas-marca" id="estadisticas-marca" class="form-control">
+                            <select
+                                name="estadisticas-marca"
+                                id="estadisticas-marca"
+                                class="form-control"
+                            >
                                 <option value="todas">Todas</option>
                                 {{ macros.marcas_options(marcas) }}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
-                            <label for="estadisticas-identificacion">Identificación del cliente</label>
-                            <input type="text" class="form-control" name="estadisticas-identificacion" id="estadisticas-identificacion">
+                            <label for="estadisticas-identificacion"
+                                >Identificación del cliente</label
+                            >
+                            <input
+                                type="text"
+                                class="form-control"
+                                name="estadisticas-identificacion"
+                                id="estadisticas-identificacion"
+                            />
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
-                            <label for="estadisticas-medio_compra">Medio de compra</label>
-                            <select class="form-control" name="estadisticas-medio_compra" id="estadisticas-medio_compra">
+                            <label for="estadisticas-medio_compra"
+                                >Medio de compra</label
+                            >
+                            <select
+                                class="form-control"
+                                name="estadisticas-medio_compra"
+                                id="estadisticas-medio_compra"
+                            >
                                 <option value="todas">Todas</option>
-                                {{ macros.medios_compra_options(medios_compra) }}
+                                {{ macros.medios_compra_options(medios_compra)
+                                }}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
-                            <label for="estadisticas-opcion_envio">Opción de envío</label>
-                            <select class="form-control" name="estadisticas-opcion_envio" id="estadisticas-opcion_envio">
+                            <label for="estadisticas-opcion_envio"
+                                >Opción de envío</label
+                            >
+                            <select
+                                class="form-control"
+                                name="estadisticas-opcion_envio"
+                                id="estadisticas-opcion_envio"
+                            >
                                 <option value="todas">Todas</option>
-                                {{ macros.opciones_envio_options(opciones_envio) }}
+                                {{ macros.opciones_envio_options(opciones_envio)
+                                }}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
-                            <label for="estadisticas-empresa_envio">Empresa envío</label>
-                            <select class="form-control" name="estadisticas-empresa_envio" id="estadisticas-empresa_envio">
+                            <label for="estadisticas-empresa_envio"
+                                >Empresa envío</label
+                            >
+                            <select
+                                class="form-control"
+                                name="estadisticas-empresa_envio"
+                                id="estadisticas-empresa_envio"
+                            >
                                 <option value="todas">Todas</option>
                                 <option value="">Sin asignar</option>
-                                {{ macros.empresas_envio_options(empresas_envio) }}
+                                {{ macros.empresas_envio_options(empresas_envio)
+                                }}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group">
-                            <label for="estadisticas-tiempo_estimado">Tiempo estimado de entrega</label>
-                            <select class="form-control" name="estadisticas-tiempo_estimado" id="estadisticas-tiempo_estimado">
+                            <label for="estadisticas-tiempo_estimado"
+                                >Tiempo estimado de entrega</label
+                            >
+                            <select
+                                class="form-control"
+                                name="estadisticas-tiempo_estimado"
+                                id="estadisticas-tiempo_estimado"
+                            >
                                 <option value="todas">Todas</option>
-                                {{ macros.categorias_envio_options(categorias_envio) }}
+                                {{
+                                macros.categorias_envio_options(categorias_envio)
+                                }}
                             </select>
                         </div>
 
                         <div class="col-12 col-lg-3 form-group align-self-end">
-                            <button class="btn btn-primary btn-block" id="buscador_estadisticas">Buscar</button>
+                            <button
+                                class="btn btn-primary btn-block"
+                                id="buscador_estadisticas"
+                            >
+                                Buscar
+                            </button>
                         </div>
-
                     </div>
-
                 </div>
             </div>
 
             <div class="row mt-2">
                 <div class="col-12 col-md-6 form-group">
-                    <label for="estadisticas-total-prendas">Total prendas</label>
-                    <input type="text" class="form-control" name="estadisticas-total-prendas" id="estadisticas-total-prendas" readonly>
+                    <label for="estadisticas-total-prendas"
+                        >Total prendas</label
+                    >
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="estadisticas-total-prendas"
+                        id="estadisticas-total-prendas"
+                        readonly
+                    />
                 </div>
                 <div class="col-12 col-md-6 form-group">
                     <label for="estadisticas-total-dinero">Total dinero</label>
-                    <input type="text" class="form-control" name="estadisticas-total-dinero" id="estadisticas-total-dinero" readonly>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="estadisticas-total-dinero"
+                        id="estadisticas-total-dinero"
+                        readonly
+                    />
                 </div>
             </div>
 
             <div class="row mt-2">
                 <div class="col-12">
-                    <table class="table table-bordered table-sm table-hover table-responsive" id="tabla_estadisticas">
+                    <table
+                        class="table table-bordered table-sm table-hover table-responsive"
+                        id="tabla_estadisticas"
+                    >
                         <thead>
                             <th>Número de órden</th>
                             <th>Cliente</th>
@@ -355,11 +527,125 @@
                     </table>
                 </div>
             </div>
-
         </div>
 
-    </div>
+        <!--  -->
 
+        <div class="tab-pane fade" id="tabtiempos" role="tabpanel">
+            <div class="row mt-2">
+                <div class="col-12">
+                    <div class="form-row">
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="tiempos-fecha-desde">Desde</label>
+                            <input
+                                type="date"
+                                class="form-control tiempos_filter"
+                                name="desde"
+                                id="tiempos-fecha-desde"
+                            />
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="tiempos-fecha-hasta">Hasta</label>
+                            <input
+                                type="date"
+                                class="form-control tiempos_filter"
+                                name="hasta"
+                                id="tiempos-fecha-hasta"
+                            />
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="tiempos-tipo-prenda"
+                                >Tipo de prenda</label
+                            >
+                            <select
+                                name="prenda"
+                                id="tiempos-tipo-prenda"
+                                class="form-control tiempos_filter"
+                            >
+                                <option value="">Todas</option>
+                                {{ macros.prendas_options(prendas)}}
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="tiempos-orden">Numero de orden</label>
+                            <input
+                                type="text"
+                                class="form-control tiempos_filter"
+                                name="orden"
+                                id="tiempos-orden"
+                            />
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="tiempos-usuario">Usuario</label>
+                            <input
+                                type="text"
+                                class="form-control tiempos_filter"
+                                name="usuario"
+                                id="tiempos-usuario"
+                            />
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group">
+                            <label for="tiempos-area">Área responsable</label>
+                            <select
+                                name="area"
+                                id="tiempos-area"
+                                class="form-control tiempos_filter"
+                            >
+                                <option value="">Todas</option>
+                                {{ macros.areas_options(areas) }}
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3 form-group align-self-end">
+                            <button
+                                class="btn btn-primary btn-block"
+                                id="buscador-tiempos"
+                            >
+                                Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12 form-group">
+                    <label for="tiempos-total">Total de tiempo</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="tiempos-total"
+                        id="tiempos-total"
+                        readonly
+                    />
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12">
+                    <table
+                        class="table table-bordered table-sm table-hover table-responsive"
+                        id="tabla_tiempos"
+                    >
+                        <thead>
+                            <th>Número de órden</th>
+                            <th>Usuario</th>
+                            <th>Area</th>
+                            <th>Inicio</th>
+                            <th>Final</th>
+                            <th>Prenda</th>
+                            <th>Tiempo</th>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="{{url_for('static', filename='script/informes.js')}}"></script>

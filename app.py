@@ -520,7 +520,7 @@ def cargar_tiempos():
                 break
         
         if tiempo:
-            tiempo.final = datetime.now().strftime("%Y %m %d %H %M %S")
+            tiempo.final = (datetime.now() - timedelta(hours=5)).strftime("%Y %m %d %H %M %S")
             tiempo.save_to_db()
         else:
             tiempo = TiemposModel(user.id, prenda.orden_id, prenda.id, session['area'])
@@ -704,6 +704,33 @@ def ver_ordenes():
         y.append(i.json())
     return {'ordenes':y}
 
+@app.route('/verordenesbydate', methods=['POST'])
+def ver_ordenes_by_date():
+    data = request.get_json()
+
+    if data["desde"] and data['hasta']:
+        desde = datetime.strptime(data["desde"], "%Y-%m-%d")
+        hasta = datetime.strptime(data["hasta"], "%Y-%m-%d")
+    elif data["desde"] and not data['hasta']:
+        desde = datetime.strptime(data["desde"], "%Y-%m-%d")
+        hasta = desde + timedelta(days=100)
+    elif data['hasta'] and not data["desde"]:
+        hasta = datetime.strptime(data["hasta"], "%Y-%m-%d")
+        desde = hasta - timedelta(days=100)
+    else:
+        utc_date = datetime.now()
+        hasta = utc_date - timedelta(hours=5)
+        desde = hasta - timedelta(days=100)
+
+    data["desde"] = desde.strftime("%y%m%d%H%M%S")
+    data["hasta"] = hasta.strftime("%y%m%d%H%M%S")
+
+    x = OrdenesModel.find_by_date(**data)
+    y = list()
+    for i in x:
+        y.append(i.json())
+    return {'ordenes':y}
+
 @app.route('/vertiempos')
 def ver_tiempos():
     x = TiemposModel.find()
@@ -713,6 +740,60 @@ def ver_tiempos():
         y[cont] = i.json()
         cont = cont + 1
     return y
+
+@app.route('/get_tiempos', methods=['POST'])
+def get_tiempos():
+    data = request.get_json()
+    utc_date = datetime.now()
+    col_date = utc_date - timedelta(hours=5)
+    default_min_date = col_date - timedelta(days=100)
+
+    if data["desde"]:
+        data["desde"] = datetime.strptime(data["desde"], "%Y-%m-%d")
+    else:
+        data["desde"] = default_min_date
+
+    if data["hasta"]:
+        data["hasta"] = datetime.strptime(data["hasta"], "%Y-%m-%d")
+    else:
+        data["hasta"] = col_date
+
+    try:
+        if data['orden']:
+            data['orden'] = OrdenesModel.find_by_orden(data['orden']).id
+
+        if data['usuario']:
+            data['usuario'] = UserModel.find_by_usuario(data['usuario']).id
+    except:
+        return {"tiempos": []}
+
+    x = TiemposModel.find_query(data['orden'], data['usuario'], data['area'])
+    y = list()
+    for i in x:
+        prenda = i.prenda.tipo
+        if data["prenda"] == "" or prenda == data['prenda']:
+            inicio = datetime.strptime(i.inicio, "%Y %m %d %H %M %S")
+            if inicio <= data['hasta'] and inicio >= data["desde"]:
+                final = ""
+                tiempo = ""
+                if i.final != "": 
+                    final = datetime.strptime(i.final, "%Y %m %d %H %M %S")
+                    tiempo = final - inicio
+                    hours, remainder = divmod(tiempo.seconds, 3600)
+                    minutes, seconds = divmod(remainder, 60)
+
+                item = {
+                    "orden": i.orden.numero_orden,
+                    "usuario": i.user.usuario,
+                    "area": i.area_produccion,
+                    "inicio": inicio.strftime("%Y-%m-%d %H:%M:%S"),
+                    "final": final.strftime("%Y-%m-%d %H:%M:%S"),
+                    "prenda": prenda,
+                    "tiempo": tiempo.seconds,
+                    "tiempo_str": f"{hours}:{minutes}:{seconds}"
+                }
+                y.append(item)
+    return {"tiempos":y}
 
 @app.route('/getsession')
 def getsession():
@@ -1020,8 +1101,8 @@ def home():
             usuario = UserModel.find_by_usuario(input_usuario)
 
             if usuario:
-                password_comparar = bytes.fromhex(usuario.password[2:])
-                # password_comparar = usuario.password
+                # password_comparar = bytes.fromhex(usuario.password[2:])
+                password_comparar = usuario.password
 
                 if bcrypt.checkpw(input_password, password_comparar):
                     session['user'] = usuario.usuario
